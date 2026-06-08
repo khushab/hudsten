@@ -1,22 +1,33 @@
-// MILESTONE 1 skeleton — proves the SPA boots with the shared design system.
-// MILESTONE 3 replaces this with auth (Supabase) + the admin route guard and the
-// Products / Categories / Collections / Product Types / Navigation / Settings modules.
+import { Route, Routes } from "react-router-dom";
+import { RequireAdmin } from "@/components/RequireAdmin";
+import { AdminLayout } from "@/components/AdminLayout";
+import Login from "@/pages/Login";
+import Dashboard from "@/pages/Dashboard";
+import ProductsList from "@/pages/products/ProductsList";
+import ProductEditor from "@/pages/products/ProductEditor";
+import Categories from "@/pages/Categories";
+import Collections from "@/pages/Collections";
+import ProductTypes from "@/pages/ProductTypes";
+import Navigation from "@/pages/Navigation";
+import Settings from "@/pages/Settings";
+
 export default function App() {
   return (
-    <div className="flex min-h-dvh items-center justify-center p-6">
-      <div className="w-full max-w-md rounded-lg border border-stone-200 bg-paper p-8 shadow-card">
-        <p className="eyebrow">Internal Tooling</p>
-        <h1 className="mt-2 text-3xl font-semibold">Hudsten Admin</h1>
-        <p className="mt-3 text-sm text-stone-600">
-          Scaffold is live. Authentication and the catalog management modules
-          arrive in Milestone&nbsp;3 (auth → products → categories → collections
-          → product types → navigation → settings).
-        </p>
-        <div className="mt-6 rounded-md bg-stone-100 p-3 text-xs text-stone-500">
-          Reminder: this SPA uses the Supabase <strong>anon key</strong> + your
-          admin JWT only. The service-role key never ships to the browser.
-        </div>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route element={<RequireAdmin />}>
+        <Route element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="products" element={<ProductsList />} />
+          <Route path="products/new" element={<ProductEditor />} />
+          <Route path="products/:id" element={<ProductEditor />} />
+          <Route path="categories" element={<Categories />} />
+          <Route path="collections" element={<Collections />} />
+          <Route path="product-types" element={<ProductTypes />} />
+          <Route path="navigation" element={<Navigation />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
+      </Route>
+    </Routes>
   );
 }

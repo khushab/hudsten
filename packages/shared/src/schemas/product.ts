@@ -21,17 +21,31 @@ export const productOptionSchema = z.object({
   values: z.array(productOptionValueSchema).min(1),
 });
 
-export const productVariantSchema = z.object({
-  id: uuidSchema.optional(),
-  title: z.string().min(1), // "Black / M"
-  sku: optionalText,
-  price: z.number().nonnegative().nullable().optional(),
-  compare_at_price: z.number().nonnegative().nullable().optional(),
-  in_stock: z.boolean().default(true),
-  position: z.number().int().min(0).default(0),
-  /** option_value_ids (or temp client ids) that compose this variant. */
-  option_value_ids: z.array(z.string()).default([]),
-});
+export const productVariantSchema = z
+  .object({
+    id: uuidSchema.optional(),
+    title: z.string().min(1), // "Black / M"
+    sku: optionalText,
+    price: z.number().nonnegative().nullable().optional(),
+    compare_at_price: z.number().nonnegative().nullable().optional(),
+    in_stock: z.boolean().default(true),
+    position: z.number().int().min(0).default(0),
+    /** option_value_ids (or temp client ids) that compose this variant. */
+    option_value_ids: z.array(z.string()).default([]),
+  })
+  // Honest discount at the variant tier too: a variant compare-at must exceed its price
+  // (variant price falls back to the product price, validated by the caller).
+  .refine(
+    (v) =>
+      v.compare_at_price == null ||
+      v.compare_at_price === 0 ||
+      v.price == null ||
+      v.compare_at_price > v.price,
+    {
+      message: "Variant compare-at must be higher than its price (no fake discounts)",
+      path: ["compare_at_price"],
+    },
+  );
 
 export const productImageSchema = z.object({
   id: uuidSchema.optional(),

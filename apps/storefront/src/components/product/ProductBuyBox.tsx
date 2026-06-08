@@ -87,12 +87,13 @@ export function ProductBuyBox({
     : (selectedVariant?.compare_at_price ?? product.compare_at_price);
   const inStock = selectedVariant ? selectedVariant.in_stock : product.in_stock;
 
+  // Build from the SELECTED option-value labels (always current) rather than the
+  // persisted variant.title, which can drift if a value was renamed in admin.
   const variantLabel =
-    selectedVariant?.title ||
     Object.values(selected)
       .map((id) => valueLabel.get(id))
       .filter(Boolean)
-      .join(" / ");
+      .join(" / ") || (selectedVariant?.title ?? "");
 
   // view_item once per product view.
   useEffect(() => {
