@@ -84,13 +84,17 @@ Migration order: `enums/functions → tables → indexes → RLS policies → st
 - **Admin (`profiles.role = 'admin'`):** full CRUD via `is_admin()`.
 - Newsletter: anon insert only (emails never publicly readable).
 
-### Promote an admin user
+### Create + promote an admin user
 
-After a user signs up (a `profiles` row is auto-created with role `customer`), promote them in the Supabase SQL editor:
+The admin login screen has **no public sign-up** (intentional). Create the user in the
+Supabase dashboard (**Auth → Users → Add user**, mark email confirmed), then promote it —
+a `profiles` row is auto-created as `customer` by a signup trigger:
 
 ```sql
 update public.profiles set role = 'admin' where id = '<auth-user-uuid>';
 ```
+
+The route guard is UX only; the real authorization is the `is_admin()` RLS check on every write.
 
 ## Running
 
