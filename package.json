@@ -1,0 +1,27 @@
+{
+  "name": "hudsten",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hudsten — fashion & lifestyle ecommerce monorepo (Phase 0 + Phase 1)",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:push": "supabase db push",
+    "db:reset": "supabase db reset",
+    "db:types": "supabase gen types typescript --linked > packages/db/src/database.types.ts",
+    "db:diff": "supabase db diff"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "prettier": "^3.4.2"
+  }
+}

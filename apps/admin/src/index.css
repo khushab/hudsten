@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Admin has no next/font — point the shared preset's font vars at a system stack. */
+  :root {
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-stone-100 text-ink font-sans antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-brass ring-offset-2 ring-offset-stone-100;
+  }
+}
