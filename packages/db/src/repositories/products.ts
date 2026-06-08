@@ -24,6 +24,8 @@ export interface ProductCardFilters {
   priceMax?: number;
   /** Color option-value labels (e.g. ["Black","Tan"]) — resolved to product ids first. */
   colorValues?: string[];
+  /** Title contains (case-insensitive). PHASE 2/DECISION: upgrade to Postgres FTS/Algolia. */
+  query?: string;
   excludeId?: string;
   limit?: number;
 }
@@ -115,6 +117,7 @@ export async function getProductCards(
   if (genders) q = q.in("gender", genders);
   if (filters.priceMin != null) q = q.gte("price", filters.priceMin);
   if (filters.priceMax != null) q = q.lte("price", filters.priceMax);
+  if (filters.query) q = q.ilike("title", `%${filters.query}%`);
   if (filters.excludeId) q = q.neq("id", filters.excludeId);
 
   q = q.order("position", { ascending: true });
@@ -124,6 +127,50 @@ export async function getProductCards(
   if (res.error)
     throw new RepositoryError(`getProductCards: ${res.error.message}`, res.error);
   return ((res.data ?? []) as unknown as RawCard[]).map(toCard);
+}
+
+// Listing query also pulls Color labels per card so the listing page can filter
+// client-side (keeps catalog pages static/SSG instead of dynamic per query string).
+const LISTING_SELECT =
+  CARD_SELECT + ", options:product_options(name, values:product_option_values(value))";
+
+interface RawListingCard extends RawCard {
+  options: { name: string; values: { value: string }[] }[];
+}
+
+export async function getListingCards(
+  client: HudstenClient,
+  filters: ProductCardFilters = {},
+): Promise<ProductCard[]> {
+  let restrictIds = filters.ids;
+  if (filters.colorValues && filters.colorValues.length > 0) {
+    const colorIds = await productIdsWithColors(client, filters.colorValues);
+    restrictIds = restrictIds
+      ? restrictIds.filter((id) => colorIds.includes(id))
+      : colorIds;
+    if (restrictIds.length === 0) return [];
+  }
+
+  let q = client.from("products").select(LISTING_SELECT).eq("status", "active");
+  if (filters.categoryId) q = q.eq("category_id", filters.categoryId);
+  if (restrictIds) q = q.in("id", restrictIds);
+  const genders = expandGenders(filters.genders);
+  if (genders) q = q.in("gender", genders);
+  if (filters.priceMin != null) q = q.gte("price", filters.priceMin);
+  if (filters.priceMax != null) q = q.lte("price", filters.priceMax);
+  q = q.order("position", { ascending: true });
+
+  const res = await q;
+  if (res.error)
+    throw new RepositoryError(`getListingCards: ${res.error.message}`, res.error);
+  return ((res.data ?? []) as unknown as RawListingCard[]).map((r) => {
+    const card = toCard(r);
+    const colorOption = (r.options ?? []).find(
+      (o) => o.name.toLowerCase() === "color",
+    );
+    card.colors = colorOption?.values.map((v) => v.value) ?? [];
+    return card;
+  });
 }
 
 export async function getFeaturedProducts(

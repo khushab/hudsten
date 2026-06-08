@@ -2,7 +2,7 @@ import type { SmartRules } from "@hudsten/shared";
 import type { HudstenClient } from "../supabase/client";
 import type { Collection, ProductCard } from "../types";
 import { getCategoryBySlug } from "./categories";
-import { getProductCards } from "./products";
+import { getListingCards } from "./products";
 import { RepositoryError, unwrap } from "./_shared";
 
 const COLLECTION_COLS =
@@ -52,7 +52,7 @@ export async function getProductsForCollection(
       );
     const ordered = (res.data ?? []).map((r) => r.product_id);
     if (ordered.length === 0) return [];
-    const cards = await getProductCards(client, { ids: ordered });
+    const cards = await getListingCards(client, { ids: ordered });
     // Re-sort to the manual order (getProductCards orders by products.position).
     const rank = new Map(ordered.map((id, i) => [id, i]));
     return cards.sort(
@@ -70,7 +70,7 @@ export async function getProductsForCollection(
     categoryId = cat.id;
   }
   // PHASE 2: rules.tags (match-all tag filtering) not yet supported — seed uses gender+category.
-  return getProductCards(client, {
+  return getListingCards(client, {
     categoryId,
     genders: rules.gender ? [rules.gender] : undefined,
     priceMin: rules.price_min,

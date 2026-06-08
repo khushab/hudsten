@@ -25,6 +25,7 @@ export {
 } from "./repositories/collections";
 export {
   getProductCards,
+  getListingCards,
   getFeaturedProducts,
   getActiveProductSlugs,
   getColorFacets,

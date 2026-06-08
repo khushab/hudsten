@@ -1,28 +1,86 @@
-// MILESTONE 1 skeleton home — proves the toolchain + design system boot.
-// MILESTONE 2 replaces this with the data-driven home (hero from settings,
-// featured collection grid, trust strip, newsletter).
-export default function HomePage() {
+import type { Metadata } from "next";
+import type { ProductCard } from "@hudsten/db";
+import { ROUTES } from "@hudsten/shared";
+import {
+  fetchActiveCollections,
+  fetchFeaturedProducts,
+  fetchProductsForCollection,
+  fetchSettings,
+} from "@/lib/data";
+import { absoluteUrl } from "@/lib/env";
+import { Container } from "@/components/ui/Container";
+import { Hero } from "@/components/marketing/Hero";
+import { TrustStrip } from "@/components/marketing/TrustStrip";
+import { SectionHeading } from "@/components/marketing/SectionHeading";
+import { ProductGrid, EmptyProducts } from "@/components/product/ProductGrid";
+import { NewsletterForm } from "@/components/layout/NewsletterForm";
+
+// ISR — home rebuilds at most hourly.
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  // Self-referencing canonical on the highest-priority page (title/description inherit from layout).
+  alternates: { canonical: absoluteUrl("/") },
+  openGraph: { url: absoluteUrl("/") },
+};
+
+export default async function HomePage() {
+  const settings = await fetchSettings();
+
+  // Featured collection (settings) → its products; fall back to is_featured products.
+  let featuredTitle = "Featured";
+  let featuredHref: string | undefined;
+  let products: ProductCard[] = [];
+
+  if (settings?.featured_collection_id) {
+    const collections = await fetchActiveCollections();
+    const featured = collections.find(
+      (c) => c.id === settings.featured_collection_id,
+    );
+    if (featured) {
+      featuredTitle = featured.name;
+      featuredHref = `${ROUTES.collection}/${featured.slug}`;
+      products = await fetchProductsForCollection(featured);
+    }
+  }
+  if (products.length === 0) {
+    products = await fetchFeaturedProducts(8);
+    featuredTitle = "Featured";
+  }
+
   return (
-    <main className="shell flex min-h-dvh flex-col items-center justify-center gap-6 text-center">
-      <p className="eyebrow">Premium Bags · Handcrafted</p>
-      <h1 className="text-6xl font-semibold tracking-tightest sm:text-7xl">
-        HUDSTEN
-      </h1>
-      <p className="max-w-prose text-lg text-stone-600">
-        Carry better. Storefront scaffold is live — the data-driven home,
-        listings, and product page land in Milestone&nbsp;2.
-      </p>
-      <div className="mt-4 flex items-center gap-3">
-        <span className="inline-flex h-8 items-center rounded-full bg-ink px-4 text-2xs uppercase tracking-eyebrow text-paper">
-          Monochrome Luxe
-        </span>
-        <span className="inline-flex h-8 items-center rounded-full border border-stone-300 px-4 text-2xs uppercase tracking-eyebrow text-stone-600">
-          Brass Accent
-        </span>
-        <span className="inline-flex h-8 items-center rounded-full bg-brass px-4 text-2xs font-medium uppercase tracking-eyebrow text-ink">
-          ₹ INR
-        </span>
-      </div>
+    <main>
+      <Hero hero={settings?.hero ?? {}} />
+
+      <Container as="section" className="py-section-sm sm:py-section">
+        <SectionHeading
+          eyebrow="Just dropped"
+          title={featuredTitle}
+          link={featuredHref ? { label: "View all", href: featuredHref } : undefined}
+        />
+        {products.length > 0 ? (
+          <ProductGrid products={products} priorityCount={4} />
+        ) : (
+          <EmptyProducts />
+        )}
+      </Container>
+
+      <TrustStrip />
+
+      <Container as="section" className="py-section">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="eyebrow mb-3">Stay in the loop</p>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            First dibs on new drops
+          </h2>
+          <p className="mt-3 text-stone-600">
+            Join the list for early access and the occasional good idea. No spam.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <NewsletterForm source="home" className="max-w-md" />
+          </div>
+        </div>
+      </Container>
     </main>
   );
 }

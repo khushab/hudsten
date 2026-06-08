@@ -75,3 +75,13 @@ export function buildWhatsAppUrl(input: BuildWhatsAppUrlInput): string | null {
   const message = renderTemplate(template, input);
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
+
+/** General-inquiry wa.me link (header/contact) — no product context. Null if no number. */
+export function buildWhatsAppGeneralUrl(
+  phoneNumber: string | null | undefined,
+  message = "Hi Hudsten 👋",
+): string | null {
+  const phone = sanitizePhoneNumber(phoneNumber ?? "");
+  if (phone.length < 8) return null;
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
