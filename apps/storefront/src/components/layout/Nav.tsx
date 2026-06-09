@@ -17,8 +17,14 @@ export function Nav({ items }: { items: NavNode[] }) {
   const hrefActive = (href: string | null) =>
     !!href && (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
+  // A direct top-level link wins. A dropdown parent highlights only for routes NOT
+  // already covered by a sibling link (e.g. /c/gym-bags via "All Gym Bags") — so the
+  // current page never lights up two top-level items at once.
+  const directActiveExists = items.some((i) => hrefActive(i.href));
   const itemActive = (item: NavNode) =>
-    hrefActive(item.href) || item.children.some((c) => hrefActive(c.href));
+    item.href
+      ? hrefActive(item.href)
+      : !directActiveExists && item.children.some((c) => hrefActive(c.href));
 
   return (
     <nav aria-label="Primary" className="hidden lg:block">
