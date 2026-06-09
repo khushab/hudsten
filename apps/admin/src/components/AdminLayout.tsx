@@ -17,7 +17,8 @@ export function AdminLayout() {
   const { session, signOut } = useAuth();
 
   return (
-    <div className="flex min-h-dvh">
+    // h-dvh + overflow-hidden so the sidebar stays put and ONLY <main> scrolls.
+    <div className="flex h-dvh overflow-hidden">
       <aside className="flex w-60 shrink-0 flex-col border-r border-stone-200 bg-paper">
         <div className="px-5 py-5">
           <p className="font-display text-xl font-extrabold tracking-tightest">
@@ -25,7 +26,7 @@ export function AdminLayout() {
           </p>
           <p className="text-2xs uppercase tracking-eyebrow text-stone-400">Admin</p>
         </div>
-        <nav className="flex-1 space-y-0.5 px-3">
+        <nav className="flex-1 space-y-0.5 overflow-y-auto px-3">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -52,7 +53,7 @@ export function AdminLayout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-x-hidden bg-stone-100">
+      <main className="flex-1 overflow-y-auto bg-stone-100">
         <div className="mx-auto max-w-5xl px-6 py-8">
           <Outlet />
         </div>

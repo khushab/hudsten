@@ -31,6 +31,39 @@
   ::selection {
     @apply bg-ink text-paper;
   }
+
+  /* Pointer cursor on interactive elements (browsers default <button> to arrow). */
+  button:not(:disabled),
+  [role="button"],
+  summary,
+  select,
+  label[for],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"] {
+    cursor: pointer;
+  }
+
+  /* PDP fixed CTA bar (mobile only) — reserve bottom space so it never covers the footer. */
+  body.has-sticky-cta {
+    padding-bottom: 5.25rem;
+  }
+  @media (min-width: 1024px) {
+    body.has-sticky-cta {
+      padding-bottom: 0;
+    }
+  }
+
+  /* On the PDP (mobile), lift the cookie banner above the fixed CTA bar so it never
+     covers the primary "Order on WhatsApp" button for first-time visitors. */
+  body.has-sticky-cta .cookie-banner {
+    bottom: 5.25rem;
+  }
+  @media (min-width: 1024px) {
+    body.has-sticky-cta .cookie-banner {
+      bottom: 0.75rem;
+    }
+  }
 }
 
 @layer components {

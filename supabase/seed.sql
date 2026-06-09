@@ -134,11 +134,13 @@ insert into public.products (
 )
 on conflict (id) do nothing;
 
--- manual "New Arrivals" membership (smart collections derive members via rules, not here)
+-- manual "New Arrivals" membership (smart collections derive members via rules, not here).
+-- Includes one product per gender (men/women/unisex) so the listing's gender facet is complete.
 insert into public.product_collections (product_id, collection_id, position) values
 ('d0000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000003',1),
-('d0000000-0000-0000-0000-000000000003','c0000000-0000-0000-0000-000000000003',2),
-('d0000000-0000-0000-0000-000000000004','c0000000-0000-0000-0000-000000000003',3)
+('d0000000-0000-0000-0000-000000000002','c0000000-0000-0000-0000-000000000003',2),
+('d0000000-0000-0000-0000-000000000003','c0000000-0000-0000-0000-000000000003',3),
+('d0000000-0000-0000-0000-000000000004','c0000000-0000-0000-0000-000000000003',4)
 on conflict do nothing;
 
 -- product ↔ tags

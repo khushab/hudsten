@@ -13,7 +13,7 @@ export function CookieConsent() {
     <div
       role="dialog"
       aria-label="Cookie consent"
-      className="fixed inset-x-3 bottom-3 z-[70] mx-auto max-w-2xl rounded-lg border border-stone-200 bg-paper p-4 shadow-lift animate-fade-in sm:p-5"
+      className="cookie-banner fixed inset-x-3 bottom-3 z-[70] mx-auto max-w-2xl rounded-lg border border-stone-200 bg-paper p-4 shadow-lift animate-fade-in sm:p-5"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-stone-600">

@@ -59,11 +59,33 @@ export function breadcrumbJsonLd(
   };
 }
 
-export function organizationJsonLd(storeName: string): Record<string, unknown> {
+export function organizationJsonLd(
+  storeName: string,
+  socials?: (string | undefined)[],
+): Record<string, unknown> {
+  const sameAs = (socials ?? []).filter(
+    (s): s is string => Boolean(s) && /^https?:\/\//.test(s as string),
+  );
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: storeName,
     url: absoluteUrl("/"),
+    logo: absoluteUrl("/icon.svg"),
+    ...(sameAs.length ? { sameAs } : {}),
+  };
+}
+
+export function websiteJsonLd(storeName: string): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: storeName,
+    url: absoluteUrl("/"),
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${absoluteUrl("/search")}?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
   };
 }

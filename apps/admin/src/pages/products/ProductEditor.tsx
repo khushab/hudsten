@@ -433,8 +433,8 @@ export default function ProductEditor() {
         </div>
       </Card>
 
-      {/* Sticky save bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-stone-200 bg-paper/95 backdrop-blur">
+      {/* Sticky save bar — starts after the 240px (w-60) sidebar so it never covers it. */}
+      <div className="fixed bottom-0 left-60 right-0 z-40 border-t border-stone-200 bg-paper/95 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-end gap-3 px-6 py-3">
           <Button variant="ghost" onClick={() => navigate("/products")}>
             Cancel

@@ -144,7 +144,10 @@ export function Gallery({
           >
             <CloseIcon className="h-6 w-6" />
           </button>
-          <div className="relative h-[85vh] w-full max-w-3xl">
+          <div
+            className="relative h-[85vh] w-full max-w-3xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Image
               src={active.url}
               alt={active.alt_text ?? title}

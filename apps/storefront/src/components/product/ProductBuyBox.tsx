@@ -122,6 +122,14 @@ export function ProductBuyBox({
       ? product.amazon_url
       : null;
 
+  // Reserve space at the page bottom (mobile only) so the fixed CTA bar never covers
+  // the footer. Scoped to the PDP via a body class that globals.css zeroes out at lg+.
+  useEffect(() => {
+    if (!waUrl) return;
+    document.body.classList.add("has-sticky-cta");
+    return () => document.body.classList.remove("has-sticky-cta");
+  }, [waUrl]);
+
   const eventPayload = {
     id: product.id,
     name: product.title,
@@ -192,7 +200,8 @@ export function ProductBuyBox({
                             isSel
                               ? "ring-2 ring-ink ring-offset-2 ring-offset-paper"
                               : "border-stone-300 hover:border-ink",
-                            !available && "opacity-40",
+                            // Don't dim the value the user has actively selected.
+                            !available && !isSel && "opacity-40",
                           )}
                           style={{ backgroundColor: v.color_hex ?? "#ddd" }}
                         >
@@ -217,7 +226,8 @@ export function ProductBuyBox({
                           isSel
                             ? "border-ink bg-ink text-paper"
                             : "border-stone-300 text-ink hover:border-ink",
-                          !available && "text-stone-400 line-through",
+                          // Strike through unavailable values, but never the active selection.
+                          !available && !isSel && "text-stone-400 line-through",
                         )}
                       >
                         {v.value}
@@ -293,9 +303,9 @@ export function ProductBuyBox({
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackWhatsAppClick(eventPayload)}
-              className={buttonClasses("whatsapp", "md", "flex-1")}
+              className={buttonClasses("whatsapp", "md", "flex-1 whitespace-nowrap")}
             >
-              <WhatsAppIcon className="h-5 w-5" />
+              <WhatsAppIcon className="h-5 w-5 shrink-0" />
               Order on WhatsApp
             </a>
           </div>

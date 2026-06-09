@@ -363,7 +363,7 @@ function CollectionEditor({
             id="c-pos"
             type="number"
             value={String(form.position)}
-            onChange={(e) => set({ position: Number(e.target.value) })}
+            onChange={(e) => set({ position: Number(e.target.value) || 0 })}
           />
         </Field>
         <div className="sm:col-span-2">

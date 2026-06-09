@@ -9,6 +9,8 @@ import {
 } from "@/lib/data";
 import { absoluteUrl } from "@/lib/env";
 import { Container } from "@/components/ui/Container";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 import { Hero } from "@/components/marketing/Hero";
 import { TrustStrip } from "@/components/marketing/TrustStrip";
 import { SectionHeading } from "@/components/marketing/SectionHeading";
@@ -48,8 +50,22 @@ export default async function HomePage() {
     featuredTitle = "Featured";
   }
 
+  const storeName = settings?.store_name ?? "Hudsten";
+  const social = settings?.social ?? {};
+
   return (
     <main>
+      <JsonLd
+        data={[
+          organizationJsonLd(storeName, [
+            social.instagram,
+            social.facebook,
+            social.youtube,
+            social.x,
+          ]),
+          websiteJsonLd(storeName),
+        ]}
+      />
       <Hero hero={settings?.hero ?? {}} />
 
       <Container as="section" className="py-section-sm sm:py-section">

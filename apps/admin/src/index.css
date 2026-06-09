@@ -17,4 +17,18 @@
   :focus-visible {
     @apply outline-none ring-2 ring-brass ring-offset-2 ring-offset-stone-100;
   }
+
+  /* Pointer cursor on interactive elements (browsers default <button> to arrow). */
+  button:not(:disabled),
+  [role="button"],
+  [role="switch"],
+  summary,
+  select,
+  label[for],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  input[type="color"] {
+    cursor: pointer;
+  }
 }
