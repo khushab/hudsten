@@ -12,18 +12,32 @@ export function ProductCard({
   product: ProductCardType;
   priority?: boolean;
 }) {
+  const colorCount = product.colors?.length ?? 0;
+
   return (
     <Link href={`${ROUTES.product}/${product.slug}`} className="group block">
       <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-paper-dim">
         {product.primaryImage ? (
-          <Image
-            src={product.primaryImage.url}
-            alt={product.primaryImage.alt_text ?? product.title}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            priority={priority}
-            className="object-cover transition-transform duration-500 ease-lux group-hover:scale-105"
-          />
+          <>
+            <Image
+              src={product.primaryImage.url}
+              alt={product.primaryImage.alt_text ?? product.title}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              priority={priority}
+              className="object-cover transition-transform duration-500 ease-lux group-hover:scale-105"
+            />
+            {/* Hover swap to the second angle (CSS-only; lazy — loads on demand). */}
+            {product.secondaryImage && (
+              <Image
+                src={product.secondaryImage.url}
+                alt=""
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover opacity-0 transition-opacity duration-300 ease-lux group-hover:opacity-100"
+              />
+            )}
+          </>
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-stone-400">
             No image
@@ -40,12 +54,19 @@ export function ProductCard({
         <h3 className="font-display text-base font-medium leading-snug tracking-tight group-hover:underline">
           {product.title}
         </h3>
-        <Price
-          price={product.price}
-          compareAt={product.compare_at_price}
-          currency={product.currency}
-          size="sm"
-        />
+        <div className="flex items-baseline justify-between gap-2">
+          <Price
+            price={product.price}
+            compareAt={product.compare_at_price}
+            currency={product.currency}
+            size="sm"
+          />
+          {colorCount > 1 && (
+            <span className="shrink-0 text-xs text-stone-500">
+              {colorCount} colours
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );

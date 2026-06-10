@@ -36,8 +36,10 @@ function expandGenders(genders?: Gender[]): Gender[] | null {
   return Array.from(new Set<Gender>([...genders, "unisex"]));
 }
 
+// Options ride along on every card: colors power the "N colours" hint on cards
+// and the listing filters; the second image powers the hover swap.
 const CARD_SELECT =
-  "id, title, slug, price, compare_at_price, currency, gender, badges, in_stock, position, images:product_images(url, alt_text, position)";
+  "id, title, slug, price, compare_at_price, currency, gender, badges, in_stock, position, images:product_images(url, alt_text, position), options:product_options(name, values:product_option_values(value))";
 
 interface RawCard {
   id: string;
@@ -51,10 +53,16 @@ interface RawCard {
   in_stock: boolean;
   position: number;
   images: { url: string; alt_text: string | null; position: number }[];
+  options: { name: string; values: { value: string }[] }[];
 }
 
 function toCard(r: RawCard): ProductCard {
-  const primary = [...(r.images ?? [])].sort(byPosition)[0] ?? null;
+  const sorted = [...(r.images ?? [])].sort(byPosition);
+  const primary = sorted[0] ?? null;
+  const secondary = sorted[1] ?? null;
+  const colorOption = (r.options ?? []).find(
+    (o) => o.name.toLowerCase() === "color",
+  );
   return {
     id: r.id,
     title: r.title,
@@ -68,6 +76,10 @@ function toCard(r: RawCard): ProductCard {
     primaryImage: primary
       ? { url: primary.url, alt_text: primary.alt_text }
       : null,
+    secondaryImage: secondary
+      ? { url: secondary.url, alt_text: secondary.alt_text }
+      : null,
+    colors: colorOption?.values.map((v) => v.value) ?? [],
   };
 }
 
@@ -129,15 +141,6 @@ export async function getProductCards(
   return ((res.data ?? []) as unknown as RawCard[]).map(toCard);
 }
 
-// Listing query also pulls Color labels per card so the listing page can filter
-// client-side (keeps catalog pages static/SSG instead of dynamic per query string).
-const LISTING_SELECT =
-  CARD_SELECT + ", options:product_options(name, values:product_option_values(value))";
-
-interface RawListingCard extends RawCard {
-  options: { name: string; values: { value: string }[] }[];
-}
-
 export async function getListingCards(
   client: HudstenClient,
   filters: ProductCardFilters = {},
@@ -151,7 +154,7 @@ export async function getListingCards(
     if (restrictIds.length === 0) return [];
   }
 
-  let q = client.from("products").select(LISTING_SELECT).eq("status", "active");
+  let q = client.from("products").select(CARD_SELECT).eq("status", "active");
   if (filters.categoryId) q = q.eq("category_id", filters.categoryId);
   if (restrictIds) q = q.in("id", restrictIds);
   const genders = expandGenders(filters.genders);
@@ -163,14 +166,7 @@ export async function getListingCards(
   const res = await q;
   if (res.error)
     throw new RepositoryError(`getListingCards: ${res.error.message}`, res.error);
-  return ((res.data ?? []) as unknown as RawListingCard[]).map((r) => {
-    const card = toCard(r);
-    const colorOption = (r.options ?? []).find(
-      (o) => o.name.toLowerCase() === "color",
-    );
-    card.colors = colorOption?.values.map((v) => v.value) ?? [];
-    return card;
-  });
+  return ((res.data ?? []) as unknown as RawCard[]).map(toCard);
 }
 
 export async function getFeaturedProducts(

@@ -12,7 +12,12 @@ import { Container } from "@/components/ui/Container";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 import { Hero } from "@/components/marketing/Hero";
-import { TrustStrip } from "@/components/marketing/TrustStrip";
+import { TrustStripSlim } from "@/components/marketing/TrustStrip";
+import { WhyHudsten } from "@/components/marketing/WhyHudsten";
+import {
+  CollectionTiles,
+  type CollectionTile,
+} from "@/components/marketing/CollectionTiles";
 import { SectionHeading } from "@/components/marketing/SectionHeading";
 import { ProductGrid, EmptyProducts } from "@/components/product/ProductGrid";
 import { NewsletterForm } from "@/components/layout/NewsletterForm";
@@ -27,7 +32,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const settings = await fetchSettings();
+  const [settings, collections] = await Promise.all([
+    fetchSettings(),
+    fetchActiveCollections(),
+  ]);
 
   // Featured collection (settings) → its products; fall back to is_featured products.
   let featuredTitle = "Featured";
@@ -35,7 +43,6 @@ export default async function HomePage() {
   let products: ProductCard[] = [];
 
   if (settings?.featured_collection_id) {
-    const collections = await fetchActiveCollections();
     const featured = collections.find(
       (c) => c.id === settings.featured_collection_id,
     );
@@ -49,6 +56,25 @@ export default async function HomePage() {
     products = await fetchFeaturedProducts(8);
     featuredTitle = "Featured";
   }
+
+  // "Shop by" tiles: top collections by position, imaged by their first product.
+  // Collections without products are skipped (no empty tiles at launch).
+  const tiles: CollectionTile[] = (
+    await Promise.all(
+      collections.slice(0, 4).map(async (c): Promise<CollectionTile | null> => {
+        const items = await fetchProductsForCollection(c);
+        const image = items.find((p) => p.primaryImage)?.primaryImage ?? null;
+        if (items.length === 0) return null;
+        return {
+          name: c.name,
+          href: `${ROUTES.collection}/${c.slug}`,
+          image,
+        };
+      }),
+    )
+  )
+    .filter((t): t is CollectionTile => t !== null)
+    .slice(0, 3);
 
   const storeName = settings?.store_name ?? "Hudsten";
   const social = settings?.social ?? {};
@@ -68,6 +94,17 @@ export default async function HomePage() {
       />
       <Hero hero={settings?.hero ?? {}} />
 
+      {/* Risk reversal BEFORE product evaluation — an unknown brand earns the
+          scroll with trust, not price. */}
+      <TrustStripSlim />
+
+      {tiles.length >= 2 && (
+        <Container as="section" className="pt-section-sm sm:pt-section">
+          <SectionHeading eyebrow="Find your fit" title="Shop by collection" />
+          <CollectionTiles tiles={tiles} />
+        </Container>
+      )}
+
       <Container as="section" className="py-section-sm sm:py-section">
         <SectionHeading
           eyebrow="Just dropped"
@@ -81,16 +118,17 @@ export default async function HomePage() {
         )}
       </Container>
 
-      <TrustStrip />
+      <WhyHudsten />
 
       <Container as="section" className="py-section">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow mb-3">Stay in the loop</p>
+          <p className="eyebrow mb-3">The launch list</p>
           <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            First dibs on new drops
+            Be first in line for the drop
           </h2>
           <p className="mt-3 text-stone-600">
-            Join the list for early access and the occasional good idea. No spam.
+            Early access to new releases before they hit the site — and nothing
+            else. No spam, unsubscribe anytime.
           </p>
           <div className="mt-6 flex justify-center">
             <NewsletterForm source="home" className="max-w-md" />

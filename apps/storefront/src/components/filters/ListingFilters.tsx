@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ProductCard } from "@hudsten/db";
 import { formatPrice } from "@hudsten/shared";
 import { ProductGrid, EmptyProducts } from "@/components/product/ProductGrid";
@@ -43,6 +43,56 @@ export function ListingFilters({
   const [genders, setGenders] = useState<Set<string>>(new Set());
   const [maxPrice, setMaxPrice] = useState<number>(priceBounds.max);
   const [sort, setSort] = useState<Sort>("featured");
+
+  // Filters ⇄ URL (?color=Black,Tan&for=men&max=2500&sort=price-asc): bookmarkable
+  // and shareable. Read once after hydration (page stays SSG), then mirror changes
+  // via replaceState so back/forward isn't spammed with filter steps.
+  const urlReady = useRef(false);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const csv = (key: string) =>
+      (params.get(key) ?? "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+    // Match URL colors case-insensitively against known facets (canonical casing wins).
+    const wantColors = csv("color").map((c) => c.toLowerCase());
+    if (wantColors.length > 0) {
+      setColors(
+        new Set(
+          colorFacets
+            .filter((c) => wantColors.includes(c.value.toLowerCase()))
+            .map((c) => c.value),
+        ),
+      );
+    }
+    const wantGenders = csv("for").filter((g) => g in GENDER_LABEL);
+    if (wantGenders.length > 0) setGenders(new Set(wantGenders));
+
+    const max = Number(params.get("max"));
+    if (Number.isFinite(max) && max > 0 && max < priceBounds.max)
+      setMaxPrice(Math.max(priceBounds.min, max));
+
+    const wantSort = params.get("sort");
+    if (wantSort === "price-asc" || wantSort === "price-desc") setSort(wantSort);
+
+    urlReady.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!urlReady.current) return;
+    const url = new URL(window.location.href);
+    const setOrDelete = (key: string, value: string | null) =>
+      value ? url.searchParams.set(key, value) : url.searchParams.delete(key);
+
+    setOrDelete("color", colors.size > 0 ? Array.from(colors).join(",") : null);
+    setOrDelete("for", genders.size > 0 ? Array.from(genders).join(",") : null);
+    setOrDelete("max", maxPrice < priceBounds.max ? String(maxPrice) : null);
+    setOrDelete("sort", sort !== "featured" ? sort : null);
+    window.history.replaceState(null, "", url);
+  }, [colors, genders, maxPrice, sort, priceBounds.max]);
 
   const filtered = useMemo(() => {
     let list = products.filter((p) => {

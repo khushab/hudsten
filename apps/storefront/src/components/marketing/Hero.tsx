@@ -24,7 +24,8 @@ export function Hero({ hero }: { hero: HeroSettings }) {
       {/* Legibility gradient over the image. */}
       <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/30 to-transparent" />
 
-      <div className="relative mx-auto flex min-h-[68vh] max-w-shell flex-col justify-end px-4 pb-14 pt-28 sm:px-6 lg:min-h-[78vh] lg:px-8 lg:pb-20">
+      {/* ~58vh on mobile so the first products peek above the fold (scroll cue). */}
+      <div className="relative mx-auto flex min-h-[58vh] max-w-shell flex-col justify-end px-4 pb-14 pt-28 sm:px-6 lg:min-h-[72vh] lg:px-8 lg:pb-20">
         <div className="max-w-2xl">
           <p className="eyebrow text-brass-200">Premium Bags · Handcrafted</p>
           <h1 className="mt-3 text-5xl font-bold leading-[0.95] tracking-tightest sm:text-6xl lg:text-7xl">

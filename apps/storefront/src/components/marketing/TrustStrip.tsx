@@ -26,3 +26,25 @@ export function TrustStrip({ className }: { className?: string }) {
     </div>
   );
 }
+
+/**
+ * One-line trust bar directly under the hero: an unknown brand must offer risk
+ * reversal BEFORE the shopper evaluates products, not after (trust precedes price).
+ */
+export function TrustStripSlim({ className }: { className?: string }) {
+  return (
+    <div className={cn("border-y border-stone-200 bg-paper-dim", className)}>
+      <ul className="mx-auto flex max-w-shell items-center gap-x-7 overflow-x-auto px-4 py-3 sm:justify-center sm:px-6 lg:px-8">
+        {ITEMS.map(({ Icon, title }) => (
+          <li
+            key={title}
+            className="flex shrink-0 items-center gap-2 text-xs font-medium text-stone-600"
+          >
+            <Icon className="h-4 w-4 shrink-0 text-brass-600" />
+            {title}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

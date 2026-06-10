@@ -76,8 +76,10 @@ export interface ProductCard {
   badges: string[];
   in_stock: boolean;
   primaryImage: { url: string; alt_text: string | null } | null;
-  /** Color option-value labels — populated only by listing queries (for client-side filters). */
-  colors?: string[];
+  /** Second gallery image — cards swap to it on hover (fashion-ecom convention). */
+  secondaryImage: { url: string; alt_text: string | null } | null;
+  /** Color option-value labels — drives the "N colours" card hint + listing filters. */
+  colors: string[];
 }
 
 /** Full PDP payload (PRD §6). */
