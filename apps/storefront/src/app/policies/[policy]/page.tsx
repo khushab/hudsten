@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { fetchSettings } from "@/lib/data";
 import { absoluteUrl } from "@/lib/env";
 import { Container } from "@/components/ui/Container";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export const revalidate = 3600;
 
@@ -51,7 +52,7 @@ export default async function PolicyPage({
       <h1 className="text-4xl font-semibold tracking-tight">{title}</h1>
       <div className="prose prose-stone mt-8 max-w-none">
         {body ? (
-          <div dangerouslySetInnerHTML={{ __html: body }} />
+          <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(body) }} />
         ) : (
           <p className="text-stone-500">
             This policy is being finalised. Please contact us with any questions

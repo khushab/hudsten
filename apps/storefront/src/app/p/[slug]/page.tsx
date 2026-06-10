@@ -22,6 +22,7 @@ import { ReviewsEmpty } from "@/components/product/ReviewsEmpty";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { SectionHeading } from "@/components/marketing/SectionHeading";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/jsonld";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export const revalidate = 3600;
 
@@ -39,10 +40,13 @@ export async function generateMetadata({
   const product = await fetchProductBySlug(slug);
   if (!product) return { title: "Not found" };
   const title = product.meta_title ?? product.title;
-  const description =
-    product.meta_description ??
-    stripHtml(product.description ?? "").slice(0, 300) ??
-    `Shop ${product.title} at Hudsten.`;
+  // `||` (not `??`): an empty description must fall through to the next option.
+  // ~160 chars is the SERP truncation point.
+  const description = (
+    product.meta_description ||
+    stripHtml(product.description ?? "") ||
+    `Shop ${product.title} at Hudsten.`
+  ).slice(0, 160);
   const canonical = absoluteUrl(`${ROUTES.product}/${product.slug}`);
   const image = product.images[0]?.url;
   return {
@@ -150,8 +154,7 @@ export default async function ProductPage({
           <Accordion title="Description" defaultOpen>
             <div
               className="prose prose-sm prose-stone max-w-none"
-              // Admin-authored, RLS-gated content (trusted). PHASE 2: sanitize for defense-in-depth.
-              dangerouslySetInnerHTML={{ __html: product.description }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }}
             />
           </Accordion>
         )}

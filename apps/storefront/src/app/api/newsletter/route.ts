@@ -21,7 +21,26 @@ function rateLimited(ip: string): boolean {
   return recent.length > MAX_PER_WINDOW;
 }
 
+/**
+ * Same-origin check: browsers send Origin on cross-site POSTs, so a foreign
+ * origin means CSRF/abuse. Absent header (curl, some old clients) is allowed —
+ * the goal is blocking hostile browser-based submissions, not all scripting.
+ */
+function originAllowed(req: Request): boolean {
+  const origin = req.headers.get("origin");
+  if (!origin) return true;
+  const allowed = [
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, ""),
+    "http://localhost:3000",
+  ].filter(Boolean);
+  return allowed.includes(origin.replace(/\/$/, ""));
+}
+
 export async function POST(req: Request) {
+  if (!originAllowed(req)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   if (rateLimited(ip)) {

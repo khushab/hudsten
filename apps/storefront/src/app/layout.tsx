@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import type { NavNode, SiteSettings } from "@hudsten/db";
 import { absoluteUrl } from "@/lib/env";
 import { fetchNavigation, fetchSettings } from "@/lib/data";
@@ -11,14 +11,17 @@ import { Analytics } from "@/components/analytics/Analytics";
 import { CookieConsent } from "@/components/analytics/CookieConsent";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({
-  subsets: ["latin"],
+// Self-hosted variable fonts: no Google request chain (faster LCP, no third-party
+// dependency at build or runtime). next/font/local auto-preloads + size-adjusts fallbacks.
+const display = localFont({
+  src: "../fonts/bricolage-grotesque-latin-wght-normal.woff2",
+  weight: "200 800",
   variable: "--font-display",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
 });
-const sans = Inter({
-  subsets: ["latin"],
+const sans = localFont({
+  src: "../fonts/inter-latin-wght-normal.woff2",
+  weight: "100 900",
   variable: "--font-sans",
   display: "swap",
 });

@@ -17,8 +17,9 @@ export function productJsonLd(
     "@type": "Product",
     name: product.title,
     description:
-      product.meta_description ??
-      product.description?.replace(/<[^>]+>/g, "").slice(0, 300) ??
+      // `||`: empty meta_description must fall through to the stripped body.
+      (product.meta_description ||
+        product.description?.replace(/<[^>]+>/g, "").slice(0, 300)) ||
       undefined,
     image: product.images.map((i) => i.url),
     brand: { "@type": "Brand", name: "Hudsten" },
