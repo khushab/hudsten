@@ -32,7 +32,7 @@ export function Price({
       </span>
       {pct != null && compareAt != null && (
         <>
-          <span className="text-sm text-stone-400 line-through">
+          <span className="text-sm text-stone-600 line-through">
             {formatPrice(compareAt, currency)}
           </span>
           <span className="rounded-sm bg-brass-100 px-1.5 py-0.5 text-2xs font-semibold uppercase tracking-wide text-brass-800">

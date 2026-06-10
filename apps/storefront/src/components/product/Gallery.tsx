@@ -124,8 +124,10 @@ export function Gallery({
         onTouchEnd={onTouchEnd}
         className="relative aspect-[4/5] touch-pan-y overflow-hidden rounded-xl bg-paper-dim focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
       >
-        {/* All images stacked + eager-loaded so a color switch is instant (no fetch flicker). */}
-        {images.map((img, i) => (
+        {/* All images stacked + eager-loaded so a color switch is instant (no fetch
+            flicker). Above ~24 images the preload cost outweighs the flicker win, so
+            only the active color set stays in the DOM. */}
+        {(images.length > 24 ? visible : images).map((img, i) => (
           <Image
             key={img.id}
             src={img.url}

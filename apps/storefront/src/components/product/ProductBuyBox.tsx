@@ -270,7 +270,8 @@ export function ProductBuyBox({
                             ? "border-ink bg-ink text-paper"
                             : "border-stone-300 text-ink hover:border-ink",
                           // Strike through unavailable values, but never the active selection.
-                          !available && !isSel && "text-stone-400 line-through",
+                          // (stone-500 + line-through: dimmed but still AA-legible.)
+                          !available && !isSel && "text-stone-500 line-through",
                         )}
                       >
                         {v.value}

@@ -191,7 +191,7 @@ export default async function ProductPage({
                 </p>
                 {r.title && <p className="mt-1 font-medium">{r.title}</p>}
                 {r.body && <p className="mt-1 text-sm text-stone-600">{r.body}</p>}
-                <p className="mt-2 text-xs text-stone-400">— {r.author_name}</p>
+                <p className="mt-2 text-xs text-stone-600">— {r.author_name}</p>
               </li>
             ))}
           </ul>

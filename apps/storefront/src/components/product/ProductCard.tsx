@@ -39,7 +39,7 @@ export function ProductCard({
             )}
           </>
         ) : (
-          <div className="flex h-full items-center justify-center text-xs text-stone-400">
+          <div className="flex h-full items-center justify-center text-xs text-stone-500">
             No image
           </div>
         )}

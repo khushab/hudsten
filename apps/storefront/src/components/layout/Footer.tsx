@@ -66,7 +66,7 @@ export function Footer({ settings }: { settings: SiteSettings | null }) {
               )}
             </p>
             {settings?.gst_number && (
-              <p className="text-xs text-stone-400">GSTIN: {settings.gst_number}</p>
+              <p className="text-xs text-stone-500">GSTIN: {settings.gst_number}</p>
             )}
           </div>
 
@@ -83,7 +83,7 @@ export function Footer({ settings }: { settings: SiteSettings | null }) {
           )}
         </div>
 
-        <p className="mt-8 text-xs text-stone-400">
+        <p className="mt-8 text-xs text-stone-500">
           © {year} {storeName}. All rights reserved.
         </p>
       </div>

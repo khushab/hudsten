@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavNode } from "@hudsten/db";
@@ -51,10 +52,22 @@ function NavItem({
     active ? "text-ink" : "text-stone-600",
   );
 
+  // Mirrors the CSS hover/focus-within visibility purely for aria-expanded —
+  // screen readers can't see :hover.
+  const [open, setOpen] = useState(false);
+
   if (item.children.length > 0) {
     return (
-      <li className="group relative">
-        <button type="button" aria-haspopup="true" className={linkCls}>
+      <li
+        className="group relative"
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onFocus={() => setOpen(true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+        }}
+      >
+        <button type="button" aria-haspopup="true" aria-expanded={open} className={linkCls}>
           <span className={cn(active && "underline decoration-brass decoration-2 underline-offset-8")}>
             {item.label}
           </span>

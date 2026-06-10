@@ -32,6 +32,8 @@ export default async function SearchPage({
             name="q"
             defaultValue={query}
             placeholder="Search products…"
+            autoComplete="off"
+            enterKeyHint="search"
             className="h-11 flex-1 bg-transparent text-sm outline-none"
             aria-label="Search products"
           />
