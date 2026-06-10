@@ -753,6 +753,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_save_product: { Args: { payload: Json }; Returns: string }
       is_admin: { Args: never; Returns: boolean }
     }
     Enums: {

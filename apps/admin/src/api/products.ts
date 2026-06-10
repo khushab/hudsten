@@ -1,5 +1,6 @@
-import type { Enums, TablesInsert, TablesUpdate } from "@hudsten/db";
+import type { Enums, Json } from "@hudsten/db";
 import { getSupabase } from "@/lib/supabase";
+import { removeProductImages } from "./storage";
 
 /** Throw on a Supabase error; return data otherwise. */
 function must<T>(res: { data: T; error: { message: string } | null }, ctx: string): T {
@@ -241,172 +242,47 @@ interface RawEditRow {
   product_tags: { tag_id: string }[];
 }
 
+/** Current image URLs of a product (for storage cleanup diffs). */
+async function getImageUrls(productId: string): Promise<string[]> {
+  const sb = getSupabase();
+  const rows = must(
+    await sb.from("product_images").select("url").eq("product_id", productId),
+    "getImageUrls",
+  ) as { url: string }[];
+  return rows.map((r) => r.url);
+}
+
 /**
- * Create/update a product and REPLACE its entire option/variant/image graph.
- * Replace-all (delete then re-insert) keeps the save logic simple and correct given the
- * form holds the complete desired state. Sequence of statements, not a transaction —
- * PHASE 2: move to a Postgres RPC for atomicity.
+ * Create/update a product and REPLACE its entire option/variant/image graph —
+ * atomically, via the `admin_save_product` Postgres RPC (one transaction: a mid-save
+ * failure rolls everything back instead of leaving partial state). RLS still applies
+ * (the function is SECURITY INVOKER).
+ *
+ * After a successful save, storage files for images that were removed from the
+ * product are deleted best-effort (never fails the save).
  */
 export async function saveProduct(payload: ProductEditorPayload): Promise<string> {
   const sb = getSupabase();
 
-  // 1) Upsert core. Cast our view-model core to the generated insert/update types
-  // (specs is Record<string,unknown> vs the column's Json — structurally compatible).
-  const coreInsert = payload.core as unknown as TablesInsert<"products">;
-  const coreUpdate = payload.core as unknown as TablesUpdate<"products">;
-  let productId = payload.id;
-  if (productId) {
-    must(
-      await sb.from("products").update(coreUpdate).eq("id", productId).select("id").single(),
-      "update product",
-    );
-  } else {
-    const row = must(
-      await sb.from("products").insert(coreInsert).select("id").single(),
-      "insert product",
-    ) as { id: string };
-    productId = row.id;
-  }
-  const pid = productId!;
+  const previousUrls = payload.id ? await getImageUrls(payload.id) : [];
 
-  // 2) Clear existing graph (cascades handle children).
-  await sb.from("product_options").delete().eq("product_id", pid);
-  await sb.from("product_variants").delete().eq("product_id", pid);
-  await sb.from("product_images").delete().eq("product_id", pid);
-  await sb.from("product_collections").delete().eq("product_id", pid);
-  await sb.from("product_tags").delete().eq("product_id", pid);
+  const pid = must(
+    await sb.rpc("admin_save_product", {
+      payload: payload as unknown as Json,
+    }),
+    "saveProduct",
+  ) as string;
 
-  // 3) Options + values → build key → new id map.
-  const valueIdByKey = new Map<string, string>();
-  for (const opt of payload.options) {
-    const optRow = must(
-      await sb
-        .from("product_options")
-        .insert({ product_id: pid, name: opt.name, position: opt.position })
-        .select("id")
-        .single(),
-      "insert option",
-    ) as { id: string };
-    if (opt.values.length) {
-      const inserted = must(
-        await sb
-          .from("product_option_values")
-          .insert(
-            opt.values.map((v) => ({
-              option_id: optRow.id,
-              value: v.value,
-              color_hex: v.color_hex,
-              position: v.position,
-            })),
-          )
-          .select("id, value, position"),
-        "insert option values",
-      ) as { id: string; value: string; position: number }[];
-      // Map by original key using order (value+position is stable within the option).
-      opt.values.forEach((v) => {
-        const match = inserted.find(
-          (i) => i.value === v.value && i.position === v.position,
-        );
-        if (match) valueIdByKey.set(v.key, match.id);
-      });
-    }
-  }
-
-  // 4) Variants + composition.
-  for (const variant of payload.variants) {
-    const vRow = must(
-      await sb
-        .from("product_variants")
-        .insert({
-          product_id: pid,
-          title: variant.title,
-          sku: variant.sku,
-          price: variant.price,
-          compare_at_price: variant.compare_at_price,
-          in_stock: variant.in_stock,
-          position: variant.position,
-        })
-        .select("id")
-        .single(),
-      "insert variant",
-    ) as { id: string };
-    const resolved = variant.valueKeys.map((k) => valueIdByKey.get(k));
-    // A stale key (option value removed/replaced without regenerating variants) must NOT
-    // be silently dropped — that would persist an unreachable/partial-composition variant.
-    if (resolved.some((id) => !id)) {
-      throw new Error(
-        `Variant "${variant.title}" references a removed option value. Click "Generate variants" after changing options, then save again.`,
-      );
-    }
-    const links = resolved.map((option_value_id) => ({
-      variant_id: vRow.id,
-      option_value_id: option_value_id!,
-    }));
-    if (links.length) {
-      must(
-        await sb.from("variant_option_values").insert(links).select("variant_id"),
-        "insert variant_option_values",
-      );
-    }
-  }
-
-  // 5) Images + color tags.
-  for (const img of payload.images) {
-    const iRow = must(
-      await sb
-        .from("product_images")
-        .insert({
-          product_id: pid,
-          url: img.url,
-          alt_text: img.alt_text,
-          position: img.position,
-        })
-        .select("id")
-        .single(),
-      "insert image",
-    ) as { id: string };
-    const colorValueId = img.colorKey ? valueIdByKey.get(img.colorKey) : null;
-    if (colorValueId) {
-      must(
-        await sb
-          .from("image_option_values")
-          .insert({ image_id: iRow.id, option_value_id: colorValueId })
-          .select("image_id"),
-        "insert image_option_values",
-      );
-    }
-  }
-
-  // 6) Collections + tags.
-  if (payload.collectionIds.length) {
-    must(
-      await sb
-        .from("product_collections")
-        .insert(
-          payload.collectionIds.map((collection_id, i) => ({
-            product_id: pid,
-            collection_id,
-            position: i,
-          })),
-        )
-        .select("product_id"),
-      "insert product_collections",
-    );
-  }
-  if (payload.tagIds.length) {
-    must(
-      await sb
-        .from("product_tags")
-        .insert(payload.tagIds.map((tag_id) => ({ product_id: pid, tag_id })))
-        .select("product_id"),
-      "insert product_tags",
-    );
-  }
+  const kept = new Set(payload.images.map((i) => i.url));
+  await removeProductImages(previousUrls.filter((u) => !kept.has(u)));
 
   return pid;
 }
 
 export async function deleteProduct(id: string): Promise<void> {
   const sb = getSupabase();
+  // Snapshot file URLs first — after the row cascade-deletes they're unrecoverable.
+  const urls = await getImageUrls(id);
   must(await sb.from("products").delete().eq("id", id).select("id"), "deleteProduct");
+  await removeProductImages(urls);
 }

@@ -16,14 +16,55 @@ function cartesian(options: EditorOption[]): EditorOptionValue[][] {
   );
 }
 
+/**
+ * Live pricing-anchor warnings (non-blocking; save-time validation still rejects
+ * hard violations). The storefront only shows a strikethrough when price and
+ * compare-at come from the SAME level — these catch configs that silently lose
+ * the discount display or invert the anchor.
+ */
+function pricingWarnings(
+  variants: EditorVariant[],
+  basePrice: number,
+  baseCompareAt: number | null,
+): string[] {
+  const warnings: string[] = [];
+  if (baseCompareAt != null && baseCompareAt !== 0 && baseCompareAt <= basePrice) {
+    warnings.push(
+      "Product compare-at is not above the price — no discount will show (and save will be rejected).",
+    );
+  }
+  for (const v of variants) {
+    if (v.price != null && v.compare_at_price == null && baseCompareAt != null) {
+      warnings.push(
+        `Variant "${v.title}" overrides the price without its own compare-at — the product's anchor won't apply, so this variant shows NO discount.`,
+      );
+    }
+    const effectivePrice = v.price ?? basePrice;
+    if (
+      v.compare_at_price != null &&
+      v.compare_at_price !== 0 &&
+      v.compare_at_price <= effectivePrice
+    ) {
+      warnings.push(
+        `Variant "${v.title}": compare-at (${v.compare_at_price}) must exceed its price (${effectivePrice}).`,
+      );
+    }
+  }
+  return warnings;
+}
+
 export function OptionsVariants({
   options,
   variants,
+  basePrice,
+  baseCompareAt,
   onOptions,
   onVariants,
 }: {
   options: EditorOption[];
   variants: EditorVariant[];
+  basePrice: number;
+  baseCompareAt: number | null;
   onOptions: (next: EditorOption[]) => void;
   onVariants: (next: EditorVariant[]) => void;
 }) {
@@ -141,6 +182,23 @@ export function OptionsVariants({
           )}
         </div>
       </div>
+
+      {/* Pricing-anchor warnings */}
+      {variants.length > 0 &&
+        (() => {
+          const warnings = pricingWarnings(variants, basePrice, baseCompareAt);
+          if (warnings.length === 0) return null;
+          return (
+            <ul
+              role="alert"
+              className="space-y-1 rounded-md border border-brass-300 bg-brass-50 p-3 text-xs text-brass-800"
+            >
+              {warnings.map((w) => (
+                <li key={w}>⚠ {w}</li>
+              ))}
+            </ul>
+          );
+        })()}
 
       {/* Variants */}
       {variants.length > 0 && (

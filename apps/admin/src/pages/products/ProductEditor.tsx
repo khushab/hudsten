@@ -123,6 +123,13 @@ export default function ProductEditor() {
         if (o.values.some((v) => !v.value.trim()))
           throw new Error(`Option "${o.name}" has a blank value.`);
       }
+      if (
+        core.compare_at_price != null &&
+        core.compare_at_price !== 0 &&
+        core.compare_at_price <= core.price
+      ) {
+        throw new Error("Compare-at price must exceed the price (honest anchor).");
+      }
       for (const v of payload.variants) {
         const effectivePrice = v.price ?? core.price;
         if (
@@ -317,6 +324,8 @@ export default function ProductEditor() {
         <OptionsVariants
           options={payload.options}
           variants={payload.variants}
+          basePrice={core.price}
+          baseCompareAt={core.compare_at_price}
           onOptions={(options) => setPayload((p) => ({ ...p, options }))}
           onVariants={(variants) => setPayload((p) => ({ ...p, variants }))}
         />
