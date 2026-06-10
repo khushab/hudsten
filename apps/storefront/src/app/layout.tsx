@@ -60,10 +60,17 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
       <body className="flex min-h-dvh flex-col">
+        {/* Keyboard users skip the sticky header/nav on every page. */}
+        <a
+          href="#content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-md focus:bg-ink focus:px-4 focus:py-2.5 focus:text-sm focus:font-medium focus:text-paper"
+        >
+          Skip to content
+        </a>
         <ConsentProvider>
           <AnnouncementBar text={settings?.announcement_bar} />
           <Header nav={nav} settings={settings} />
-          <div className="flex-1">{children}</div>
+          <div id="content" className="flex-1">{children}</div>
           <Footer settings={settings} />
           <CookieConsent />
           <Analytics

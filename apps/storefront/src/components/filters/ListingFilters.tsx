@@ -140,7 +140,8 @@ export function ListingFilters({
                       title={c.value}
                       onClick={() => setColors((s) => toggle(s, c.value))}
                       className={cn(
-                        "h-7 w-7 rounded-full border transition-all",
+                        // 36px on touch screens (tap target), compact 28px on desktop.
+                        "h-9 w-9 rounded-full border transition-all sm:h-7 sm:w-7",
                         active
                           ? "ring-2 ring-ink ring-offset-2 ring-offset-paper-dim"
                           : "border-stone-300 hover:border-ink",

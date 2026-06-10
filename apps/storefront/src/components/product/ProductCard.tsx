@@ -63,7 +63,7 @@ export function ProductCard({
           />
           {colorCount > 1 && (
             <span className="shrink-0 text-xs text-stone-500">
-              {colorCount} colours
+              {colorCount} colors
             </span>
           )}
         </div>
