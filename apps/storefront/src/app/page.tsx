@@ -28,7 +28,8 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   // Self-referencing canonical on the highest-priority page (title/description inherit from layout).
   alternates: { canonical: absoluteUrl("/") },
-  openGraph: { url: absoluteUrl("/") },
+  // Page-level openGraph replaces the layout's whole object — re-declare the image.
+  openGraph: { url: absoluteUrl("/"), images: ["/og-default.png"] },
 };
 
 export default async function HomePage() {

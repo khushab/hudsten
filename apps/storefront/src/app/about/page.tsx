@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { absoluteUrl } from "@/lib/env";
 import { Container } from "@/components/ui/Container";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { TrustStrip } from "@/components/marketing/TrustStrip";
 
 export const revalidate = 86400;
@@ -15,6 +16,16 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          name: "About Hudsten",
+          description:
+            "Hudsten makes premium bags built to outlast the hype — founder-led, obsessively made.",
+          url: absoluteUrl("/about"),
+        }}
+      />
       <Container className="max-w-prose py-14 sm:py-20">
         <p className="eyebrow mb-3">Our story</p>
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">

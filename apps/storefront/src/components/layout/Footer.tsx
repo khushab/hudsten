@@ -12,6 +12,7 @@ const POLICY_LINKS = [
 
 const SHOP_LINKS = [
   { label: "Gym Bags", href: "/c/gym-bags" },
+  { label: "All collections", href: "/collections" },
   { label: "New Arrivals", href: "/collections/new-arrivals" },
   { label: "Men", href: "/collections/mens-gym-bags" },
   { label: "Women", href: "/collections/womens-gym-bags" },

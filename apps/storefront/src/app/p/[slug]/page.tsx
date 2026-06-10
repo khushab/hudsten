@@ -59,7 +59,7 @@ export async function generateMetadata({
       description,
       url: canonical,
       type: "website",
-      images: image ? [{ url: image }] : undefined,
+      images: [{ url: image ?? "/og-default.png" }],
     },
   };
 }

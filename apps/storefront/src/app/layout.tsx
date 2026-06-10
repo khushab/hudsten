@@ -31,7 +31,8 @@ export const metadata: Metadata = {
   title: { default: "Hudsten — Carry Better", template: "%s · Hudsten" },
   description:
     "Premium gym bags and lifestyle goods, handcrafted to outlast the hype.",
-  openGraph: { type: "website", siteName: "Hudsten" },
+  // Branded default OG image — pages with real imagery (PDP/listings) override it.
+  openGraph: { type: "website", siteName: "Hudsten", images: ["/og-default.png"] },
   twitter: { card: "summary_large_image" },
 };
 

@@ -12,12 +12,12 @@ export interface CollectionTile {
  * instead of relying on the navbar alone (also internal-linking SEO value).
  */
 export function CollectionTiles({ tiles }: { tiles: CollectionTile[] }) {
-  if (tiles.length < 2) return null;
+  if (tiles.length === 0) return null;
 
   return (
     <div
       className={
-        tiles.length === 2
+        tiles.length <= 2
           ? "grid grid-cols-1 gap-4 sm:grid-cols-2"
           : "grid grid-cols-1 gap-4 sm:grid-cols-3"
       }
