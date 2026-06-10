@@ -82,7 +82,9 @@ export function NewsletterForm({
           type="email"
           inputMode="email"
           placeholder="you@email.com"
-          className="h-11 flex-1 rounded-md border border-stone-300 bg-paper px-4 text-sm outline-none transition-colors focus:border-ink"
+          // sm:flex-1 (not flex-1): in the mobile COLUMN layout flex-1 would govern
+          // height and collapse the h-11; appearance-none kills iOS native styling.
+          className="h-11 w-full appearance-none rounded-md border border-stone-300 bg-paper px-4 text-sm outline-none transition-colors focus:border-ink sm:flex-1"
           {...register("email")}
         />
         <Button type="submit" variant="primary" disabled={isSubmitting}>
