@@ -637,6 +637,7 @@ export type Database = {
           address: string | null
           announcement_bar: string | null
           contact_email: string | null
+          delivery_note: string | null
           featured_collection_id: string | null
           gst_number: string | null
           hero: Json
@@ -654,6 +655,7 @@ export type Database = {
           address?: string | null
           announcement_bar?: string | null
           contact_email?: string | null
+          delivery_note?: string | null
           featured_collection_id?: string | null
           gst_number?: string | null
           hero?: Json
@@ -671,6 +673,7 @@ export type Database = {
           address?: string | null
           announcement_bar?: string | null
           contact_email?: string | null
+          delivery_note?: string | null
           featured_collection_id?: string | null
           gst_number?: string | null
           hero?: Json

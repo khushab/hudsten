@@ -136,6 +136,8 @@ export interface SiteSettings {
   announcement_bar: string | null;
   whatsapp_number: string | null;
   whatsapp_default_message_template: string | null;
+  /** Shipping expectation line shown near the PDP CTA (e.g. "Ships in 24–48h"). */
+  delivery_note: string | null;
   hero: HeroSettings;
   featured_collection_id: string | null;
   contact_email: string | null;

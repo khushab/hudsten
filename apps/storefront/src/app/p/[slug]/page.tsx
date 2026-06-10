@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ROUTES } from "@hudsten/shared";
 import { summarizeReviews } from "@hudsten/db";
@@ -197,11 +198,36 @@ export default async function ProductPage({
         )}
       </Container>
 
-      {/* Pairs well with (cross-sell) */}
-      {related.length > 0 && (
+      {/* Pairs well with (cross-sell) — with a fallback so the page never dead-ends. */}
+      {related.length > 0 ? (
         <Container className="py-12">
           <SectionHeading eyebrow="Complete the kit" title="Pairs well with" />
           <ProductGrid products={related} />
+        </Container>
+      ) : (
+        <Container className="py-12">
+          <div className="rounded-lg border border-stone-200 bg-paper-dim px-6 py-8 text-center">
+            <p className="font-display text-lg font-medium">
+              Want to see what else we make?
+            </p>
+            <p className="mx-auto mt-1 max-w-prose text-sm text-stone-600">
+              More pieces are on the way — browse the collection or come back
+              soon.
+            </p>
+            <Link
+              href={
+                product.category
+                  ? `${ROUTES.category}/${product.category.slug}`
+                  : "/"
+              }
+              className="mt-4 inline-block text-sm font-medium underline underline-offset-4 hover:text-ink"
+            >
+              {product.category
+                ? `Explore ${product.category.name}`
+                : "Back to home"}{" "}
+              →
+            </Link>
+          </div>
         </Container>
       )}
     </main>

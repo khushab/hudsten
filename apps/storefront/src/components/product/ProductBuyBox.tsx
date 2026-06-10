@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ProductDetail, ReviewSummary, SiteSettings } from "@hudsten/db";
 import {
   buildWhatsAppUrl,
@@ -13,6 +13,7 @@ import { buttonClasses } from "@/components/ui/Button";
 import { CompactTrust } from "./CompactTrust";
 import {
   CheckIcon,
+  TruckIcon,
   WhatsAppIcon,
 } from "@/components/icons";
 import { trackAmazonClick, trackViewItem, trackWhatsAppClick } from "@/lib/analytics";
@@ -41,6 +42,36 @@ export function ProductBuyBox({
     for (const o of product.options) if (o.values[0]) init[o.id] = o.values[0].id;
     return init;
   });
+
+  // Variant selection ⇄ URL (?color=Tan&size=M): shareable links restore the exact
+  // variant. Read once after hydration (SSG markup must stay deterministic), then
+  // mirror every change via replaceState — no history spam, no re-render loop.
+  const urlReady = useRef(false);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const restored: Record<string, string> = {};
+    for (const o of product.options) {
+      const want = params.get(o.name.toLowerCase())?.trim().toLowerCase();
+      if (!want) continue;
+      const match = o.values.find((v) => v.value.toLowerCase() === want);
+      if (match) restored[o.id] = match.id;
+    }
+    if (Object.keys(restored).length > 0)
+      setSelected((s) => ({ ...s, ...restored }));
+    urlReady.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id]);
+
+  useEffect(() => {
+    if (!urlReady.current) return;
+    const url = new URL(window.location.href);
+    for (const o of product.options) {
+      const label = valueLabel.get(selected[o.id] ?? "");
+      if (label) url.searchParams.set(o.name.toLowerCase(), label);
+    }
+    window.history.replaceState(null, "", url);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected, product.options]);
 
   const valueLabel = useMemo(() => {
     const m = new Map<string, string>();
@@ -138,9 +169,21 @@ export function ProductBuyBox({
     variant: variantLabel,
   };
 
+  // Product video (PRD §6) lives in specs so each product type can opt in.
+  const rawVideo = product.specs.video_url;
+  const videoUrl =
+    typeof rawVideo === "string" && rawVideo.trim().length > 0
+      ? rawVideo.trim()
+      : null;
+
   return (
     <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-      <Gallery images={product.images} activeColorId={activeColorId} title={product.title} />
+      <Gallery
+        images={product.images}
+        activeColorId={activeColorId}
+        title={product.title}
+        videoUrl={videoUrl}
+      />
 
       <div>
         <ProductBadges badges={product.badges} className="mb-3" />
@@ -281,6 +324,14 @@ export function ProductBuyBox({
               Prefer Amazon? Buy there →
             </a>
           )}
+
+          {/* Delivery expectation right at the decision point — the #1 unasked
+              question in Indian ecommerce. Admin-editable via Settings. */}
+          <p className="flex items-center justify-center gap-2 text-xs text-stone-600">
+            <TruckIcon className="h-4 w-4 shrink-0 text-brass-600" />
+            {settings?.delivery_note ||
+              "Free shipping across India · usually 3–7 business days"}
+          </p>
         </div>
 
         <CompactTrust className="mt-7" />

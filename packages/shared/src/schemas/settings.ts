@@ -33,6 +33,7 @@ export const settingsSchema = z.object({
   announcement_bar: optionalText,
   whatsapp_number: optionalText, // sanitized at link-build time
   whatsapp_default_message_template: optionalText,
+  delivery_note: optionalText,
   hero: heroSchema.default({}),
   featured_collection_id: uuidSchema.nullable().optional(),
   contact_email: z.union([z.string().email(), z.literal("")]).optional(),

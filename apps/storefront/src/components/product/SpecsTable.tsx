@@ -8,8 +8,11 @@ import {
 /**
  * Specs rendered DYNAMICALLY from the product type's spec_schema (PRD §6). Adding a new
  * product type with different fields renders here automatically — no code change.
- * `whats_in_box` is excluded (it has its own section).
+ * Presentational keys are excluded: `whats_in_box` has its own section, `video_url`
+ * renders inside the gallery.
  */
+const PRESENTATIONAL_KEYS = new Set(["whats_in_box", "video_url"]);
+
 export function SpecsTable({
   schema,
   specs,
@@ -17,11 +20,16 @@ export function SpecsTable({
   schema: SpecSchema;
   specs: Record<string, unknown>;
 }) {
-  const groups = groupSpecFields(schema.filter((f) => f.key !== "whats_in_box"));
+  const groups = groupSpecFields(
+    schema.filter((f) => !PRESENTATIONAL_KEYS.has(f.key)),
+  );
 
   // Only show fields that actually have a value.
   const hasAny = schema.some(
-    (f) => f.key !== "whats_in_box" && specs[f.key] != null && specs[f.key] !== "",
+    (f) =>
+      !PRESENTATIONAL_KEYS.has(f.key) &&
+      specs[f.key] != null &&
+      specs[f.key] !== "",
   );
   if (!hasAny) return null;
 

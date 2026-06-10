@@ -18,7 +18,8 @@ insert into public.product_types (id, name, spec_schema) values
   {"key":"whats_in_box","label":"What''s in the Box","type":"list","group":"Features"},
   {"key":"care","label":"Care","type":"textarea","group":"Care & Warranty"},
   {"key":"warranty","label":"Warranty","type":"text","group":"Care & Warranty"},
-  {"key":"country","label":"Origin","type":"text","group":"Origin"}
+  {"key":"country","label":"Origin","type":"text","group":"Origin"},
+  {"key":"video_url","label":"Product video URL","type":"text","group":"Media","help":"YouTube link or direct .mp4 URL — shown as the last gallery slide."}
 ]'::jsonb)
 on conflict (id) do nothing;
 

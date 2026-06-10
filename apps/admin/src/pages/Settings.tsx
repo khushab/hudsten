@@ -23,6 +23,7 @@ interface FormState {
   announcement_bar: string;
   whatsapp_number: string;
   whatsapp_default_message_template: string;
+  delivery_note: string;
   featured_collection_id: string;
   contact_email: string;
   phone: string;
@@ -39,6 +40,7 @@ const BLANK: FormState = {
   announcement_bar: "",
   whatsapp_number: "",
   whatsapp_default_message_template: "",
+  delivery_note: "",
   featured_collection_id: "",
   contact_email: "",
   phone: "",
@@ -59,6 +61,7 @@ function seedFrom(row: SettingsRow): FormState {
     announcement_bar: row.announcement_bar ?? "",
     whatsapp_number: row.whatsapp_number ?? "",
     whatsapp_default_message_template: row.whatsapp_default_message_template ?? "",
+    delivery_note: row.delivery_note ?? "",
     featured_collection_id: row.featured_collection_id ?? "",
     contact_email: row.contact_email ?? "",
     phone: row.phone ?? "",
@@ -98,6 +101,7 @@ export default function Settings() {
         announcement_bar: orNull(form.announcement_bar),
         whatsapp_number: orNull(form.whatsapp_number),
         whatsapp_default_message_template: orNull(form.whatsapp_default_message_template),
+        delivery_note: orNull(form.delivery_note),
         featured_collection_id: orNull(form.featured_collection_id),
         contact_email: orNull(form.contact_email),
         phone: orNull(form.phone),
@@ -191,6 +195,18 @@ export default function Settings() {
               value={form.whatsapp_default_message_template}
               onChange={(e) => set("whatsapp_default_message_template", e.target.value)}
               placeholder="Hi! I'd like to order {product} ({variant}) — {price}. {url}"
+            />
+          </Field>
+          <Field
+            label="Delivery note"
+            htmlFor="delivery_note"
+            hint="Shown under the Buy buttons. Keep it honest — e.g. shipping cost + realistic delivery window."
+          >
+            <Input
+              id="delivery_note"
+              value={form.delivery_note}
+              onChange={(e) => set("delivery_note", e.target.value)}
+              placeholder="Free shipping across India · usually 3–7 business days"
             />
           </Field>
         </div>

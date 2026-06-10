@@ -28,6 +28,8 @@ export async function getSettings(
     announcement_bar: row.announcement_bar,
     whatsapp_number: row.whatsapp_number,
     whatsapp_default_message_template: row.whatsapp_default_message_template,
+    // ?? null tolerates a DB that hasn't applied the delivery_note migration yet.
+    delivery_note: row.delivery_note ?? null,
     hero: (row.hero ?? {}) as HeroSettings,
     featured_collection_id: row.featured_collection_id,
     contact_email: row.contact_email,
