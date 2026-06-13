@@ -23,12 +23,16 @@ export function slugify(input: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-/** Optional non-empty string that normalizes "" → undefined (so blank form fields don't overwrite). */
+/**
+ * Optional text field. Accepts string | null | undefined (DB nullable columns come back as
+ * null) and normalizes null/"" → undefined so blank fields don't overwrite and validation
+ * never throws "Expected string, received null".
+ */
 export const optionalText = z
   .string()
   .trim()
-  .optional()
-  .transform((v) => (v === "" ? undefined : v));
+  .nullish()
+  .transform((v) => (v == null || v === "" ? undefined : v));
 
 export const seoSchema = z.object({
   meta_title: optionalText,
