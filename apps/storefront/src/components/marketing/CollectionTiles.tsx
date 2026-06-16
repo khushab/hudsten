@@ -39,7 +39,7 @@ export function CollectionTiles({ tiles }: { tiles: CollectionTile[] }) {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
           <div className="absolute inset-x-0 bottom-0 flex items-center justify-between p-5">
-            <span className="font-display text-xl font-semibold text-paper">
+            <span className="font-display text-xl font-normal uppercase tracking-caps text-paper">
               {tile.name}
             </span>
             <span

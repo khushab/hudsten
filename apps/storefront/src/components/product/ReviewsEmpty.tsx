@@ -18,11 +18,11 @@ export function ReviewsEmpty() {
       </p>
       <div className="mt-4 flex flex-wrap gap-x-8 gap-y-3 text-sm text-stone-700">
         <span className="flex items-center gap-2">
-          <ShieldIcon className="h-5 w-5 text-brass-600" />
+          <ShieldIcon className="h-5 w-5 text-ink" />
           1-year warranty against defects
         </span>
         <span className="flex items-center gap-2">
-          <ReturnIcon className="h-5 w-5 text-brass-600" />
+          <ReturnIcon className="h-5 w-5 text-ink" />
           7-day easy returns
         </span>
       </div>
@@ -30,7 +30,7 @@ export function ReviewsEmpty() {
         Curious who&apos;s behind this?{" "}
         <Link
           href="/about"
-          className="font-medium text-ink underline underline-offset-4 hover:text-brass-700"
+          className="font-medium whitespace-nowrap text-ink underline underline-offset-4 hover:text-stone-600"
         >
           Meet the maker →
         </Link>

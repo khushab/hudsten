@@ -29,7 +29,7 @@ export function Footer({ settings }: { settings: SiteSettings | null }) {
         <div className="grid grid-cols-2 gap-10 md:grid-cols-4 lg:grid-cols-5">
           {/* Brand + newsletter */}
           <div className="col-span-2 lg:col-span-2">
-            <p className="font-display text-2xl font-extrabold tracking-tightest">
+            <p className="font-display text-base font-medium tracking-[0.22em]">
               {storeName.toUpperCase()}
             </p>
             <p className="mt-3 max-w-sm text-sm text-stone-600">

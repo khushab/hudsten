@@ -22,7 +22,7 @@ export default async function SearchPage({
 
   return (
     <Container as="main" className="py-12">
-      <h1 className="text-3xl font-semibold tracking-tight">Search</h1>
+      <h1 className="text-3xl font-normal">Search</h1>
 
       <form action="/search" method="get" className="mt-6 max-w-md">
         <div className="flex items-center gap-2 rounded-md border border-stone-300 bg-paper px-3 focus-within:border-ink">

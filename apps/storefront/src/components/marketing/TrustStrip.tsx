@@ -15,9 +15,9 @@ export function TrustStrip({ className }: { className?: string }) {
       <div className="mx-auto grid max-w-shell grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 sm:px-6 lg:grid-cols-4 lg:px-8">
         {ITEMS.map(({ Icon, title, sub }) => (
           <div key={title} className="flex items-start gap-3">
-            <Icon className="h-7 w-7 shrink-0 text-brass-600" />
+            <Icon className="h-7 w-7 shrink-0 text-ink" />
             <div>
-              <p className="text-sm font-semibold">{title}</p>
+              <p className="text-sm font-medium">{title}</p>
               <p className="text-xs text-stone-500">{sub}</p>
             </div>
           </div>
@@ -42,7 +42,7 @@ export function TrustStripSlim({ className }: { className?: string }) {
             key={title}
             className="flex items-center gap-2 text-xs font-medium text-stone-600 sm:text-sm"
           >
-            <Icon className="h-4 w-4 shrink-0 text-brass-600 sm:h-5 sm:w-5" />
+            <Icon className="h-4 w-4 shrink-0 text-ink sm:h-5 sm:w-5" />
             {title}
           </li>
         ))}

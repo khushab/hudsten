@@ -169,7 +169,7 @@ export function ListingFilters({
                       aria-pressed={active}
                       onClick={() => setGenders((s) => toggle(s, g))}
                       className={cn(
-                        "rounded-full border px-3 py-1 text-sm transition-colors",
+                        "border px-3 py-1 text-sm uppercase tracking-[0.08em] transition-colors",
                         active
                           ? "border-ink bg-ink text-paper"
                           : "border-stone-300 text-stone-600 hover:border-ink",

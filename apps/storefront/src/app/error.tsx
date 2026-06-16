@@ -22,7 +22,7 @@ export default function Error({
   return (
     <main className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-4 text-center">
       <p className="eyebrow">Something went wrong</p>
-      <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+      <h1 className="text-4xl font-normal sm:text-5xl">
         We hit a snag.
       </h1>
       <p className="max-w-prose text-stone-600">

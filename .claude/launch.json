@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "demos",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8753", "--directory", "/Users/khushab/Desktop/myfiles/Hudsten/design-demos"],
+      "port": 8753
+    },
+    {
+      "name": "storefront",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@hudsten/storefront", "dev"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

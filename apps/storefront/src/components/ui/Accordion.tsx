@@ -20,7 +20,7 @@ export function Accordion({
       open={defaultOpen}
       className={cn("group border-b border-stone-200", className)}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-display text-lg font-medium [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-display text-sm font-medium uppercase tracking-caps [&::-webkit-details-marker]:hidden">
         {title}
         <svg
           className="h-5 w-5 shrink-0 text-stone-400 transition-transform duration-200 ease-lux group-open:rotate-45"

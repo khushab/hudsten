@@ -2,14 +2,14 @@
 // e.g. theme-color meta tags, OG image generation, chart colors.
 
 export const brandColors = {
-  ink: "#111111",
-  paper: "#FAFAF7",
-  brass: "#C9A227",
-  whatsapp: "#25D366",
+  ink: "#171717",
+  paper: "#FFFFFF",
+  brass: "#171717", // neutralized to monochrome (MW has no metallic accent)
+  whatsapp: "#1E7A47", // refined green reserved for the primary CTA
 } as const;
 
 export const fontStacks = {
-  display: "Bricolage Grotesque, ui-sans-serif, system-ui, sans-serif",
+  display: "Inter, ui-sans-serif, system-ui, sans-serif",
   sans: "Inter, ui-sans-serif, system-ui, sans-serif",
 } as const;
 

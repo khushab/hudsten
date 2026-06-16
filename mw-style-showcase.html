@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hudsten — Mission Workshop style showcase</title>
+<style>
+  :root{
+    --ink:#171717; --paper:#fff; --imgbg:#f5f5f3; --body:#2e2e2e;
+    --gray:#8a8a8a; --line:#e4e4e2; --gunmetal:#8e9193; --olive:#5e6a39;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--body);background:var(--paper);
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .caps{text-transform:uppercase;letter-spacing:.15em}
+  a{color:var(--ink)}
+
+  .announce{background:var(--ink);color:#fff;text-align:center;font-size:11px;
+    padding:14px;text-transform:uppercase;letter-spacing:.1em;text-decoration:underline;text-underline-offset:3px}
+
+  header{display:flex;align-items:center;justify-content:space-between;
+    padding:22px 44px;border-bottom:1px solid var(--line)}
+  nav{display:flex;gap:28px;font-size:12px}
+  nav span{text-transform:uppercase;letter-spacing:.15em;color:var(--ink)}
+  .logo{font-size:13px;letter-spacing:.28em;color:var(--ink);text-transform:uppercase}
+  .utils{display:flex;gap:18px;font-size:12px;color:var(--ink);text-transform:uppercase;letter-spacing:.1em}
+
+  .pdp{display:grid;grid-template-columns:58% 42%;gap:0;max-width:1280px;margin:0 auto}
+  .gallery{position:relative;padding:56px}
+  .imgblock{background:var(--imgbg);aspect-ratio:1/1;display:flex;align-items:center;
+    justify-content:center;color:#cfcfca;font-size:12px;text-transform:uppercase;letter-spacing:.2em}
+  .arrow{position:absolute;top:50%;transform:translateY(-50%);font-size:22px;color:var(--ink);
+    background:none;border:none;cursor:pointer;padding:10px}
+  .arrow.l{left:8px} .arrow.r{right:8px}
+
+  .info{padding:64px 56px 64px 24px}
+  .title{font-size:29px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin:0;font-weight:400}
+  .sub{font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);margin:10px 0 0}
+  .price{font-size:24px;color:var(--ink);margin:18px 0 0}
+  .rule{border:none;border-top:1px solid var(--line);margin:28px 0}
+
+  .clabel{font-size:14px;color:var(--ink);margin:0 0 14px}
+  .clabel b{font-weight:400;color:var(--gray)}
+  .swatches{display:flex;gap:14px}
+  .sw{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);cursor:pointer}
+  .sw.sel{outline:1px solid var(--ink);outline-offset:3px;border-color:var(--ink)}
+
+  .qty{display:inline-flex;align-items:center;border:1px solid var(--line);height:48px;margin:28px 0 0}
+  .qty button{background:none;border:none;font-size:16px;padding:0 16px;cursor:pointer;color:var(--ink)}
+  .qty span{min-width:30px;text-align:center;font-size:14px}
+
+  .add{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--ink);
+    color:#fff;border:none;height:54px;padding:0 22px;margin:16px 0 0;cursor:pointer;
+    font-size:13px;text-transform:uppercase;letter-spacing:.15em}
+  .fine{font-size:12px;color:var(--gray);margin:14px 0 0}
+
+  .desc{font-size:15px;line-height:1.65;color:var(--body);margin:40px 0 0}
+
+  details{border-top:1px solid var(--line);max-width:1280px;margin:0 auto}
+  details:last-of-type{border-bottom:1px solid var(--line)}
+  summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;
+    padding:24px 56px;font-size:14px;text-transform:uppercase;letter-spacing:.15em;color:var(--ink)}
+  summary::-webkit-details-marker{display:none}
+  details p{padding:0 56px 24px;font-size:15px;line-height:1.65;margin:0;max-width:760px}
+
+  .editorial{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+  .editorial .pic{background:var(--imgbg);min-height:420px;display:flex;align-items:center;
+    justify-content:center;color:#cfcfca;font-size:12px;text-transform:uppercase;letter-spacing:.2em}
+  .editorial .txt{display:flex;flex-direction:column;justify-content:center;padding:56px}
+  .editorial h3{font-size:19px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);
+    margin:0 0 14px;font-weight:400}
+  .editorial .body{font-size:12px;line-height:1.85;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin:0}
+
+  footer{text-align:center;padding:40px;border-top:1px solid var(--line);
+    font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.12em}
+
+  @media (max-width:768px){
+    header{padding:18px 20px} nav{display:none}
+    .pdp{grid-template-columns:1fr}
+    .gallery{padding:0} .info{padding:28px 20px}
+    .editorial{grid-template-columns:1fr}
+    summary,details p,.editorial .txt{padding-left:20px;padding-right:20px}
+  }
+</style>
+</head>
+<body>
+
+  <div class="announce">Free shipping on all orders over &#8377;999</div>
+
+  <header>
+    <nav><span>Shop</span><span>Men</span><span>Women</span><span>New</span></nav>
+    <div class="logo">Hudsten</div>
+    <div class="utils"><span>Search</span><span>Cart</span></div>
+  </header>
+
+  <section class="pdp">
+    <div class="gallery">
+      <button class="arrow l" aria-label="Previous">&#8592;</button>
+      <div class="imgblock">Product image</div>
+      <button class="arrow r" aria-label="Next">&#8594;</button>
+    </div>
+    <div class="info">
+      <h1 class="title">Atlas Gym Duffel</h1>
+      <p class="sub">Everyday carry</p>
+      <p class="price">&#8377; 2,499</p>
+      <hr class="rule" />
+      <p class="clabel"><b>Color:</b> Black</p>
+      <div class="swatches">
+        <span class="sw sel" style="background:#171717"></span>
+        <span class="sw" style="background:#8e9193"></span>
+        <span class="sw" style="background:#5e6a39"></span>
+      </div>
+      <div class="qty"><button aria-label="Decrease">&#8722;</button><span>1</span><button aria-label="Increase">+</button></div>
+      <button class="add"><span>Add to cart</span><span>&#8377; 2,499</span></button>
+      <p class="fine">Free shipping &middot; 7-day returns &middot; 1-year warranty</p>
+      <p class="desc">A weatherproof duffel built for the gym and the commute. Full-grain leather trim, a dedicated shoe compartment, and a laptop sleeve that actually fits — made to outlast the trend cycle, not to chase it.</p>
+    </div>
+  </section>
+
+  <details open>
+    <summary>Details <span>+</span></summary>
+    <p>Full-grain leather, water-resistant shell, metal hardware, and a separate ventilated compartment. Designed for everyday use and built to be repaired, not replaced.</p>
+  </details>
+  <details>
+    <summary>Specifications <span>+</span></summary>
+    <p>Dimensions 50 &times; 25 &times; 28 cm &middot; Capacity 35 L &middot; Weight 0.9 kg &middot; Fits a 15&quot; laptop.</p>
+  </details>
+
+  <section class="editorial">
+    <div class="pic">Lifestyle image</div>
+    <div class="txt">
+      <h3>Built to carry more</h3>
+      <p class="body">Every compartment is sized for the daily routine — gym kit, laptop, and the small essentials — organized so nothing rattles loose.</p>
+    </div>
+  </section>
+  <section class="editorial">
+    <div class="txt">
+      <h3>Made to last</h3>
+      <p class="body">Full-grain leather and reinforced stitching age into the bag rather than wearing out of it. Quietly engineered, honestly priced.</p>
+    </div>
+    <div class="pic">Detail image</div>
+  </section>
+
+  <footer>Hudsten &middot; Handcrafted &middot; Free shipping over &#8377;999</footer>
+
+</body>
+</html>

@@ -27,7 +27,7 @@ export function Price({
 
   return (
     <div className={cn("flex flex-wrap items-baseline gap-x-2.5 gap-y-1", className)}>
-      <span className={cn("font-display font-semibold tracking-tight", sizeCls)}>
+      <span className={cn("font-display font-medium", sizeCls)}>
         {formatPrice(price, currency)}
       </span>
       {pct != null && compareAt != null && (
@@ -35,7 +35,7 @@ export function Price({
           <span className="text-sm text-stone-600 line-through">
             {formatPrice(compareAt, currency)}
           </span>
-          <span className="rounded-sm bg-brass-100 px-1.5 py-0.5 text-2xs font-semibold uppercase tracking-wide text-brass-800">
+          <span className="border border-stone-300 px-1.5 py-0.5 text-2xs font-medium uppercase tracking-wide text-ink">
             -{pct}%
           </span>
         </>

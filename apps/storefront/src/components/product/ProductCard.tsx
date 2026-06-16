@@ -51,7 +51,7 @@ export function ProductCard({
         )}
       </div>
       <div className="mt-3 space-y-1.5">
-        <h3 className="font-display text-base font-medium leading-snug tracking-tight group-hover:underline">
+        <h3 className="font-display text-sm font-normal uppercase tracking-[0.08em] group-hover:underline">
           {product.title}
         </h3>
         <div className="flex items-baseline justify-between gap-2">

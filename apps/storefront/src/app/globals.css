@@ -5,6 +5,8 @@
 @layer base {
   :root {
     color-scheme: light;
+    /* One grotesk for the whole brand: display aliases to the sans (Inter). */
+    --font-display: var(--font-sans);
   }
 
   html {
@@ -17,15 +19,20 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Editorial display family on headings by default; components can override. */
+  /* MW: uppercase, tracked, regular-weight grotesk headings. Components can override. */
   h1, h2, h3, h4 {
-    @apply font-display;
+    @apply font-display font-normal uppercase tracking-caps;
     text-wrap: balance;
+  }
+
+  /* Rich-text (prose) headings stay natural-case — uppercase is for UI chrome, not content. */
+  .prose :is(h1, h2, h3, h4) {
+    @apply font-medium normal-case tracking-normal;
   }
 
   /* Visible, on-brand focus ring for keyboard users (a11y, PRD §9). */
   :focus-visible {
-    @apply outline-none ring-2 ring-brass ring-offset-2 ring-offset-paper;
+    @apply outline-none ring-2 ring-ink ring-offset-2 ring-offset-paper;
   }
 
   ::selection {
@@ -46,7 +53,7 @@
 
   /* PDP fixed CTA bar (mobile only) — reserve bottom space so it never covers the footer. */
   body.has-sticky-cta {
-    padding-bottom: 5.25rem;
+    padding-bottom: 4.5rem;
   }
   @media (min-width: 1024px) {
     body.has-sticky-cta {
@@ -57,7 +64,7 @@
   /* On the PDP (mobile), lift the cookie banner above the fixed CTA bar so it never
      covers the primary "Order on WhatsApp" button for first-time visitors. */
   body.has-sticky-cta .cookie-banner {
-    bottom: 5.25rem;
+    bottom: 4.75rem;
   }
   @media (min-width: 1024px) {
     body.has-sticky-cta .cookie-banner {

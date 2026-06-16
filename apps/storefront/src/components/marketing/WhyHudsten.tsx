@@ -27,14 +27,14 @@ export function WhyHudsten() {
   return (
     <section className="border-y border-stone-200 bg-ink text-paper">
       <div className="mx-auto max-w-shell px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-        <p className="eyebrow text-brass-200">Why Hudsten</p>
-        <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+        <p className="eyebrow text-paper/70">Why Hudsten</p>
+        <h2 className="mt-3 max-w-2xl text-3xl font-normal sm:text-4xl">
           Built to outlast the hype.
         </h2>
         <div className="mt-10 grid gap-10 sm:grid-cols-3">
           {PILLARS.map(({ Icon, title, body }) => (
             <div key={title}>
-              <Icon className="h-6 w-6 text-brass-400" />
+              <Icon className="h-6 w-6 text-paper" />
               <h3 className="mt-3 font-display text-lg font-medium">{title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-paper/70">{body}</p>
             </div>
@@ -42,7 +42,7 @@ export function WhyHudsten() {
         </div>
         <Link
           href="/about"
-          className="mt-10 inline-block text-sm font-medium text-brass-200 underline underline-offset-4 hover:text-brass-100"
+          className="mt-10 inline-block whitespace-nowrap text-xs font-medium uppercase tracking-[0.12em] text-paper/80 underline underline-offset-4 hover:text-paper"
         >
           Meet the maker →
         </Link>

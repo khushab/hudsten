@@ -27,8 +27,8 @@ export function Hero({ hero }: { hero: HeroSettings }) {
       {/* ~58vh on mobile so the first products peek above the fold (scroll cue). */}
       <div className="relative mx-auto flex min-h-[58vh] max-w-shell flex-col justify-end px-4 pb-14 pt-28 sm:px-6 lg:min-h-[72vh] lg:px-8 lg:pb-20">
         <div className="max-w-2xl">
-          <p className="eyebrow text-brass-200">Premium Bags · Handcrafted</p>
-          <h1 className="mt-3 text-5xl font-bold leading-[0.95] tracking-tightest sm:text-6xl lg:text-7xl">
+          <p className="eyebrow text-paper/70">Premium Bags · Handcrafted</p>
+          <h1 className="mt-3 text-5xl font-normal leading-tight tracking-caps sm:text-6xl lg:text-7xl">
             {headline}
           </h1>
           <p className="mt-5 max-w-md text-base text-paper/80 sm:text-lg">
@@ -37,7 +37,7 @@ export function Hero({ hero }: { hero: HeroSettings }) {
           {hero.cta_link && (
             <Link
               href={hero.cta_link}
-              className={buttonClasses("brass", "lg", "mt-8")}
+              className={buttonClasses("primary", "lg", "mt-8 bg-paper text-ink hover:bg-stone-100")}
             >
               {hero.cta_label || "Shop now"}
             </Link>

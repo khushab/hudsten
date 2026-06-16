@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlas Gym Duffel — HUDSTEN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ===== BAZAAR design system — Indian value-retail trust ===== */
+  :root{
+    --blue:#1A56DB; --blue-dk:#1141A8; --blue-tint:#E7EEFD;
+    --white:#FFFFFF; --bg:#F1F3F6; --ink:#1B1F27; --muted:#5B6470;
+    --green:#1FA45A; --green-dk:#127544; --green-tint:#E4F5EC;
+    --amber:#F59E0B; --amber-dk:#92610B; --amber-tint:#FEF0D6;
+    --line:#E3E7EC; --line-dk:#CDD3DB;
+    --wa:#25D366; --wa-ink:#0B3D1E;
+    --radius:7px; --radius-sm:5px;
+    /* duffel — default Black */
+    --bag:#23262B; --bag-dk:#15171A; --bag-zip:#8A9099; --bag-strap:#15171A;
+    --shadow:0 1px 2px rgba(27,31,39,.06), 0 1px 3px rgba(27,31,39,.05);
+    --shadow-lg:0 4px 16px rgba(27,31,39,.10);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--blue); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  img,svg{display:block;}
+  h1,h2,h3{margin:0; font-weight:600; line-height:1.25;}
+  ul{margin:0; padding:0; list-style:none;}
+  button{font-family:inherit;}
+
+  /* Visible focus everywhere */
+  a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible, summary:focus-visible{
+    outline:3px solid var(--blue); outline-offset:2px; border-radius:4px;
+  }
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+  .wrap{max-width:1200px; margin:0 auto; padding:0 16px;}
+
+  /* Skip link */
+  .skip{position:absolute; left:8px; top:-48px; background:var(--ink); color:#fff; padding:10px 14px; border-radius:6px; z-index:200; transition:top .15s;}
+  .skip:focus{top:8px; text-decoration:none;}
+
+  /* Design demo ribbon */
+  .demo-ribbon{
+    position:fixed; right:-44px; top:20px; transform:rotate(40deg);
+    background:var(--amber); color:var(--amber-dk); font-size:11px; font-weight:700;
+    letter-spacing:.04em; text-transform:uppercase; padding:5px 52px; z-index:300;
+    box-shadow:0 2px 6px rgba(0,0,0,.18); pointer-events:none; border:1px solid rgba(146,97,11,.25);
+  }
+
+  /* Announcement bar */
+  .announce{background:var(--blue-dk); color:#fff; font-size:12.5px; font-weight:500; text-align:center; padding:8px 12px;}
+  .announce b{font-weight:700;}
+  .announce .sep{opacity:.55; margin:0 8px;}
+
+  /* Header */
+  header.site{position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid var(--line); box-shadow:var(--shadow);}
+  .hdr{display:flex; align-items:center; gap:18px; min-height:60px;}
+  .wordmark{font-size:22px; font-weight:700; letter-spacing:.12em; color:var(--ink);}
+  .wordmark:hover{text-decoration:none;}
+  .wordmark .dot{color:var(--blue);}
+  nav.main{display:flex; gap:4px; margin-left:6px;}
+  nav.main a{color:var(--ink); font-size:14px; font-weight:500; padding:10px 12px; border-radius:6px;}
+  nav.main a:hover{background:var(--bg); text-decoration:none;}
+  .hdr-right{margin-left:auto; display:flex; align-items:center; gap:6px;}
+  .icon-btn{
+    width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--line); background:#fff; border-radius:8px; color:var(--ink); cursor:pointer;
+  }
+  .icon-btn:hover{background:var(--bg); text-decoration:none;}
+  .icon-btn.wa{background:var(--green-tint); border-color:transparent; color:var(--green-dk);}
+  .icon-btn.wa:hover{background:#d6efe0;}
+
+  /* Breadcrumbs */
+  .crumbs{font-size:12.5px; color:var(--muted); padding:12px 0 4px;}
+  .crumbs a{color:var(--muted);}
+  .crumbs a:hover{color:var(--blue);}
+  .crumbs .cur{color:var(--ink); font-weight:500;}
+  .crumbs .chev{margin:0 7px; color:var(--line-dk);}
+
+  /* ===== PDP grid ===== */
+  .pdp{display:grid; grid-template-columns:1fr; gap:20px; padding:8px 0 28px;}
+  @media(min-width:900px){ .pdp{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:36px; align-items:start;} }
+
+  /* Gallery */
+  .gallery{position:relative;}
+  @media(min-width:900px){ .gallery{position:sticky; top:80px;} }
+  .stage{
+    position:relative; background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .stage .bag{width:100%; height:auto; max-height:420px;}
+  .deal-flag{
+    position:absolute; left:0; top:18px; background:var(--amber); color:var(--amber-dk);
+    font-size:12px; font-weight:700; padding:6px 14px 6px 12px; border-radius:0 6px 6px 0;
+    box-shadow:0 2px 5px rgba(0,0,0,.12); display:flex; align-items:center; gap:6px;
+  }
+  .deal-flag::after{content:""; position:absolute; right:-9px; top:0; border:0 solid transparent; border-width:0 0 32px 9px; border-left-color:var(--amber-dk); opacity:.0;}
+  .img-cap{font-size:11px; color:var(--muted); text-align:center; margin-top:8px; font-style:italic;}
+  .thumbs{display:flex; gap:10px; margin-top:12px;}
+  .thumb{
+    flex:1; min-width:0; aspect-ratio:1/1; background:#fff; border:2px solid var(--line);
+    border-radius:var(--radius-sm); padding:8px; cursor:pointer; position:relative;
+    display:flex; align-items:center; justify-content:center; transition:border-color .12s;
+  }
+  .thumb:hover{border-color:var(--line-dk);}
+  .thumb[aria-current="true"]{border-color:var(--blue);}
+  .thumb svg{width:100%; height:100%;}
+  .thumb .lbl{position:absolute; bottom:3px; left:0; right:0; text-align:center; font-size:9.5px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
+  .thumb .play{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  }
+  .thumb .play span{
+    width:34px; height:34px; border-radius:50%; background:rgba(27,31,39,.78);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .thumb .play span::after{content:""; border-style:solid; border-width:7px 0 7px 11px; border-color:transparent transparent transparent #fff; margin-left:2px;}
+
+  /* Buy box */
+  .buybox{display:flex; flex-direction:column; gap:14px;}
+  .badges{display:flex; gap:8px; flex-wrap:wrap;}
+  .badge{font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:4px 9px; border-radius:4px;}
+  .badge.new{background:var(--blue-tint); color:var(--blue-dk);}
+  .badge.best{background:var(--amber-tint); color:var(--amber-dk);}
+  h1.title{font-size:26px; font-weight:600; letter-spacing:-.01em;}
+  @media(min-width:900px){ h1.title{font-size:28px;} }
+  .review-line{font-size:13px; color:var(--muted); margin-top:-6px;}
+  .review-line a{font-size:13px;}
+
+  /* Price */
+  .price-block{
+    background:var(--green-tint); border:1px solid #c6ecd6; border-radius:var(--radius);
+    padding:14px 16px;
+  }
+  .price-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .price-now{font-size:30px; font-weight:700; color:var(--ink); letter-spacing:-.01em;}
+  .price-was{font-size:16px; color:var(--muted); text-decoration:line-through;}
+  .price-off{background:var(--green); color:#fff; font-size:12.5px; font-weight:700; padding:3px 8px; border-radius:5px;}
+  .save-callout{margin-top:8px; display:flex; align-items:center; gap:7px; font-size:14px; font-weight:600; color:var(--green-dk);}
+  .save-callout b{font-weight:700;}
+  .incl-tax{font-size:11.5px; color:var(--muted); margin-top:3px;}
+
+  /* Option groups */
+  .opt-label{font-size:13px; font-weight:600; color:var(--ink); margin-bottom:8px;}
+  .opt-label .val{font-weight:600; color:var(--blue-dk);}
+  .swatches{display:flex; gap:10px;}
+  .swatch{
+    display:flex; align-items:center; gap:8px; padding:7px 13px 7px 7px; min-height:44px;
+    border:2px solid var(--line); background:#fff; border-radius:8px; cursor:pointer; font-size:13.5px; font-weight:500; color:var(--ink);
+    transition:border-color .12s, box-shadow .12s;
+  }
+  .swatch:hover{border-color:var(--line-dk);}
+  .swatch[aria-pressed="true"]{border-color:var(--blue); box-shadow:0 0 0 2px var(--blue-tint);}
+  .swatch .chip{width:26px; height:26px; border-radius:6px; border:1px solid rgba(0,0,0,.12); flex:none;}
+
+  .sizes{display:flex; gap:10px;}
+  .size-btn{
+    min-width:60px; min-height:44px; padding:8px 16px; border:2px solid var(--line); background:#fff;
+    border-radius:8px; cursor:pointer; font-size:15px; font-weight:600; color:var(--ink); transition:border-color .12s, box-shadow .12s;
+  }
+  .size-btn:hover{border-color:var(--line-dk);}
+  .size-btn[aria-pressed="true"]{border-color:var(--blue); box-shadow:0 0 0 2px var(--blue-tint); color:var(--blue-dk);}
+  .size-hint{font-size:12px; color:var(--muted); margin-top:6px;}
+
+  .stock{display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; color:var(--green-dk);}
+  .stock .dot{width:9px; height:9px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px var(--green-tint);}
+
+  /* CTA */
+  .cta-wa{
+    display:flex; align-items:center; justify-content:center; gap:10px; width:100%;
+    background:var(--wa); color:var(--wa-ink); font-size:16.5px; font-weight:700; letter-spacing:.01em;
+    padding:15px 18px; border-radius:9px; min-height:54px; border:1px solid rgba(11,61,30,.18);
+    box-shadow:0 2px 6px rgba(37,211,102,.28);
+  }
+  .cta-wa:hover{background:#1fc15d; text-decoration:none;}
+  .cta-wa svg{flex:none;}
+  .cta-sub{font-size:13.5px; text-align:center;}
+  .cta-sub a{font-weight:600;}
+
+  .delivery{display:flex; align-items:flex-start; gap:9px; font-size:13.5px; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:11px 13px;}
+  .delivery svg{color:var(--blue); flex:none; margin-top:1px;}
+  .delivery b{font-weight:600;}
+
+  /* value-retail trust strip */
+  .vr-strip{
+    display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; font-size:12.5px; font-weight:600; color:var(--ink);
+    background:var(--blue-tint); border:1px solid #d3e1fb; border-radius:var(--radius); padding:10px 13px;
+  }
+  .vr-strip .vi{display:flex; align-items:center; gap:6px;}
+  .vr-strip svg{color:var(--blue); flex:none;}
+  .vr-strip .vsep{color:var(--line-dk);}
+
+  /* Trust row */
+  .trust-row{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
+  @media(min-width:520px){ .trust-row{grid-template-columns:repeat(4,1fr);} }
+  .trust-item{display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:11px 6px;}
+  .trust-item svg{color:var(--blue);}
+  .trust-item span{font-size:11.5px; font-weight:600; color:var(--ink); line-height:1.25;}
+
+  /* ===== Content sections below ===== */
+  .section{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:22px 22px; margin-bottom:18px; box-shadow:var(--shadow);}
+  .section h2{font-size:19px; margin-bottom:14px;}
+  .section h2.tight{margin-bottom:10px;}
+  .desc p{color:#2c333f; margin:0 0 12px; max-width:68ch; font-size:15px;}
+  .desc p:last-child{margin-bottom:0;}
+
+  .feat-list{display:grid; grid-template-columns:1fr; gap:10px;}
+  @media(min-width:680px){ .feat-list{grid-template-columns:1fr 1fr;} }
+  .feat-list li{display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:#2c333f;}
+  .feat-list li svg{color:var(--green); flex:none; margin-top:2px;}
+
+  /* Specs table */
+  table.specs{width:100%; border-collapse:collapse; font-size:14px;}
+  table.specs th, table.specs td{text-align:left; padding:9px 12px; border:1px solid var(--line); vertical-align:top;}
+  table.specs th{width:38%; background:var(--bg); font-weight:600; color:var(--ink);}
+  @media(min-width:680px){ table.specs th{width:30%;} }
+  table.specs td{color:#2c333f;}
+  table.specs tr:nth-child(even) td, table.specs tr:nth-child(even) th{background-color:#fafbfc;}
+
+  .box-list{display:flex; flex-direction:column; gap:9px;}
+  .box-list li{display:flex; align-items:center; gap:10px; font-size:14.5px; color:#2c333f;}
+  .box-list li svg{color:var(--blue); flex:none;}
+
+  /* FAQ */
+  .faq details{border:1px solid var(--line); border-radius:var(--radius-sm); margin-bottom:9px; background:#fff; overflow:hidden;}
+  .faq details[open]{border-color:var(--line-dk);}
+  .faq summary{
+    list-style:none; cursor:pointer; padding:13px 44px 13px 14px; position:relative;
+    font-size:14.5px; font-weight:600; color:var(--ink); min-height:44px; display:flex; align-items:center;
+  }
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{
+    content:""; position:absolute; right:16px; top:50%; width:9px; height:9px;
+    border-right:2px solid var(--muted); border-bottom:2px solid var(--muted);
+    transform:translateY(-65%) rotate(45deg); transition:transform .18s;
+  }
+  .faq details[open] summary::after{transform:translateY(-35%) rotate(-135deg);}
+  .faq summary:hover{background:var(--bg);}
+  .faq .ans{padding:0 14px 14px; font-size:14px; color:#2c333f; max-width:70ch;}
+
+  /* Reviews empty state */
+  .reviews-empty{background:var(--bg); border:1px dashed var(--line-dk); border-radius:var(--radius); padding:20px; text-align:center;}
+  .reviews-empty .ic{width:42px; height:42px; border-radius:50%; background:var(--blue-tint); color:var(--blue); display:flex; align-items:center; justify-content:center; margin:0 auto 10px;}
+  .reviews-empty p{font-size:14px; color:var(--muted); max-width:60ch; margin:0 auto;}
+  .reviews-empty p b{color:var(--ink);}
+
+  /* Cross-sell */
+  .cards{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
+  @media(min-width:680px){ .cards{grid-template-columns:repeat(3,1fr);} }
+  .pcard{border:1px solid var(--line); border-radius:var(--radius); background:#fff; overflow:hidden; transition:box-shadow .15s, border-color .15s;}
+  .pcard:hover{box-shadow:var(--shadow-lg); border-color:var(--line-dk);}
+  .pcard .pthumb{background:var(--bg); padding:14px; display:flex; align-items:center; justify-content:center;}
+  .pcard .pthumb svg{width:100%; height:auto; max-height:120px;}
+  .pcard .pmeta{padding:11px 13px;}
+  .pcard .pname{font-size:14px; font-weight:600; color:var(--ink); display:block; margin-bottom:3px;}
+  .pcard .pprice{font-size:15px; font-weight:700; color:var(--ink);}
+
+  /* Footer */
+  footer.site{background:var(--ink); color:#cfd4dc; margin-top:8px;}
+  .foot-top{display:grid; grid-template-columns:1fr; gap:26px; padding:34px 0;}
+  @media(min-width:760px){ .foot-top{grid-template-columns:1.4fr 1fr 1fr 1fr;} }
+  .news h3{color:#fff; font-size:16px; margin-bottom:8px;}
+  .news p{font-size:13px; color:#9aa3af; margin:0 0 12px; max-width:34ch;}
+  .news-form{display:flex; gap:8px; flex-wrap:wrap;}
+  .news-form input{
+    flex:1 1 180px; min-width:0; min-height:44px; padding:10px 12px; border-radius:7px; border:1px solid #3a414d;
+    background:#23272f; color:#fff; font-size:14px; font-family:inherit;
+  }
+  .news-form input::placeholder{color:#7d8694;}
+  .news-form button{
+    flex:none; min-height:44px; padding:11px 18px; border:none; border-radius:7px; background:var(--blue);
+    color:#fff; font-size:14px; font-weight:700; cursor:pointer;
+  }
+  .news-form button:hover{background:#2f64e0;}
+  .foot-col h3{color:#fff; font-size:13px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; margin-bottom:12px;}
+  .foot-col a{color:#cfd4dc; font-size:13.5px; display:block; padding:5px 0;}
+  .foot-col a:hover{color:#fff;}
+  .foot-bottom{border-top:1px solid #2c313b; padding:18px 0 92px;}
+  @media(min-width:768px){ .foot-bottom{padding:18px 0;} }
+  .foot-bottom-in{display:flex; flex-direction:column; gap:14px;}
+  @media(min-width:680px){ .foot-bottom-in{flex-direction:row; align-items:center; justify-content:space-between;} }
+  .contact{font-size:12.5px; color:#9aa3af; line-height:1.7;}
+  .contact a{color:#cfd4dc;}
+  .socials{display:flex; gap:8px;}
+  .socials a{width:38px; height:38px; border-radius:8px; border:1px solid #3a414d; display:flex; align-items:center; justify-content:center; color:#cfd4dc;}
+  .socials a:hover{background:#23272f; color:#fff;}
+  .copyright{font-size:12.5px; color:#7d8694;}
+
+  /* Sticky mobile CTA */
+  .mobile-cta{
+    position:fixed; left:0; right:0; bottom:0; z-index:150; display:none;
+    background:#fff; border-top:1px solid var(--line); box-shadow:0 -2px 12px rgba(27,31,39,.12);
+    padding:9px 12px calc(9px + env(safe-area-inset-bottom,0px));
+  }
+  .mobile-cta .row{display:flex; align-items:center; gap:12px;}
+  .mobile-cta .mc-price{flex:none;}
+  .mobile-cta .mc-now{font-size:19px; font-weight:700; color:var(--ink); line-height:1.1;}
+  .mobile-cta .mc-was{font-size:12px; color:var(--muted); text-decoration:line-through;}
+  .mobile-cta .cta-wa{flex:1; padding:12px 14px; min-height:48px; font-size:15.5px;}
+  @media(max-width:767px){ .mobile-cta{display:block;} body{padding-bottom:0;} }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<div class="demo-ribbon" aria-hidden="true">Design demo · Bazaar</div>
+
+<!-- 1. Announcement bar -->
+<div class="announce" role="region" aria-label="Store announcements">
+  Free shipping pan-India <span class="sep" aria-hidden="true">·</span> 7-day easy returns <span class="sep" aria-hidden="true">·</span> <b>Now shipping the first drop</b>
+</div>
+
+<!-- 2. Sticky header -->
+<header class="site">
+  <div class="wrap hdr">
+    <a class="wordmark" href="#" aria-label="HUDSTEN home">HUDSTEN<span class="dot">.</span></a>
+    <nav class="main" aria-label="Primary">
+      <a href="#">Gym Bags</a>
+      <a href="#">Men</a>
+      <a href="#">Women</a>
+      <a href="#">New Arrivals</a>
+    </nav>
+    <div class="hdr-right">
+      <button class="icon-btn" aria-label="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </button>
+      <a class="icon-btn wa" href="https://wa.me/919000000000" aria-label="Chat with us on WhatsApp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.004c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.13c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.36c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.25 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <!-- 3. Breadcrumbs -->
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="#">Home</a><span class="chev" aria-hidden="true">›</span>
+      <a href="#">Bags</a><span class="chev" aria-hidden="true">›</span>
+      <a href="#">Gym Bags</a><span class="chev" aria-hidden="true">›</span>
+      <span class="cur" aria-current="page">Atlas Gym Duffel</span>
+    </nav>
+
+    <!-- 4. PDP area -->
+    <div class="pdp">
+      <!-- LEFT: Gallery -->
+      <section class="gallery" aria-label="Product gallery">
+        <div class="stage">
+          <div class="deal-flag" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M21.41 11.58 12.42 2.6A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l8.99 8.99a2 2 0 0 0 2.83 0l7-7a2 2 0 0 0 0-2.83ZM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8Z"/></svg>
+            −29% deal
+          </div>
+          <svg class="bag" id="mainBag" viewBox="0 0 480 340" role="img" aria-label="Atlas Gym Duffel, front view, in Black">
+            <ellipse cx="240" cy="298" rx="170" ry="18" fill="rgba(0,0,0,0.07)"/>
+            <rect x="74" y="118" width="332" height="150" rx="62" fill="var(--bag)"/>
+            <ellipse cx="104" cy="193" rx="32" ry="72" fill="var(--bag-dk)"/>
+            <ellipse cx="396" cy="193" rx="20" ry="60" fill="var(--bag-dk)" opacity="0.6"/>
+            <rect x="150" y="180" width="180" height="74" rx="20" fill="var(--bag-dk)" opacity="0.45"/>
+            <path d="M118 150 H392" stroke="var(--bag-zip)" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="250" cy="150" r="8" fill="var(--bag-zip)"/>
+            <path d="M168 122 C172 72 222 72 226 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>
+            <path d="M256 122 C260 72 310 72 314 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>
+          </svg>
+          <p class="img-cap">Illustrative placeholder imagery — product photography coming with the first drop.</p>
+        </div>
+
+        <ul class="thumbs" role="tablist" aria-label="Product views">
+          <li>
+            <button class="thumb" role="tab" aria-current="true" data-view="front" aria-label="Front view">
+              <svg viewBox="0 0 480 340" aria-hidden="true">
+                <rect x="74" y="118" width="332" height="150" rx="62" fill="var(--bag)"/>
+                <ellipse cx="104" cy="193" rx="32" ry="72" fill="var(--bag-dk)"/>
+                <path d="M118 150 H392" stroke="var(--bag-zip)" stroke-width="6" stroke-linecap="round"/>
+                <path d="M168 122 C172 72 222 72 226 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>
+                <path d="M256 122 C260 72 310 72 314 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>
+              </svg>
+              <span class="lbl">Front</span>
+            </button>
+          </li>
+          <li>
+            <button class="thumb" role="tab" aria-current="false" data-view="angled" aria-label="Angled view">
+              <svg viewBox="0 0 480 340" aria-hidden="true">
+                <g transform="rotate(-8 240 190)">
+                  <rect x="74" y="118" width="332" height="150" rx="62" fill="var(--bag)"/>
+                  <ellipse cx="396" cy="193" rx="34" ry="72" fill="var(--bag-dk)"/>
+                  <path d="M118 150 H392" stroke="var(--bag-zip)" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M168 122 C172 72 222 72 226 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>
+                </g>
+              </svg>
+              <span class="lbl">Angled</span>
+            </button>
+          </li>
+          <li>
+            <button class="thumb" role="tab" aria-current="false" data-view="interior" aria-label="Interior view">
+              <svg viewBox="0 0 480 340" aria-hidden="true">
+                <rect x="74" y="118" width="332" height="150" rx="40" fill="var(--bag-dk)"/>
+                <rect x="100" y="140" width="280" height="106" rx="14" fill="var(--bag)" opacity="0.55"/>
+                <rect x="120" y="160" width="110" height="70" rx="8" fill="var(--bag-dk)"/>
+                <rect x="250" y="160" width="110" height="70" rx="8" fill="var(--bag-dk)"/>
+                <path d="M118 138 H392" stroke="var(--bag-zip)" stroke-width="6" stroke-linecap="round"/>
+              </svg>
+              <span class="lbl">Interior</span>
+            </button>
+          </li>
+          <li>
+            <button class="thumb" role="tab" aria-current="false" data-view="video" aria-label="Product video (placeholder)">
+              <svg viewBox="0 0 480 340" aria-hidden="true">
+                <rect x="74" y="118" width="332" height="150" rx="62" fill="var(--bag)" opacity="0.85"/>
+                <ellipse cx="104" cy="193" rx="32" ry="72" fill="var(--bag-dk)"/>
+                <path d="M168 122 C172 72 222 72 226 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>
+                <path d="M256 122 C260 72 310 72 314 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>
+              </svg>
+              <span class="play" aria-hidden="true"><span></span></span>
+              <span class="lbl">Video</span>
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <!-- RIGHT: Buy box -->
+      <section class="buybox" aria-label="Purchase options">
+        <div class="badges">
+          <span class="badge new">New</span>
+          <span class="badge best">Bestseller</span>
+        </div>
+
+        <h1 class="title">Atlas Gym Duffel</h1>
+
+        <p class="review-line">Be the first to review · <a href="#reviews">see our promise</a></p>
+
+        <!-- Price -->
+        <div class="price-block">
+          <div class="price-row">
+            <span class="price-now">₹2,499</span>
+            <span class="price-was">₹3,499</span>
+            <span class="price-off">−29%</span>
+          </div>
+          <div class="save-callout">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            You save <b>₹1,000&nbsp;(29%)</b>
+          </div>
+          <div class="incl-tax">Inclusive of all taxes</div>
+        </div>
+
+        <!-- Color -->
+        <div>
+          <div class="opt-label">Color: <span class="val" id="colorLabel">Black</span></div>
+          <div class="swatches" role="group" aria-label="Choose a color">
+            <button class="swatch" data-color="Black" aria-pressed="true"
+              data-bag="#23262B" data-dk="#15171A" data-zip="#8A9099" data-strap="#15171A">
+              <span class="chip" style="background:#23262B"></span>Black
+            </button>
+            <button class="swatch" data-color="Tan" aria-pressed="false"
+              data-bag="#B79268" data-dk="#8A6E4C" data-zip="#5C4A33" data-strap="#5C4A33">
+              <span class="chip" style="background:#B79268"></span>Tan
+            </button>
+          </div>
+        </div>
+
+        <!-- Size -->
+        <div>
+          <div class="opt-label">Size: <span class="val" id="sizeLabel">M</span></div>
+          <div class="sizes" role="group" aria-label="Choose a size">
+            <button class="size-btn" data-size="M" aria-pressed="true">M</button>
+            <button class="size-btn" data-size="L" aria-pressed="false">L</button>
+          </div>
+          <p class="size-hint">M = 35 L (everyday) · L = 45 L (weekend)</p>
+        </div>
+
+        <!-- Stock -->
+        <div class="stock"><span class="dot" aria-hidden="true"></span> In stock</div>
+
+        <!-- CTA -->
+        <a class="cta-wa" id="waCta" href="https://wa.me/919000000000" aria-label="Order the Atlas Gym Duffel on WhatsApp">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.004c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.13c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.36c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.25 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+          Order on WhatsApp
+        </a>
+        <p class="cta-sub">Prefer Amazon? <a href="#" target="_blank" rel="noopener">Buy there →</a></p>
+
+        <!-- Delivery -->
+        <div class="delivery">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 3h13v12H1z"/><path d="M14 8h4l3 3v4h-7z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg>
+          <span><b>Free shipping across India</b> · usually 3–7 business days</span>
+        </div>
+
+        <!-- value-retail trust strip (honest) -->
+        <div class="vr-strip" aria-label="Buying conveniences">
+          <span class="vi">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>
+            Cash on Delivery available
+          </span>
+          <span class="vsep" aria-hidden="true">·</span>
+          <span class="vi">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            GST invoice
+          </span>
+          <span class="vsep" aria-hidden="true">·</span>
+          <span class="vi">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-7 3.3"/><path d="M3 3v4h4"/></svg>
+            7-day returns
+          </span>
+        </div>
+
+        <!-- Trust row -->
+        <ul class="trust-row" aria-label="Store guarantees">
+          <li class="trust-item">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 3h13v12H1z"/><path d="M14 8h4l3 3v4h-7z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg>
+            <span>Free shipping</span>
+          </li>
+          <li class="trust-item">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-7 3.3"/><path d="M3 3v4h4"/></svg>
+            <span>7-day returns</span>
+          </li>
+          <li class="trust-item">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V5z"/><path d="m9 12 2 2 4-4"/></svg>
+            <span>1-year warranty</span>
+          </li>
+          <li class="trust-item">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            <span>Secure ordering</span>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- 5. Description -->
+    <section class="section desc" aria-labelledby="desc-h">
+      <h2 id="desc-h">Built for the daily grind.</h2>
+      <p>The Atlas Gym Duffel pairs water-resistant coated canvas with a structured base that stands on its own — so your kit stays off the locker-room floor. A ventilated shoe compartment keeps the muck away from your clean gear.</p>
+      <p>The padded, detachable strap makes the commute disappear, and a side sleeve swallows a 15-inch laptop for the office-to-gym crossover.</p>
+    </section>
+
+    <!-- 6. Key features -->
+    <section class="section" aria-labelledby="feat-h">
+      <h2 id="feat-h" class="tight">Key features</h2>
+      <ul class="feat-list">
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>35 L — a full day's kit</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Ventilated shoe &amp; wet-gear compartment</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Water-resistant coated canvas</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Padded detachable shoulder strap</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Fits a 15" laptop</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Stands upright on a reinforced base</li>
+      </ul>
+    </section>
+
+    <!-- 7. Specifications -->
+    <section class="section" aria-labelledby="spec-h">
+      <h2 id="spec-h" class="tight">Specifications</h2>
+      <table class="specs">
+        <tbody>
+          <tr><th scope="row">Dimensions</th><td>50 × 25 × 28 cm</td></tr>
+          <tr><th scope="row">Weight</th><td>0.9 kg</td></tr>
+          <tr><th scope="row">Capacity</th><td>35 L</td></tr>
+          <tr><th scope="row">Outer</th><td>Water-resistant coated canvas</td></tr>
+          <tr><th scope="row">Trim</th><td>Vegan leather</td></tr>
+          <tr><th scope="row">Hardware</th><td>Matte gunmetal zips</td></tr>
+          <tr><th scope="row">Compartments</th><td>Main + ventilated shoe + 2 side pockets + laptop sleeve</td></tr>
+          <tr><th scope="row">Laptop fit</th><td>Up to 15"</td></tr>
+          <tr><th scope="row">Care</th><td>Wipe clean with a damp cloth</td></tr>
+          <tr><th scope="row">Warranty</th><td>1 year against manufacturing defects</td></tr>
+          <tr><th scope="row">Origin</th><td>Handcrafted in India</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 8. What's in the box -->
+    <section class="section" aria-labelledby="box-h">
+      <h2 id="box-h" class="tight">What's in the box</h2>
+      <ul class="box-list">
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/></svg>The Atlas duffel</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/></svg>Detachable padded strap</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/></svg>Hudsten care card</li>
+      </ul>
+    </section>
+
+    <!-- 9. FAQ -->
+    <section class="section faq" aria-labelledby="faq-h">
+      <h2 id="faq-h" class="tight">Frequently asked questions</h2>
+      <details>
+        <summary>Is it cabin-friendly?</summary>
+        <div class="ans">At 50 cm it fits most domestic cabin allowances; check your airline's limit for the size you choose.</div>
+      </details>
+      <details>
+        <summary>Will my shoes stay separate?</summary>
+        <div class="ans">Yes — the base compartment is fully partitioned and ventilated, so muddy soles never touch your clean kit.</div>
+      </details>
+      <details>
+        <summary>How water-resistant is it?</summary>
+        <div class="ans">The coated canvas shrugs off rain and gym splashes. It's water-resistant, not submersible.</div>
+      </details>
+      <details>
+        <summary>What about returns &amp; warranty?</summary>
+        <div class="ans">7-day easy returns, no questions asked, plus a 1-year warranty on manufacturing defects.</div>
+      </details>
+    </section>
+
+    <!-- 10. Reviews — honest empty state -->
+    <section class="section" id="reviews" aria-labelledby="rev-h">
+      <h2 id="rev-h" class="tight">Reviews</h2>
+      <div class="reviews-empty">
+        <div class="ic" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <p><b>No reviews yet — you could be the first.</b> We're a new, founder-run label. Until reviews roll in, here's our promise: a 1-year warranty and 7-day no-fuss returns.</p>
+      </div>
+    </section>
+
+    <!-- 11. Pairs well with -->
+    <section class="section" aria-labelledby="cross-h">
+      <h2 id="cross-h" class="tight">Pairs well with</h2>
+      <div class="cards">
+        <a class="pcard" href="#" aria-label="Vanguard Weekender, ₹3,299">
+          <div class="pthumb">
+            <svg viewBox="0 0 480 340" aria-hidden="true">
+              <rect x="74" y="118" width="332" height="150" rx="48" fill="#2F3A4A"/>
+              <ellipse cx="104" cy="193" rx="30" ry="70" fill="#1C2330"/>
+              <path d="M118 150 H392" stroke="#9AA3B2" stroke-width="6" stroke-linecap="round"/>
+              <path d="M168 122 C172 74 222 74 226 122" fill="none" stroke="#1C2330" stroke-width="12" stroke-linecap="round"/>
+              <path d="M256 122 C260 74 310 74 314 122" fill="none" stroke="#1C2330" stroke-width="12" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="pmeta"><span class="pname">Vanguard Weekender</span><span class="pprice">₹3,299</span></div>
+        </a>
+        <a class="pcard" href="#" aria-label="Forge Sport Holdall, ₹2,799">
+          <div class="pthumb">
+            <svg viewBox="0 0 480 340" aria-hidden="true">
+              <rect x="74" y="118" width="332" height="150" rx="70" fill="#7A2E2E"/>
+              <ellipse cx="104" cy="193" rx="30" ry="70" fill="#561E1E"/>
+              <path d="M118 150 H392" stroke="#D9A9A9" stroke-width="6" stroke-linecap="round"/>
+              <path d="M168 122 C172 74 222 74 226 122" fill="none" stroke="#561E1E" stroke-width="12" stroke-linecap="round"/>
+              <path d="M256 122 C260 74 310 74 314 122" fill="none" stroke="#561E1E" stroke-width="12" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="pmeta"><span class="pname">Forge Sport Holdall</span><span class="pprice">₹2,799</span></div>
+        </a>
+        <a class="pcard" href="#" aria-label="Aura Studio Tote, ₹1,999">
+          <div class="pthumb">
+            <svg viewBox="0 0 480 340" aria-hidden="true">
+              <rect x="120" y="110" width="240" height="160" rx="18" fill="#C9B79A"/>
+              <ellipse cx="240" cy="298" rx="120" ry="14" fill="rgba(0,0,0,0.06)"/>
+              <path d="M165 110 C170 56 230 56 235 110" fill="none" stroke="#8A7656" stroke-width="13" stroke-linecap="round"/>
+              <path d="M245 110 C250 56 310 56 315 110" fill="none" stroke="#8A7656" stroke-width="13" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="pmeta"><span class="pname">Aura Studio Tote</span><span class="pprice">₹1,999</span></div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- 12. Footer -->
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="news">
+          <h3>Be first in line for the drop</h3>
+          <p>New colours, restocks and founder notes — no spam, unsubscribe anytime.</p>
+          <form class="news-form" onsubmit="return false;">
+            <label class="sr-only" for="news-email">Email address</label>
+            <input id="news-email" type="email" placeholder="you@email.com" autocomplete="email" />
+            <button type="submit">Notify me</button>
+          </form>
+        </div>
+        <nav class="foot-col" aria-label="Shop">
+          <h3>Shop</h3>
+          <a href="#">Gym Bags</a>
+          <a href="#">New Arrivals</a>
+          <a href="#">Men</a>
+          <a href="#">Women</a>
+        </nav>
+        <nav class="foot-col" aria-label="Company">
+          <h3>Company</h3>
+          <a href="#">About Hudsten</a>
+          <a href="#">Our Promise</a>
+          <a href="#">Sustainability</a>
+          <a href="#">Careers</a>
+        </nav>
+        <nav class="foot-col" aria-label="Help">
+          <h3>Help</h3>
+          <a href="#">Track Order</a>
+          <a href="#">Returns &amp; Warranty</a>
+          <a href="#">Shipping</a>
+          <a href="#">Contact Us</a>
+        </nav>
+      </div>
+      <div class="foot-bottom">
+        <div class="foot-bottom-in">
+          <div class="contact">
+            <b style="color:#fff;">Hudsten</b> · [Registered address placeholder] · GSTIN: [GSTIN placeholder]<br>
+            <a href="mailto:care@hudsten.in">care@hudsten.in</a>
+          </div>
+          <div class="socials" aria-label="Social media">
+            <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3l.5-3H14V4.5c0-.8.3-1.5 1.5-1.5H18V.2C17.5.1 16.4 0 15.3 0 12.8 0 11 1.5 11 4.3V6H8v3h3v9h3z"/></svg></a>
+            <a href="#" aria-label="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .4-4.5 31 31 0 0 0-.4-4.5ZM9.8 15.3V8.7l5.7 3.3Z"/></svg></a>
+          </div>
+        </div>
+        <p class="copyright" style="margin-top:14px;">© 2026 Hudsten</p>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<!-- 13. Sticky mobile CTA bar -->
+<div class="mobile-cta" aria-label="Quick order">
+  <div class="row">
+    <div class="mc-price">
+      <div class="mc-now">₹2,499</div>
+      <div class="mc-was">₹3,499</div>
+    </div>
+    <a class="cta-wa" id="waCtaMobile" href="https://wa.me/919000000000" aria-label="Order the Atlas Gym Duffel on WhatsApp">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.004c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg>
+      Order on WhatsApp
+    </a>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // ---- Central selection state. WhatsApp links + labels derive from this. ----
+  var state = { color: "Black", size: "M" };
+  var PRODUCT_URL = "https://hudsten.in/products/atlas-gym-duffel";
+  var WA_NUMBER = "919000000000";
+
+  var colorLabel = document.getElementById("colorLabel");
+  var sizeLabel  = document.getElementById("sizeLabel");
+  var waCta      = document.getElementById("waCta");
+  var waCtaMob   = document.getElementById("waCtaMobile");
+  var mainBag    = document.getElementById("mainBag");
+  var root       = document.documentElement;
+
+  function buildWaLink(){
+    var text = "Hi Hudsten! I'd like to order the Atlas Gym Duffel — "
+             + state.color + " / " + state.size + ". " + PRODUCT_URL;
+    return "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(text);
+  }
+  function refreshWa(){
+    var link = buildWaLink();
+    waCta.href = link;
+    if (waCtaMob) waCtaMob.href = link;
+  }
+
+  // ---- Color swatches: recolor the duffel SVG via CSS vars + move active ring ----
+  var swatches = document.querySelectorAll(".swatch");
+  swatches.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      swatches.forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+      btn.setAttribute("aria-pressed","true");
+      root.style.setProperty("--bag",       btn.dataset.bag);
+      root.style.setProperty("--bag-dk",    btn.dataset.dk);
+      root.style.setProperty("--bag-zip",   btn.dataset.zip);
+      root.style.setProperty("--bag-strap", btn.dataset.strap);
+      state.color = btn.dataset.color;
+      colorLabel.textContent = state.color;
+      if (mainBag) mainBag.setAttribute("aria-label", "Atlas Gym Duffel, in " + state.color);
+      refreshWa();
+    });
+  });
+
+  // ---- Size buttons: toggle active only (image unchanged) ----
+  var sizeBtns = document.querySelectorAll(".size-btn");
+  sizeBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      sizeBtns.forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+      btn.setAttribute("aria-pressed","true");
+      state.size = btn.dataset.size;
+      sizeLabel.textContent = state.size;
+      refreshWa();
+    });
+  });
+
+  // ---- Gallery: thumbnail click swaps which view the main image shows ----
+  // Re-render the main SVG inner markup per view so the recolor vars still apply live.
+  var views = {
+    front: '<ellipse cx="240" cy="298" rx="170" ry="18" fill="rgba(0,0,0,0.07)"/>'
+      + '<rect x="74" y="118" width="332" height="150" rx="62" fill="var(--bag)"/>'
+      + '<ellipse cx="104" cy="193" rx="32" ry="72" fill="var(--bag-dk)"/>'
+      + '<ellipse cx="396" cy="193" rx="20" ry="60" fill="var(--bag-dk)" opacity="0.6"/>'
+      + '<rect x="150" y="180" width="180" height="74" rx="20" fill="var(--bag-dk)" opacity="0.45"/>'
+      + '<path d="M118 150 H392" stroke="var(--bag-zip)" stroke-width="6" stroke-linecap="round"/>'
+      + '<circle cx="250" cy="150" r="8" fill="var(--bag-zip)"/>'
+      + '<path d="M168 122 C172 72 222 72 226 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>'
+      + '<path d="M256 122 C260 72 310 72 314 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>',
+    angled: '<ellipse cx="240" cy="300" rx="172" ry="18" fill="rgba(0,0,0,0.07)"/>'
+      + '<g transform="rotate(-7 240 190)">'
+      + '<rect x="74" y="118" width="332" height="150" rx="62" fill="var(--bag)"/>'
+      + '<ellipse cx="396" cy="193" rx="36" ry="74" fill="var(--bag-dk)"/>'
+      + '<ellipse cx="104" cy="193" rx="20" ry="60" fill="var(--bag-dk)" opacity="0.5"/>'
+      + '<rect x="160" y="180" width="170" height="74" rx="20" fill="var(--bag-dk)" opacity="0.4"/>'
+      + '<path d="M118 150 H392" stroke="var(--bag-zip)" stroke-width="6" stroke-linecap="round"/>'
+      + '<circle cx="250" cy="150" r="8" fill="var(--bag-zip)"/>'
+      + '<path d="M168 122 C172 72 222 72 226 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>'
+      + '<path d="M256 122 C260 72 310 72 314 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>'
+      + '</g>',
+    interior: '<ellipse cx="240" cy="298" rx="170" ry="18" fill="rgba(0,0,0,0.07)"/>'
+      + '<rect x="74" y="116" width="332" height="152" rx="44" fill="var(--bag-dk)"/>'
+      + '<rect x="98" y="140" width="284" height="108" rx="16" fill="var(--bag)" opacity="0.5"/>'
+      + '<rect x="116" y="158" width="118" height="74" rx="10" fill="var(--bag-dk)"/>'
+      + '<rect x="246" y="158" width="118" height="74" rx="10" fill="var(--bag-dk)"/>'
+      + '<path d="M116 134 H242" stroke="var(--bag-zip)" stroke-width="5" stroke-dasharray="2 7" stroke-linecap="round"/>'
+      + '<path d="M118 116 H392" stroke="var(--bag-zip)" stroke-width="6" stroke-linecap="round"/>'
+      + '<circle cx="118" cy="116" r="7" fill="var(--bag-zip)"/>',
+    video: '<ellipse cx="240" cy="298" rx="170" ry="18" fill="rgba(0,0,0,0.07)"/>'
+      + '<rect x="74" y="118" width="332" height="150" rx="62" fill="var(--bag)" opacity="0.9"/>'
+      + '<ellipse cx="104" cy="193" rx="32" ry="72" fill="var(--bag-dk)"/>'
+      + '<path d="M118 150 H392" stroke="var(--bag-zip)" stroke-width="6" stroke-linecap="round"/>'
+      + '<path d="M168 122 C172 72 222 72 226 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>'
+      + '<path d="M256 122 C260 72 310 72 314 122" fill="none" stroke="var(--bag-strap)" stroke-width="13" stroke-linecap="round"/>'
+      + '<circle cx="240" cy="190" r="38" fill="rgba(27,31,39,0.78)"/>'
+      + '<path d="M228 172 L262 190 L228 208 Z" fill="#fff"/>'
+  };
+  var viewNames = { front:"front view", angled:"angled view", interior:"interior view", video:"product video preview" };
+
+  var thumbs = document.querySelectorAll(".thumb");
+  thumbs.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      thumbs.forEach(function(b){ b.setAttribute("aria-current","false"); });
+      btn.setAttribute("aria-current","true");
+      var v = btn.dataset.view;
+      if (mainBag && views[v]){
+        mainBag.innerHTML = views[v];
+        mainBag.setAttribute("aria-label", "Atlas Gym Duffel, " + (viewNames[v] || v) + ", in " + state.color);
+      }
+    });
+  });
+
+  // ---- FAQ keyboard support: Enter/Space toggle (native <details> already handles click) ----
+  document.querySelectorAll(".faq summary").forEach(function(s){
+    s.addEventListener("keydown", function(e){
+      if (e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        var d = s.parentElement;
+        d.open = !d.open;
+      }
+    });
+  });
+
+  // Init links on load.
+  refreshWa();
+})();
+</script>
+</body>
+</html>

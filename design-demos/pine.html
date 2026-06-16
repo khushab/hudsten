@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlas Gym Duffel — HUDSTEN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ===== HERITAGE design system — elevated heritage-premium ===== */
+  :root{
+    --pine:#1E3A30;          /* primary brand chrome: header, bands, footer */
+    --pine-dk:#142A22;       /* deep pine — alt dark surface */
+    --pine-soft:#2C4A3E;     /* hover / lifted pine */
+    --bone:#F4EFE4;          /* cream/bone page background */
+    --bone-dk:#EAE3D2;       /* slightly deeper cream for insets */
+    --white:#FFFFFF;         /* cards / surfaces */
+    --ink:#1B1B18;           /* primary text on light */
+    --muted:#6B6A5F;         /* muted text on light (AA on bone/white) */
+    --line:#DED7C6;          /* hairlines on bone */
+    --line-soft:#E7E1D2;     /* lighter hairline */
+    --brass:#6B2334;         /* refined metallic accent — sparing */
+    --brass-dk:#531B28;      /* brass text variant (AA on bone/white) */
+    --gold-tint:#E7EDE9;     /* savings pill background */
+    --gold-tint-ink:#234B3A; /* dark text on gold tint (AA) */
+    --cream-on-pine:#F4EFE4; /* cream text on pine */
+    --muted-on-pine:#B9C6BE; /* muted text on pine (AA ≥4.5) */
+    --line-on-pine:#335144;  /* hairline on pine */
+    --green-save:#2F6B3F;    /* savings/stock green text on light (AA) */
+    --wa:#25D366;            /* whatsapp */
+    --wa-ink:#0A3D1C;        /* dark text ON green (AA-safe) */
+
+    --r-sm:6px; --r-md:8px; --r-lg:10px;
+    --font-head:"Fraunces",Georgia,"Times New Roman",serif;
+    --font-body:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --maxw:1200px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;font-family:var(--font-body);color:var(--ink);
+    background:var(--bone);line-height:1.65;-webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    padding-bottom:86px; /* room for mobile sticky bar */
+  }
+  @media(min-width:768px){ body{padding-bottom:0;} }
+  h1,h2,h3{font-family:var(--font-head);margin:0;line-height:1.12;font-weight:500;}
+  a{color:var(--pine);text-decoration:none;}
+  img,svg{display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;}
+
+  /* visible focus everywhere */
+  a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible,.thumb:focus-visible,summary:focus-visible{
+    outline:3px solid var(--brass);outline-offset:2px;border-radius:var(--r-sm);
+  }
+  .on-pine a:focus-visible,.on-pine button:focus-visible{ outline-color:#6B2334; }
+
+  /* kicker — small refined eyebrow with a thin brass rule */
+  .kicker{font-family:var(--font-body);font-weight:600;font-size:11px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--brass-dk);display:inline-flex;align-items:center;
+    gap:10px;margin-bottom:14px;}
+  .kicker::before{content:"";display:inline-block;width:26px;height:1px;background:var(--brass);}
+
+  /* skip link */
+  .skip{position:absolute;left:-999px;top:8px;z-index:200;background:var(--pine);color:var(--cream-on-pine);
+    padding:11px 18px;border-radius:var(--r-md);font-weight:600;font-size:14px;}
+  .skip:focus{left:14px;}
+
+  /* ===== Announcement ===== */
+  .announce{background:var(--pine-dk);color:var(--cream-on-pine);font-size:12.5px;letter-spacing:.03em;
+    text-align:center;padding:10px 16px;}
+  .announce b{color:#6B2334;font-weight:600;}
+
+  /* ===== Header ===== */
+  header.site{background:var(--pine);position:sticky;top:0;z-index:100;
+    border-bottom:1px solid var(--line-on-pine);}
+  .hd{display:flex;align-items:center;gap:18px;height:70px;}
+  .brand{font-family:var(--font-head);font-weight:600;font-size:27px;letter-spacing:.13em;
+    color:var(--cream-on-pine);text-transform:uppercase;margin-right:auto;line-height:1;}
+  nav.main{display:none;gap:30px;margin-right:auto;}
+  @media(min-width:940px){ nav.main{display:flex;} .brand{margin-right:40px;} }
+  nav.main a{color:var(--muted-on-pine);font-weight:500;font-size:13.5px;letter-spacing:.05em;
+    padding:8px 0;position:relative;}
+  nav.main a::after{content:"";position:absolute;left:0;right:100%;bottom:2px;height:1px;
+    background:var(--brass);transition:right .25s ease;}
+  nav.main a:hover,nav.main a:focus-visible{color:var(--cream-on-pine);}
+  nav.main a:hover::after{right:0;}
+  .hd-icons{display:flex;align-items:center;gap:4px;}
+  .icon-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+    background:transparent;border:none;color:var(--muted-on-pine);cursor:pointer;border-radius:var(--r-md);}
+  .icon-btn:hover{color:var(--cream-on-pine);background:rgba(255,255,255,.07);}
+  .icon-btn svg{width:21px;height:21px;}
+
+  /* ===== Breadcrumbs ===== */
+  .crumbs{font-size:13px;color:var(--muted);padding:20px 0 6px;letter-spacing:.01em;}
+  .crumbs a{color:var(--muted);}
+  .crumbs a:hover{color:var(--pine);text-decoration:underline;text-underline-offset:2px;}
+  .crumbs .sep{margin:0 9px;color:#B5B1A9;}
+  .crumbs .here{color:var(--ink);font-weight:600;}
+
+  /* ===== PDP grid ===== */
+  .pdp{display:grid;grid-template-columns:1fr;gap:36px;padding:16px 0 54px;}
+  @media(min-width:900px){ .pdp{grid-template-columns:minmax(0,1.04fr) minmax(0,1fr);gap:56px;align-items:start;} }
+
+  /* Gallery */
+  .gallery{position:relative;}
+  @media(min-width:900px){ .gallery{position:sticky;top:90px;} }
+  .main-img{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:14px;position:relative;overflow:hidden;}
+  /* subtle brass corner ticks — heritage framing detail (above the photo) */
+  .main-img::before,.main-img::after{content:"";position:absolute;width:18px;height:18px;
+    border-color:var(--brass);opacity:.55;pointer-events:none;z-index:2;}
+  .main-img::before{top:14px;left:14px;border-top:1px solid;border-left:1px solid;}
+  .main-img::after{bottom:44px;right:14px;border-bottom:1px solid;border-right:1px solid;}
+  /* photo fills the framed stage; fixed aspect so it never collapses */
+  #stage-img{aspect-ratio:4/5;border-radius:var(--r-md);overflow:hidden;}
+  .main-img .bag{width:100%;height:100%;object-fit:cover;display:block;}
+  .img-note{font-size:11px;color:var(--muted);text-align:center;margin-top:14px;letter-spacing:.04em;
+    font-style:italic;}
+  .vid-stage{display:none;flex-direction:column;align-items:center;justify-content:center;
+    aspect-ratio:4/5;border-radius:var(--r-md);overflow:hidden;position:relative;
+    color:var(--cream-on-pine);text-align:center;gap:16px;
+    background:url("img/lifestyle.jpg") center/cover no-repeat;}
+  .vid-stage::after{content:"";position:absolute;inset:0;background:rgba(20,42,34,.4);}
+  .vid-stage .pbig,.vid-stage span{position:relative;z-index:1;}
+  .vid-stage .pbig{width:76px;height:76px;border-radius:50%;background:var(--pine);
+    display:flex;align-items:center;justify-content:center;}
+  .vid-stage .pbig svg{width:30px;height:30px;fill:var(--cream-on-pine);margin-left:3px;}
+  .vid-stage span{font-size:13px;letter-spacing:.03em;text-shadow:0 1px 3px rgba(0,0,0,.5);}
+
+  .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px;}
+  .thumb{background:var(--white);border:1px solid var(--line);border-radius:var(--r-md);
+    padding:0;cursor:pointer;position:relative;aspect-ratio:1/1;overflow:hidden;display:block;
+    transition:border-color .18s ease,transform .18s ease;}
+  .thumb:hover{transform:translateY(-2px);border-color:#C6C2BA;}
+  .thumb .bag{width:100%;height:100%;object-fit:cover;display:block;}
+  .thumb[aria-current="true"]{border-color:var(--pine);box-shadow:0 0 0 1px var(--pine);}
+  .thumb .tlabel{position:absolute;bottom:5px;left:0;right:0;text-align:center;font-size:9px;
+    font-family:var(--font-body);font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  .thumb .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+  .thumb .play span{width:32px;height:32px;border-radius:50%;background:var(--pine);
+    display:flex;align-items:center;justify-content:center;}
+  .thumb .play span svg{width:13px;height:13px;fill:var(--cream-on-pine);margin-left:2px;}
+
+  /* ===== Buy box ===== */
+  .badges{display:flex;gap:9px;margin-bottom:16px;}
+  .badge{font-family:var(--font-body);font-weight:600;font-size:10.5px;letter-spacing:.16em;
+    text-transform:uppercase;padding:6px 12px;border-radius:var(--r-sm);}
+  .badge.new{background:var(--pine);color:var(--cream-on-pine);}
+  .badge.best{background:var(--gold-tint);color:var(--gold-tint-ink);border:1px solid #D7D3CB;}
+  h1.title{font-size:46px;font-weight:500;letter-spacing:-.01em;line-height:1.02;margin-bottom:10px;}
+  @media(max-width:520px){ h1.title{font-size:35px;} }
+  .soc{font-size:13.5px;color:var(--muted);margin-bottom:24px;}
+  .soc a{color:var(--brass-dk);font-weight:600;text-decoration:underline;text-underline-offset:3px;
+    text-decoration-color:var(--brass);}
+
+  .price-block{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;margin-bottom:12px;}
+  .price-now{font-family:var(--font-head);font-weight:500;font-size:38px;color:var(--ink);letter-spacing:-.01em;}
+  .price-was{font-size:18px;color:var(--muted);text-decoration:line-through;}
+  .pct-pill{font-family:var(--font-body);font-weight:600;font-size:12.5px;color:var(--gold-tint-ink);
+    border:1px solid #D7D3CB;padding:3px 9px;border-radius:100px;letter-spacing:.03em;}
+  .save{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-body);font-weight:600;
+    font-size:14.5px;color:var(--gold-tint-ink);background:var(--gold-tint);
+    padding:8px 15px;border-radius:100px;margin-bottom:26px;letter-spacing:.01em;}
+  .save svg{width:15px;height:15px;fill:none;stroke:var(--gold-tint-ink);stroke-width:1.8;}
+
+  .opt-group{margin-bottom:24px;}
+  .opt-label{font-family:var(--font-body);font-weight:600;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink);margin-bottom:12px;}
+  .opt-label .val{color:var(--muted);font-weight:500;letter-spacing:.02em;}
+
+  .swatches{display:flex;gap:14px;}
+  .swatch{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);cursor:pointer;
+    padding:0;position:relative;transition:transform .14s ease;background:var(--white);}
+  .swatch:hover{transform:scale(1.05);}
+  .swatch .dotc{position:absolute;inset:5px;border-radius:50%;}
+  .swatch[aria-pressed="true"]{border-color:var(--pine);box-shadow:0 0 0 2px var(--bone),0 0 0 3px var(--pine);}
+  .sw-black .dotc{background:#23262B;}
+  .sw-tan .dotc{background:#B79268;}
+
+  .sizes{display:flex;gap:12px;}
+  .size-btn{min-width:62px;height:48px;padding:0 20px;font-family:var(--font-body);font-weight:600;
+    font-size:15px;letter-spacing:.04em;background:var(--white);border:1px solid var(--line);
+    border-radius:var(--r-md);cursor:pointer;color:var(--ink);transition:all .16s ease;}
+  .size-btn:hover{border-color:#BFBBB3;}
+  .size-btn[aria-pressed="true"]{border-color:var(--pine);background:var(--pine);color:var(--cream-on-pine);}
+
+  .stock{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:600;
+    color:var(--green-save);margin-bottom:22px;letter-spacing:.01em;}
+  .stock .dot{width:9px;height:9px;border-radius:50%;background:#3B8A4E;position:relative;}
+  .stock .dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;
+    border:1px solid rgba(59,138,78,.45);animation:pulse 2s infinite;}
+  @keyframes pulse{0%{transform:scale(.6);opacity:1;}100%{transform:scale(1.5);opacity:0;}}
+
+  /* CTAs */
+  .cta-wa{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;
+    min-height:58px;background:var(--wa);color:var(--wa-ink);font-family:var(--font-body);
+    font-weight:700;font-size:16.5px;letter-spacing:.02em;
+    border:none;border-radius:var(--r-md);cursor:pointer;transition:filter .15s ease,transform .1s ease;}
+  .cta-wa:hover{filter:brightness(.96);}
+  .cta-wa:active{transform:translateY(1px);}
+  .cta-wa svg{width:23px;height:23px;fill:var(--wa-ink);}
+  .cta-amazon{display:inline-block;font-size:14px;font-weight:600;color:var(--pine);
+    margin-top:16px;border-bottom:1px solid var(--line);padding-bottom:2px;}
+  .cta-amazon:hover{border-color:var(--brass);color:var(--brass-dk);}
+
+  .delivery{display:flex;align-items:center;gap:11px;font-size:13.5px;color:var(--muted);
+    margin-top:22px;padding-top:22px;border-top:1px solid var(--line);}
+  .delivery svg{width:21px;height:21px;fill:none;stroke:var(--pine);stroke-width:1.5;flex:none;}
+  .delivery b{color:var(--ink);font-weight:600;}
+
+  .trust{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin-top:22px;
+    background:var(--line);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;}
+  @media(min-width:560px){ .trust{grid-template-columns:repeat(4,1fr);} }
+  .trust .t{display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px;
+    padding:16px 8px;background:var(--white);}
+  .trust .t svg{width:22px;height:22px;fill:none;stroke:var(--pine);stroke-width:1.5;}
+  .trust .t span{font-size:11.5px;font-weight:600;color:var(--ink);letter-spacing:.02em;line-height:1.35;}
+
+  /* ===== Content sections ===== */
+  section.block{padding:54px 0;border-top:1px solid var(--line);}
+  .sec-h{font-size:32px;font-weight:500;letter-spacing:-.01em;margin-bottom:22px;}
+  @media(max-width:520px){ .sec-h{font-size:27px;} }
+  .desc p{max-width:62ch;margin:0 0 18px;color:#33322C;font-size:16.5px;line-height:1.8;}
+
+  /* pine feature band */
+  section.pine{background:var(--pine);color:var(--cream-on-pine);border-top:none;}
+  section.pine .sec-h{color:var(--cream-on-pine);}
+  section.pine .kicker{color:#6B2334;}
+  section.pine .kicker::before{background:#6B2334;}
+  .feat-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:0;}
+  @media(min-width:680px){ .feat-list{grid-template-columns:1fr 1fr;column-gap:48px;} }
+  .feat-list li{display:flex;align-items:flex-start;gap:14px;padding:17px 0;
+    border-bottom:1px solid var(--line-on-pine);font-size:15.5px;color:var(--cream-on-pine);}
+  .feat-list li svg{width:20px;height:20px;flex:none;margin-top:2px;stroke:#6B2334;
+    fill:none;stroke-width:1.8;}
+
+  /* specs */
+  .specs{display:grid;grid-template-columns:1fr;gap:0;border:1px solid var(--line);
+    border-radius:var(--r-lg);overflow:hidden;background:var(--white);}
+  @media(min-width:640px){ .specs{grid-template-columns:1fr 1fr;} }
+  .spec-row{display:grid;grid-template-columns:148px 1fr;gap:16px;padding:16px 20px;
+    border-bottom:1px solid var(--line-soft);font-size:14.5px;}
+  @media(min-width:640px){ .spec-row:nth-child(odd){border-right:1px solid var(--line-soft);} }
+  .spec-row dt{font-family:var(--font-body);font-weight:600;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);margin:0;align-self:center;}
+  .spec-row dd{margin:0;color:var(--ink);font-weight:500;}
+
+  /* in the box */
+  .box-list{display:flex;flex-wrap:wrap;gap:14px;list-style:none;padding:0;margin:0;}
+  .box-list li{display:flex;align-items:center;gap:11px;background:var(--white);
+    border:1px solid var(--line);border-radius:var(--r-md);padding:14px 18px;font-size:14.5px;font-weight:500;}
+  .box-list li svg{width:18px;height:18px;stroke:var(--pine);fill:none;stroke-width:1.6;flex:none;}
+
+  /* FAQ */
+  .faq details{background:var(--white);border:1px solid var(--line);border-radius:var(--r-md);
+    margin-bottom:12px;overflow:hidden;}
+  .faq details[open]{border-color:var(--pine);}
+  .faq summary{list-style:none;cursor:pointer;padding:19px 22px;font-family:var(--font-head);
+    font-weight:500;font-size:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    color:var(--ink);}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary .chev{width:18px;height:18px;flex:none;transition:transform .22s ease;
+    stroke:var(--brass-dk);fill:none;stroke-width:2;}
+  .faq details[open] summary .chev{transform:rotate(180deg);}
+  .faq .ans{padding:0 22px 20px;color:#33322C;font-size:15.5px;max-width:64ch;line-height:1.75;}
+
+  /* reviews empty */
+  .reviews-empty{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:38px 32px;text-align:center;position:relative;}
+  .reviews-empty .ricon{width:54px;height:54px;border-radius:50%;background:var(--gold-tint);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+  .reviews-empty .ricon svg{width:24px;height:24px;stroke:var(--gold-tint-ink);fill:none;stroke-width:1.6;}
+  .reviews-empty p{max-width:56ch;margin:0 auto;color:#33322C;font-size:16px;line-height:1.75;}
+  .reviews-empty b{color:var(--ink);font-weight:600;}
+
+  /* cross-sell */
+  .xsell{display:grid;grid-template-columns:1fr;gap:18px;}
+  @media(min-width:620px){ .xsell{grid-template-columns:repeat(3,1fr);} }
+  .xcard{background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:20px;text-align:center;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;cursor:pointer;}
+  .xcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(20,42,34,.1);border-color:#C6C2BA;}
+  .xcard .xbag{background:var(--bone);border-radius:var(--r-md);margin-bottom:16px;
+    overflow:hidden;aspect-ratio:1/1;}
+  .xcard .xbag .bag{width:100%;height:100%;object-fit:cover;display:block;}
+  .xcard .xname{font-family:var(--font-head);font-weight:500;font-size:18px;letter-spacing:-.005em;margin-bottom:5px;}
+  .xcard .xprice{font-family:var(--font-body);font-weight:600;font-size:15px;color:var(--muted);}
+
+  /* ===== Footer ===== */
+  footer.site{background:var(--pine);color:var(--cream-on-pine);margin-top:0;}
+  .news{border-bottom:1px solid var(--line-on-pine);padding:52px 0;}
+  .news h3{font-size:30px;font-weight:500;color:var(--cream-on-pine);margin-bottom:8px;letter-spacing:-.01em;}
+  .news p{color:var(--muted-on-pine);font-size:14px;margin:0 0 20px;}
+  .news-form{display:flex;flex-wrap:wrap;gap:12px;max-width:500px;}
+  .news-form input{flex:1;min-width:200px;height:52px;padding:0 18px;border-radius:var(--r-md);
+    border:1px solid var(--line-on-pine);background:var(--pine-dk);color:var(--cream-on-pine);
+    font-size:15px;font-family:var(--font-body);}
+  .news-form input::placeholder{color:var(--muted-on-pine);}
+  .news-form input:focus-visible{outline-color:#6B2334;border-color:#6B2334;}
+  .news-form button{height:52px;padding:0 28px;background:#6B2334;color:var(--pine-dk);border:none;
+    border-radius:var(--r-md);font-family:var(--font-body);font-weight:700;font-size:14px;
+    letter-spacing:.04em;cursor:pointer;transition:filter .15s ease;}
+  .news-form button:hover{filter:brightness(1.05);}
+
+  .foot-cols{display:grid;grid-template-columns:1fr 1fr;gap:32px;padding:52px 0 34px;}
+  @media(min-width:760px){ .foot-cols{grid-template-columns:1.5fr 1fr 1fr 1fr;} }
+  .foot-cols h4{font-family:var(--font-body);font-weight:600;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:#6B2334;margin:0 0 17px;}
+  .foot-cols ul{list-style:none;padding:0;margin:0;}
+  .foot-cols li{margin-bottom:12px;}
+  .foot-cols a{color:var(--muted-on-pine);font-size:14px;}
+  .foot-cols a:hover{color:var(--cream-on-pine);}
+  .foot-brand .bw{font-family:var(--font-head);font-weight:600;font-size:25px;letter-spacing:.13em;
+    color:var(--cream-on-pine);text-transform:uppercase;margin-bottom:14px;}
+  .foot-brand p{color:var(--muted-on-pine);font-size:13.5px;line-height:1.8;margin:0;}
+  .foot-brand a{color:#6B2334;}
+  .socials{display:flex;gap:11px;margin-top:20px;}
+  .socials a{width:42px;height:42px;border-radius:var(--r-md);border:1px solid var(--line-on-pine);
+    display:flex;align-items:center;justify-content:center;color:var(--muted-on-pine);}
+  .socials a:hover{color:var(--cream-on-pine);border-color:#6B2334;background:rgba(255,255,255,.05);}
+  .socials svg{width:18px;height:18px;fill:currentColor;}
+  .copy{border-top:1px solid var(--line-on-pine);padding:22px 0;font-size:13px;color:var(--muted-on-pine);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+
+  /* ===== Sticky mobile CTA ===== */
+  .mobcta{position:fixed;left:0;right:0;bottom:0;z-index:120;background:var(--pine);
+    border-top:1px solid var(--line-on-pine);padding:11px 16px;display:flex;align-items:center;gap:16px;
+    box-shadow:0 -6px 28px rgba(20,42,34,.32);}
+  @media(min-width:768px){ .mobcta{display:none;} }
+  .mobcta .mp{flex:none;}
+  .mobcta .mp .now{font-family:var(--font-head);font-weight:500;font-size:21px;color:var(--cream-on-pine);line-height:1.05;}
+  .mobcta .mp .was{font-size:12px;color:var(--muted-on-pine);text-decoration:line-through;}
+  .mobcta .cta-wa{flex:1;min-height:48px;font-size:15px;}
+
+  /* ===== Design demo badge ===== */
+  .demo-badge{position:fixed;bottom:14px;left:14px;z-index:300;
+    background:var(--pine-dk);color:var(--cream-on-pine);font-family:var(--font-body);font-weight:600;
+    font-size:11px;letter-spacing:.06em;padding:7px 13px;border-radius:100px;
+    border:1px solid var(--brass);box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;}
+  @media(max-width:767px){ .demo-badge{bottom:auto;top:14px;left:14px;} }
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+<div class="demo-badge" aria-hidden="true">Design demo · Pine</div>
+
+<!-- 1 · Announcement -->
+<div class="announce">Free shipping pan-India · 7-day easy returns · <b>Now shipping the first drop</b></div>
+
+<!-- 2 · Header -->
+<header class="site on-pine">
+  <div class="wrap hd">
+    <div class="brand">HUDSTEN</div>
+    <nav class="main" aria-label="Primary">
+      <a href="#">Gym Bags</a>
+      <a href="#">Men</a>
+      <a href="#">Women</a>
+      <a href="#">New Arrivals</a>
+    </nav>
+    <div class="hd-icons">
+      <button class="icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+      </button>
+      <a class="icon-btn" href="#buybox" aria-label="Order on WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 5-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.3-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.6.1a6.6 6.6 0 0 1-3.2-2.8c-.2-.4 0-.6.2-.8l.4-.5c.1-.2.1-.3.2-.5s0-.4 0-.5-.6-1.4-.8-1.9-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.2c0 1.3 1 2.6 1.1 2.8s1.9 2.9 4.6 4c1.7.7 2.3.8 3.1.7a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.3-.2-.6-.3z"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+  <!-- 3 · Breadcrumbs -->
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="#">Home</a><span class="sep" aria-hidden="true">›</span>
+    <a href="#">Bags</a><span class="sep" aria-hidden="true">›</span>
+    <a href="#">Gym Bags</a><span class="sep" aria-hidden="true">›</span>
+    <span class="here" aria-current="page">Atlas Gym Duffel</span>
+  </nav>
+
+  <!-- 4 · PDP -->
+  <div class="pdp">
+    <!-- LEFT gallery -->
+    <div class="gallery">
+      <div class="main-img">
+        <div id="stage-img">
+          <img class="bag" id="mainBag" src="img/black-a.jpg" alt="Atlas Gym Duffel in Black"
+               width="100%" height="100%" />
+        </div>
+        <div class="vid-stage" id="stage-vid">
+          <div class="pbig"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
+          <span>Product video preview<br/>(placeholder)</span>
+        </div>
+        <p class="img-note">Stock photo — placeholder for product shoot.</p>
+      </div>
+
+      <div class="thumbs" role="group" aria-label="Product image thumbnails">
+        <button class="thumb" data-view="front" data-img="img/black-a.jpg" aria-current="true" aria-label="Front view">
+          <img class="bag" src="img/black-a.jpg" alt="Atlas Gym Duffel in Black, front view" />
+          <span class="tlabel">Front</span>
+        </button>
+        <button class="thumb" data-view="angled" data-img="img/black-b.jpg" aria-current="false" aria-label="Angled view">
+          <img class="bag" src="img/black-b.jpg" alt="Atlas Gym Duffel in Black, angled view" />
+          <span class="tlabel">Angled</span>
+        </button>
+        <button class="thumb" data-view="interior" data-img="img/interior.jpg" aria-current="false" aria-label="Interior view">
+          <img class="bag" src="img/interior.jpg" alt="Atlas Gym Duffel open, showing interior" />
+          <span class="tlabel">Interior</span>
+        </button>
+        <button class="thumb" data-view="video" aria-current="false" aria-label="Play product video">
+          <img class="bag" src="img/lifestyle.jpg" alt="Person carrying the Atlas Gym Duffel" />
+          <span class="play"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+          <span class="tlabel">Video</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT buy box -->
+    <div class="buybox" id="buybox">
+      <div class="badges">
+        <span class="badge new">New</span>
+        <span class="badge best">Bestseller</span>
+      </div>
+      <h1 class="title">Atlas Gym Duffel</h1>
+      <p class="soc">Be the first to review · <a href="#reviews">share your experience</a></p>
+
+      <div class="price-block">
+        <span class="price-now">₹2,499</span>
+        <span class="price-was">₹3,499</span>
+        <span class="pct-pill">−29%</span>
+      </div>
+      <div class="save">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 11.4 12.5 3.3A2 2 0 0 0 11 2.7H4a1 1 0 0 0-1 1v7a2 2 0 0 0 .6 1.5l8.1 8.1a2 2 0 0 0 2.8 0l6-6a2 2 0 0 0 .1-2.9z"/><circle cx="7" cy="7" r="1.6"/></svg>
+        Save ₹1,000
+      </div>
+
+      <!-- Color -->
+      <div class="opt-group">
+        <div class="opt-label">Colour: <span class="val" id="colorVal">Black</span></div>
+        <div class="swatches" role="group" aria-label="Choose colour">
+          <button class="swatch sw-black" data-color="Black" data-img="img/black-a.jpg" aria-pressed="true" aria-label="Black"><span class="dotc"></span></button>
+          <button class="swatch sw-tan" data-color="Tan" data-img="img/tan-b.jpg" aria-pressed="false" aria-label="Tan"><span class="dotc"></span></button>
+        </div>
+      </div>
+
+      <!-- Size -->
+      <div class="opt-group">
+        <div class="opt-label">Size: <span class="val" id="sizeVal">M</span></div>
+        <div class="sizes" role="group" aria-label="Choose size">
+          <button class="size-btn" data-size="M" aria-pressed="true">M</button>
+          <button class="size-btn" data-size="L" aria-pressed="false">L</button>
+        </div>
+      </div>
+
+      <div class="stock"><span class="dot" aria-hidden="true"></span> In stock</div>
+
+      <!-- Primary CTA -->
+      <a class="cta-wa" id="waBtn" href="#" target="_blank" rel="noopener"
+         aria-label="Order the Atlas Gym Duffel on WhatsApp">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 5-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.3-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.6.1a6.6 6.6 0 0 1-3.2-2.8c-.2-.4 0-.6.2-.8l.4-.5c.1-.2.1-.3.2-.5s0-.4 0-.5-.6-1.4-.8-1.9-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.2c0 1.3 1 2.6 1.1 2.8s1.9 2.9 4.6 4c1.7.7 2.3.8 3.1.7a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.3-.2-.6-.3z"/></svg>
+        Order on WhatsApp
+      </a>
+      <a class="cta-amazon" href="#" target="_blank" rel="noopener">Prefer Amazon? Buy there →</a>
+
+      <div class="delivery">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 3h13v10H1zM14 6h4l3 4v3h-7" stroke-linejoin="round"/><circle cx="6" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+        <span><b>Free shipping across India</b> · usually 3–7 business days</span>
+      </div>
+
+      <div class="trust">
+        <div class="t">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 3h13v10H1zM14 6h4l3 4v3h-7" stroke-linejoin="round"/><circle cx="6" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+          <span>Free shipping</span>
+        </div>
+        <div class="t">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7" stroke-linecap="round"/><path d="M3 4v5h5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>7-day returns</span>
+        </div>
+        <div class="t">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V5z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>1-year warranty</span>
+        </div>
+        <div class="t">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke-linecap="round"/></svg>
+          <span>Secure ordering</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5 · Description -->
+<section class="block desc">
+  <div class="wrap">
+    <span class="kicker">The build</span>
+    <h2 class="sec-h">Built for the daily grind.</h2>
+    <p>The Atlas Gym Duffel pairs water-resistant coated canvas with a structured base that stands on its own — so your kit stays off the locker-room floor. A ventilated shoe compartment keeps the muck away from your clean gear.</p>
+    <p>The padded, detachable strap makes the commute disappear, and a side sleeve swallows a 15-inch laptop for the office-to-gym crossover.</p>
+  </div>
+</section>
+
+<!-- 6 · Key features (pine band) -->
+<section class="pine">
+  <div class="wrap" style="padding:56px 22px;">
+    <span class="kicker">Considered details</span>
+    <h2 class="sec-h">Key features</h2>
+    <ul class="feat-list">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>35 L — a full day's kit</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Ventilated shoe &amp; wet-gear compartment</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Water-resistant coated canvas</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Padded detachable shoulder strap</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Fits a 15" laptop</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>Stands upright on a reinforced base</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 7 · Specifications -->
+<section class="block">
+  <div class="wrap">
+    <span class="kicker">The detail</span>
+    <h2 class="sec-h">Specifications</h2>
+    <dl class="specs">
+      <div class="spec-row"><dt>Dimensions</dt><dd>50 × 25 × 28 cm</dd></div>
+      <div class="spec-row"><dt>Weight</dt><dd>0.9 kg</dd></div>
+      <div class="spec-row"><dt>Capacity</dt><dd>35 L</dd></div>
+      <div class="spec-row"><dt>Outer</dt><dd>Water-resistant coated canvas</dd></div>
+      <div class="spec-row"><dt>Trim</dt><dd>Vegan leather</dd></div>
+      <div class="spec-row"><dt>Hardware</dt><dd>Matte gunmetal zips</dd></div>
+      <div class="spec-row"><dt>Compartments</dt><dd>Main + ventilated shoe + 2 side pockets + laptop sleeve</dd></div>
+      <div class="spec-row"><dt>Laptop fit</dt><dd>Up to 15"</dd></div>
+      <div class="spec-row"><dt>Care</dt><dd>Wipe clean with a damp cloth</dd></div>
+      <div class="spec-row"><dt>Warranty</dt><dd>1 year against manufacturing defects</dd></div>
+      <div class="spec-row"><dt>Origin</dt><dd>Handcrafted in India</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- 8 · What's in the box -->
+<section class="block">
+  <div class="wrap">
+    <span class="kicker">Unboxing</span>
+    <h2 class="sec-h">What's in the box</h2>
+    <ul class="box-list">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4z" stroke-linejoin="round"/><path d="M3 7v10l9 4 9-4V7" stroke-linejoin="round"/></svg>The Atlas duffel</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4z" stroke-linejoin="round"/><path d="M3 7v10l9 4 9-4V7" stroke-linejoin="round"/></svg>Detachable padded strap</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4z" stroke-linejoin="round"/><path d="M3 7v10l9 4 9-4V7" stroke-linejoin="round"/></svg>Hudsten care card</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 9 · FAQ -->
+<section class="block faq">
+  <div class="wrap">
+    <span class="kicker">Good to know</span>
+    <h2 class="sec-h">Frequently asked</h2>
+    <details>
+      <summary>Is it cabin-friendly?<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="ans">At 50 cm it fits most domestic cabin allowances; check your airline's limit for the size you choose.</div>
+    </details>
+    <details>
+      <summary>Will my shoes stay separate?<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="ans">Yes — the base compartment is fully partitioned and ventilated, so muddy soles never touch your clean kit.</div>
+    </details>
+    <details>
+      <summary>How water-resistant is it?<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="ans">The coated canvas shrugs off rain and gym splashes. It's water-resistant, not submersible.</div>
+    </details>
+    <details>
+      <summary>What about returns &amp; warranty?<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="ans">7-day easy returns, no questions asked, plus a 1-year warranty on manufacturing defects.</div>
+    </details>
+  </div>
+</section>
+
+<!-- 10 · Reviews empty state -->
+<section class="block" id="reviews">
+  <div class="wrap">
+    <span class="kicker">Reviews</span>
+    <h2 class="sec-h">Early days</h2>
+    <div class="reviews-empty">
+      <div class="ricon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linejoin="round"/></svg></div>
+      <p>No reviews yet — you could be the first. We're a new, founder-run label. Until reviews roll in, here's our promise: a <b>1-year warranty</b> and <b>7-day no-fuss returns</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · Pairs well with -->
+<section class="block">
+  <div class="wrap">
+    <span class="kicker">Complete the kit</span>
+    <h2 class="sec-h">Pairs well with</h2>
+    <div class="xsell">
+      <div class="xcard" tabindex="0">
+        <div class="xbag"><img class="bag" src="img/tan-b.jpg" alt="Vanguard Weekender duffel" /></div>
+        <div class="xname">Vanguard Weekender</div>
+        <div class="xprice">₹3,299</div>
+      </div>
+      <div class="xcard" tabindex="0">
+        <div class="xbag"><img class="bag" src="img/lifestyle.jpg" alt="Forge Sport Holdall in use" /></div>
+        <div class="xname">Forge Sport Holdall</div>
+        <div class="xprice">₹2,799</div>
+      </div>
+      <div class="xcard" tabindex="0">
+        <div class="xbag"><img class="bag" src="img/black-b.jpg" alt="Aura Studio Tote" /></div>
+        <div class="xname">Aura Studio Tote</div>
+        <div class="xprice">₹1,999</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- 12 · Footer -->
+<footer class="site on-pine">
+  <div class="news">
+    <div class="wrap">
+      <h3>Be first in line for the drop</h3>
+      <p>Early access, restock alerts, and founder notes. No spam.</p>
+      <form class="news-form" onsubmit="return false;">
+        <label for="nl" class="skip">Email address</label>
+        <input id="nl" type="email" placeholder="you@email.com" autocomplete="email" />
+        <button type="submit">Notify me</button>
+      </form>
+    </div>
+  </div>
+  <div class="wrap foot-cols">
+    <div class="foot-brand">
+      <div class="bw">HUDSTEN</div>
+      <p>
+        Hudsten · [Street address placeholder], India<br/>
+        GSTIN: [GSTIN placeholder]<br/>
+        <a href="mailto:care@hudsten.in">care@hudsten.in</a>
+      </p>
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.07 1.2.05 1.8.25 2.2.42.6.22 1 .48 1.4.9.4.4.7.8.9 1.4.17.4.37 1 .42 2.2.06 1.2.07 1.6.07 4.8s0 3.6-.07 4.8c-.05 1.2-.25 1.8-.42 2.2a3.8 3.8 0 0 1-.9 1.4 3.8 3.8 0 0 1-1.4.9c-.4.17-1 .37-2.2.42-1.2.06-1.6.07-4.8.07s-3.6 0-4.8-.07c-1.2-.05-1.8-.25-2.2-.42a3.8 3.8 0 0 1-1.4-.9 3.8 3.8 0 0 1-.9-1.4c-.17-.4-.37-1-.42-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.8c.05-1.2.25-1.8.42-2.2.22-.6.48-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.17 1-.37 2.2-.42C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.07-1.1.05-1.7.24-2.1.4-.5.2-.9.44-1.3.84-.4.4-.64.8-.84 1.3-.16.4-.35 1-.4 2.1C2.6 9.9 2.6 10.3 2.6 12s0 2.1.06 3.3c.05 1.1.24 1.7.4 2.1.2.5.44.9.84 1.3.4.4.8.64 1.3.84.4.16 1 .35 2.1.4 1.2.06 1.6.07 4.7.07s3.5 0 4.7-.07c1.1-.05 1.7-.24 2.1-.4.5-.2.9-.44 1.3-.84.4-.4.64-.8.84-1.3.16-.4.35-1 .4-2.1.06-1.2.07-1.6.07-3.3s0-2.1-.07-3.3c-.05-1.1-.24-1.7-.4-2.1a3.5 3.5 0 0 0-.84-1.3 3.5 3.5 0 0 0-1.3-.84c-.4-.16-1-.35-2.1-.4-1.2-.06-1.6-.07-4.7-.07zm0 3.06A4.94 4.94 0 1 1 12 17a4.94 4.94 0 0 1 0-9.88zm0 1.8a3.14 3.14 0 1 0 0 6.28 3.14 3.14 0 0 0 0-6.28zm5.14-.27a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23 12s0-3.3-.42-4.9a2.5 2.5 0 0 0-1.76-1.77C19.2 5 12 5 12 5s-7.2 0-8.82.43A2.5 2.5 0 0 0 1.42 7.2 26 26 0 0 0 1 12c0 1.6 0 3.3.42 4.8a2.5 2.5 0 0 0 1.76 1.77C4.8 19 12 19 12 19s7.2 0 8.82-.43a2.5 2.5 0 0 0 1.76-1.77C23 15.2 23 13.6 23 12zm-13 3.2V8.8l5.2 3.2z"/></svg></a>
+        <a href="#" aria-label="X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.2 2H21l-6.4 7.3L22 22h-5.8l-4.5-5.9L6.5 22H3.7l6.8-7.8L2 2h5.9l4.1 5.4zm-1 18h1.6L7 3.7H5.3z"/></svg></a>
+      </div>
+    </div>
+    <div>
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">Gym Bags</a></li>
+        <li><a href="#">Men</a></li>
+        <li><a href="#">Women</a></li>
+        <li><a href="#">New Arrivals</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">Our story</a></li>
+        <li><a href="#">The first drop</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Help</h4>
+      <ul>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Warranty</a></li>
+        <li><a href="#">Contact us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap copy">
+    <span>© 2026 Hudsten. All rights reserved.</span>
+    <span>Considered goods, made to last.</span>
+  </div>
+</footer>
+
+<!-- 13 · Sticky mobile CTA -->
+<div class="mobcta">
+  <div class="mp">
+    <div class="now">₹2,499</div>
+    <div class="was">₹3,499</div>
+  </div>
+  <a class="cta-wa" id="waBtnMobile" href="#" target="_blank" rel="noopener" aria-label="Order on WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 5-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.3-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.6.1a6.6 6.6 0 0 1-3.2-2.8c-.2-.4 0-.6.2-.8l.4-.5c.1-.2.1-.3.2-.5s0-.4 0-.5-.6-1.4-.8-1.9-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.2c0 1.3 1 2.6 1.1 2.8s1.9 2.9 4.6 4c1.7.7 2.3.8 3.1.7a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.1-.3-.2-.6-.3z"/></svg>
+    Order on WhatsApp
+  </a>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // ---- State ----
+  var state = { color: "Black", size: "M" };
+  var PHONE = "919000000000";
+  var DEMO_URL = "https://hudsten.in/p/atlas-gym-duffel";
+
+  // ---- WhatsApp link builder ----
+  // Single source of truth so both desktop + mobile CTAs always reflect current selection.
+  function buildWaHref(){
+    var msg = "Hi Hudsten! I'd like to order the Atlas Gym Duffel — "
+            + state.color + " / " + state.size + ". " + DEMO_URL;
+    return "https://wa.me/" + PHONE + "?text=" + encodeURIComponent(msg);
+  }
+  function syncWa(){
+    var href = buildWaHref();
+    var d = document.getElementById("waBtn");
+    var m = document.getElementById("waBtnMobile");
+    if(d) d.setAttribute("href", href);
+    if(m) m.setAttribute("href", href);
+  }
+
+  var mainImg = document.getElementById("mainBag");
+  var stageImg = document.getElementById("stage-img");
+  var stageVid = document.getElementById("stage-vid");
+  var thumbs = document.querySelectorAll(".thumb");
+  var frontThumb = document.querySelector('.thumb[data-view="front"]');
+
+  // Shared helper: point the main stage at a photo + show the image stage (not video).
+  function setMainImage(src, alt){
+    mainImg.src = src;
+    mainImg.alt = alt;
+    stageVid.style.display = "none";
+    stageImg.style.display = "block";
+  }
+
+  // ---- Color swatches: swap the main image + the 'front' thumbnail ----
+  var swatches = document.querySelectorAll(".swatch");
+  swatches.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      swatches.forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+      btn.setAttribute("aria-pressed","true");
+      state.color = btn.dataset.color;
+      document.getElementById("colorVal").textContent = state.color;
+
+      var src = btn.dataset.img;
+      var alt = "Atlas Gym Duffel in " + state.color;
+      // Front thumbnail tracks the chosen colour, then becomes the active main view.
+      if(frontThumb){
+        var fimg = frontThumb.querySelector("img");
+        if(fimg){ fimg.src = src; fimg.alt = alt + ", front view"; }
+        frontThumb.dataset.img = src;
+      }
+      setMainImage(src, alt);
+      thumbs.forEach(function(x){ x.setAttribute("aria-current","false"); });
+      if(frontThumb) frontThumb.setAttribute("aria-current","true");
+      syncWa();
+    });
+  });
+
+  // ---- Size buttons ----
+  var sizeBtns = document.querySelectorAll(".size-btn");
+  sizeBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      sizeBtns.forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+      btn.setAttribute("aria-pressed","true");
+      state.size = btn.dataset.size;
+      document.getElementById("sizeVal").textContent = state.size;
+      syncWa(); // size does NOT change the image, only the order text
+    });
+  });
+
+  // ---- Gallery thumbnails: swap main stage ----
+  thumbs.forEach(function(t){
+    t.addEventListener("click", function(){
+      thumbs.forEach(function(x){ x.setAttribute("aria-current","false"); });
+      t.setAttribute("aria-current","true");
+      if(t.dataset.view === "video"){
+        stageImg.style.display = "none";
+        stageVid.style.display = "flex";
+      } else {
+        var img = t.querySelector("img");
+        setMainImage(t.dataset.img, img ? img.alt : "Atlas Gym Duffel");
+      }
+    });
+  });
+
+  // ---- FAQ: native <details> handles keyboard; close siblings for clean accordion ----
+  var faqItems = document.querySelectorAll(".faq details");
+  faqItems.forEach(function(d){
+    d.addEventListener("toggle", function(){
+      if(d.open){
+        faqItems.forEach(function(o){ if(o !== d) o.open = false; });
+      }
+    });
+  });
+
+  // init
+  syncWa();
+})();
+</script>
+</body>
+</html>

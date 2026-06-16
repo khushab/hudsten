@@ -19,7 +19,7 @@ export function CompactTrust({ className }: { className?: string }) {
     >
       {ITEMS.map(({ Icon, label }) => (
         <li key={label} className="flex items-center gap-2 text-xs font-medium text-stone-600">
-          <Icon className="h-5 w-5 shrink-0 text-brass-600" />
+          <Icon className="h-5 w-5 shrink-0 text-ink" />
           {label}
         </li>
       ))}

@@ -60,7 +60,7 @@ export default async function CollectionsIndexPage() {
       <Breadcrumbs
         crumbs={[{ name: "Home", path: "/" }, { name: "Collections" }]}
       />
-      <h1 className="mt-6 text-4xl font-semibold tracking-tight">Collections</h1>
+      <h1 className="mt-6 text-4xl font-normal">Collections</h1>
       <p className="mt-2 max-w-prose text-stone-600">
         Curated edits of the range — built around how you train, travel and
         carry.

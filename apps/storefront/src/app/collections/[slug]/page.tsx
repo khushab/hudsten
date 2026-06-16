@@ -81,7 +81,7 @@ export default async function CollectionPage({
       <Breadcrumbs crumbs={crumbs} />
 
       <header className="mb-8 mt-6 max-w-2xl">
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+        <h1 className="text-4xl font-normal sm:text-5xl">
           {collection.name}
         </h1>
         {collection.description && (

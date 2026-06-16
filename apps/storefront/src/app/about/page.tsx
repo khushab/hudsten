@@ -28,7 +28,7 @@ export default function AboutPage() {
       />
       <Container className="max-w-prose py-14 sm:py-20">
         <p className="eyebrow mb-3">Our story</p>
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+        <h1 className="text-4xl font-normal sm:text-5xl">
           Built to outlast the hype.
         </h1>
         {/* [PLACEHOLDER] Founder story — replace with the real brand narrative. */}

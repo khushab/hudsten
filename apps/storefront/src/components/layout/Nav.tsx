@@ -48,7 +48,7 @@ function NavItem({
   hrefActive: (href: string | null) => boolean;
 }) {
   const linkCls = cn(
-    "inline-flex cursor-pointer items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-stone-100",
+    "inline-flex cursor-pointer items-center gap-1 px-3 py-2 text-xs font-medium uppercase tracking-[0.14em] transition-colors hover:bg-stone-100",
     active ? "text-ink" : "text-stone-600",
   );
 
@@ -68,7 +68,7 @@ function NavItem({
         }}
       >
         <button type="button" aria-haspopup="true" aria-expanded={open} className={linkCls}>
-          <span className={cn(active && "underline decoration-brass decoration-2 underline-offset-8")}>
+          <span className={cn(active && "underline decoration-ink decoration-2 underline-offset-8")}>
             {item.label}
           </span>
           <ChevronDown className="h-3.5 w-3.5 text-stone-400 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
@@ -79,7 +79,7 @@ function NavItem({
               <Link
                 href={child.href ?? "#"}
                 className={cn(
-                  "block rounded-md px-3 py-2 text-sm transition-colors hover:bg-stone-100 hover:text-ink",
+                  "block px-3 py-2 text-xs uppercase tracking-[0.12em] transition-colors hover:bg-stone-100 hover:text-ink",
                   hrefActive(child.href) ? "bg-stone-100 text-ink" : "text-stone-700",
                 )}
               >
@@ -95,7 +95,7 @@ function NavItem({
   return (
     <li>
       <Link href={item.href ?? "#"} className={linkCls}>
-        <span className={cn(active && "underline decoration-brass decoration-2 underline-offset-8")}>
+        <span className={cn(active && "underline decoration-ink decoration-2 underline-offset-8")}>
           {item.label}
         </span>
       </Link>

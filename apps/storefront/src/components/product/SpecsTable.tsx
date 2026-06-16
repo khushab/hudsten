@@ -43,7 +43,7 @@ export function SpecsTable({
         return (
           <div key={group ?? "_"}>
             {group && (
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-eyebrow text-stone-500">
+              <h3 className="mb-3 text-sm font-medium uppercase tracking-eyebrow text-stone-500">
                 {group}
               </h3>
             )}

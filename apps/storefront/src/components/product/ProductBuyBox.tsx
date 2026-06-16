@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ProductDetail, ReviewSummary, SiteSettings } from "@hudsten/db";
 import {
   buildWhatsAppUrl,
+  discountPercent,
   formatPrice,
 } from "@hudsten/shared";
 import { Gallery } from "./Gallery";
@@ -117,6 +118,7 @@ export function ProductBuyBox({
     ? selectedVariant!.compare_at_price
     : (selectedVariant?.compare_at_price ?? product.compare_at_price);
   const inStock = selectedVariant ? selectedVariant.in_stock : product.in_stock;
+  const pct = discountPercent(price, compareAt);
 
   // Build from the SELECTED option-value labels (always current) rather than the
   // persisted variant.title, which can drift if a value was renamed in admin.
@@ -187,7 +189,7 @@ export function ProductBuyBox({
 
       <div>
         <ProductBadges badges={product.badges} className="mb-3" />
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h1 className="text-3xl font-normal uppercase tracking-caps sm:text-4xl">
           {product.title}
         </h1>
 
@@ -203,7 +205,7 @@ export function ProductBuyBox({
         {/* Social proof — only real reviews; hidden empty state (never fabricated). */}
         {reviews.count > 0 && reviews.average != null && (
           <p className="mt-2 text-sm text-stone-600">
-            <span className="text-brass-600" aria-hidden="true">
+            <span className="text-ink" aria-hidden="true">
               {"★".repeat(Math.round(reviews.average))}
             </span>{" "}
             {reviews.average.toFixed(1)} · {reviews.count}{" "}
@@ -303,7 +305,7 @@ export function ProductBuyBox({
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackWhatsAppClick(eventPayload)}
-              className={buttonClasses("whatsapp", "lg", "w-full text-base")}
+              className={buttonClasses("whatsapp", "lg", "w-full text-sm")}
             >
               <WhatsAppIcon className="h-5 w-5" />
               Order on WhatsApp
@@ -320,7 +322,7 @@ export function ProductBuyBox({
               target="_blank"
               rel="noopener noreferrer nofollow"
               onClick={() => trackAmazonClick(eventPayload)}
-              className="block text-center text-sm font-medium text-stone-600 underline underline-offset-4 hover:text-ink"
+              className="block text-center text-xs font-medium uppercase tracking-[0.12em] text-stone-600 underline underline-offset-4 hover:text-ink"
             >
               Prefer Amazon? Buy there →
             </a>
@@ -328,10 +330,10 @@ export function ProductBuyBox({
 
           {/* Delivery expectation right at the decision point — the #1 unasked
               question in Indian ecommerce. Admin-editable via Settings. */}
-          <p className="flex items-center justify-center gap-2 text-xs text-stone-600">
-            <TruckIcon className="h-4 w-4 shrink-0 text-brass-600" />
+          <p className="flex items-start justify-center gap-2 text-xs text-stone-600">
+            <TruckIcon className="mt-0.5 h-4 w-4 shrink-0 text-ink" />
             {settings?.delivery_note ||
-              "Free shipping across India · usually 3–7 business days"}
+              "Usually delivered in 3–7 business days across India"}
           </p>
         </div>
 
@@ -342,13 +344,17 @@ export function ProductBuyBox({
       {waUrl && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-stone-200 bg-paper/95 p-3 backdrop-blur-md lg:hidden">
           <div className="flex items-center gap-3">
-            <div className="min-w-0">
-              <Price
-                price={price}
-                compareAt={compareAt}
-                currency={product.currency}
-                size="sm"
-              />
+            <div className="shrink-0">
+              <div className="flex items-baseline gap-2">
+                <span className="font-display text-base font-medium">
+                  {formatPrice(price, product.currency)}
+                </span>
+                {pct != null && (
+                  <span className="border border-stone-300 px-1.5 py-0.5 text-2xs font-medium uppercase tracking-wide text-ink">
+                    -{pct}%
+                  </span>
+                )}
+              </div>
             </div>
             <a
               href={waUrl}

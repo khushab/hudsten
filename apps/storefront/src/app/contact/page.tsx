@@ -21,7 +21,7 @@ export default async function ContactPage() {
   return (
     <Container as="main" className="max-w-prose py-14 sm:py-20">
       <p className="eyebrow mb-3">We're here to help</p>
-      <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+      <h1 className="text-4xl font-normal sm:text-5xl">
         Get in touch
       </h1>
       <p className="mt-4 text-stone-600">

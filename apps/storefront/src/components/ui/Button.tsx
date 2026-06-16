@@ -10,13 +10,13 @@ type Variant =
 type Size = "sm" | "md" | "lg" | "icon";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-md font-medium tracking-tight transition-colors duration-200 ease-lux disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 font-medium uppercase tracking-caps transition-colors duration-200 ease-lux disabled:cursor-not-allowed disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
   primary: "bg-ink text-paper hover:bg-ink-soft",
   secondary: "border border-ink text-ink hover:bg-ink hover:text-paper",
   outline: "border border-stone-300 text-ink hover:border-ink",
-  brass: "bg-brass text-ink hover:bg-brass-600",
+  brass: "bg-ink text-paper hover:bg-ink-soft",
   whatsapp: "bg-whatsapp text-white hover:bg-whatsapp-dark",
   ghost: "text-ink hover:bg-stone-100",
 };
@@ -24,7 +24,7 @@ const variants: Record<Variant, string> = {
 const sizes: Record<Size, string> = {
   sm: "h-9 px-4 text-sm",
   md: "h-11 px-6 text-sm",
-  lg: "h-14 px-8 text-base",
+  lg: "h-14 px-8 text-sm",
   icon: "h-10 w-10",
 };
 

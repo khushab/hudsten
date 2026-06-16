@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hudsten — PDP redesign demos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F7F7F5; color: #1A1A1A; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; line-height: 1.6; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 56px 24px 88px; }
+  h1 { font-size: 32px; line-height: 1.15; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .lede { color: #5C574D; max-width: 66ch; margin: 0 0 14px; }
+  .tip { margin: 0 0 36px; font-size: 13px; color: #5C574D; background: #fff; border: 1px solid #E2E0D8; border-radius: 12px; padding: 12px 16px; }
+  h2.grp { font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A8378; margin: 36px 0 16px; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  .card { display: flex; flex-direction: column; text-decoration: none; color: inherit; border: 1px solid #E2E0D8; border-radius: 16px; overflow: hidden; background: #fff; transition: transform .18s ease, box-shadow .18s ease; position: relative; }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+  .swatch { height: 104px; display: flex; }
+  .swatch span { flex: 1; }
+  .tag { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: #16243A; color: #fff; }
+  .body { padding: 16px 18px 20px; }
+  .body h3 { font-size: 19px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .body .sub { font-size: 13px; font-weight: 600; color: #8A8378; margin: 0 0 10px; }
+  .body p { font-size: 13.5px; color: #5C574D; margin: 0 0 14px; }
+  .open { font-size: 13px; font-weight: 600; color: #111; }
+  .note { margin-top: 42px; font-size: 13px; color: #5C574D; border-top: 1px solid #E2E0D8; padding-top: 18px; max-width: 76ch; }
+  code { background: #ECEAE3; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Hudsten — product page redesigns</h1>
+  <p class="lede">Directions for the product page, positioning Hudsten as a real semi-luxury brand — elevated and aspirational, but priced for the real world. Same product and content across every demo, so only the design differs.</p>
+  <p class="tip">Tip: resize the window narrow for the mobile layout + sticky “Order on WhatsApp” bar. Click a colour swatch to recolour the gallery, switch size, and open the FAQ.</p>
+
+  <h2 class="grp">Semi-luxury brand directions — latest</h2>
+  <div class="grid">
+    <a class="card" href="heritage.html">
+      <span class="tag">Recommended</span>
+      <div class="swatch"><span style="background:#1E3A30"></span><span style="background:#F4EFE4"></span><span style="background:#B08D2E"></span><span style="background:#1B1B18"></span></div>
+      <div class="body">
+        <h3>Heritage</h3>
+        <p class="sub">Premium-heritage</p>
+        <p>Pine green + cream + antique brass, editorial serif. Timeless, confident, unisex — scales into leather.</p>
+        <span class="open">Open demo &rarr;</span>
+      </div>
+    </a>
+    <a class="card" href="cognac.html">
+      <div class="swatch"><span style="background:#F3ECE0"></span><span style="background:#9C5A2C"></span><span style="background:#6B2B2E"></span><span style="background:#241C16"></span></div>
+      <div class="body">
+        <h3>Cognac</h3>
+        <p class="sub">Leather-goods warmth</p>
+        <p>Bone + cognac + oxblood, classic serif, stitch details. Rich, tactile, aspirational.</p>
+        <span class="open">Open demo &rarr;</span>
+      </div>
+    </a>
+    <a class="card" href="atlas-navy.html">
+      <div class="swatch"><span style="background:#16243A"></span><span style="background:#F6F3EC"></span><span style="background:#C2A35A"></span><span style="background:#1A1F2B"></span></div>
+      <div class="body">
+        <h3>Atlas Navy</h3>
+        <p class="sub">Modern premium</p>
+        <p>Midnight navy + ivory + champagne gold. Polished, quiet-confident — the Tumi / Monos register.</p>
+        <span class="open">Open demo &rarr;</span>
+      </div>
+    </a>
+  </div>
+
+  <h2 class="grp">Earlier explorations</h2>
+  <div class="grid">
+    <a class="card" href="locker-room.html">
+      <div class="swatch"><span style="background:#0E1320"></span><span style="background:#1E5BFF"></span><span style="background:#FFFFFF"></span><span style="background:#16A34A"></span></div>
+      <div class="body">
+        <h3>Locker room</h3>
+        <p class="sub">Athletic energy</p>
+        <p>Midnight + electric blue. Bold, sporty, mass-premium — on-category but less “brand luxe”.</p>
+        <span class="open">Open demo &rarr;</span>
+      </div>
+    </a>
+    <a class="card" href="daybreak.html">
+      <div class="swatch"><span style="background:#FBF8F3"></span><span style="background:#C75D3A"></span><span style="background:#8A9A6B"></span><span style="background:#2A2520"></span></div>
+      <div class="body">
+        <h3>Daybreak</h3>
+        <p class="sub">Friendly warm DTC</p>
+        <p>Oat + clay + sage, soft serif. Human and approachable — warmer, more casual.</p>
+        <span class="open">Open demo &rarr;</span>
+      </div>
+    </a>
+    <a class="card" href="bazaar.html">
+      <div class="swatch"><span style="background:#1A56DB"></span><span style="background:#FFFFFF"></span><span style="background:#1FA45A"></span><span style="background:#F59E0B"></span></div>
+      <div class="body">
+        <h3>Bazaar</h3>
+        <p class="sub">Value-retail</p>
+        <p>Trust-blue + deal-amber. Familiar and value-forward — reads more marketplace than brand.</p>
+        <span class="open">Open demo &rarr;</span>
+      </div>
+    </a>
+  </div>
+
+  <p class="note">Throwaway mockups to choose a direction — they don't touch <code>apps/storefront</code>. Fonts load from Google here for convenience; production self-hosts via <code>next/font</code>. Pick (or blend) a direction and it gets implemented at the design-token level.</p>
+</div>
+</body>
+</html>

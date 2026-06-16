@@ -11,14 +11,9 @@ import { Analytics } from "@/components/analytics/Analytics";
 import { CookieConsent } from "@/components/analytics/CookieConsent";
 import "./globals.css";
 
-// Self-hosted variable fonts: no Google request chain (faster LCP, no third-party
-// dependency at build or runtime). next/font/local auto-preloads + size-adjusts fallbacks.
-const display = localFont({
-  src: "../fonts/bricolage-grotesque-latin-wght-normal.woff2",
-  weight: "200 800",
-  variable: "--font-display",
-  display: "swap",
-});
+// One self-hosted grotesk (Inter) for the whole brand — neutral, technical, and identical
+// on every device. No Google request chain. --font-display is aliased to --font-sans in
+// globals.css, so headings and body share the same face.
 const sans = localFont({
   src: "../fonts/inter-latin-wght-normal.woff2",
   weight: "100 900",
@@ -37,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#111111",
+  themeColor: "#171717",
   width: "device-width",
   initialScale: 1,
 };
@@ -58,7 +53,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en" className={sans.variable}>
       <body className="flex min-h-dvh flex-col">
         {/* Keyboard users skip the sticky header/nav on every page. */}
         <a

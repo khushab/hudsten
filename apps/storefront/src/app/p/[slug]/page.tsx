@@ -179,14 +179,14 @@ export default async function ProductPage({
 
       {/* Reviews */}
       <Container className="max-w-4xl py-12">
-        <h2 className="mb-5 text-2xl font-semibold tracking-tight">Reviews</h2>
+        <h2 className="mb-5 text-2xl font-normal">Reviews</h2>
         {reviewList.length === 0 ? (
           <ReviewsEmpty />
         ) : (
           <ul className="space-y-6">
             {reviewList.map((r) => (
               <li key={r.id} className="border-b border-stone-200 pb-6">
-                <p className="text-brass-600" aria-hidden="true">
+                <p className="text-ink" aria-hidden="true">
                   {"★".repeat(r.rating)}
                 </p>
                 {r.title && <p className="mt-1 font-medium">{r.title}</p>}

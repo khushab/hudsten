@@ -10,7 +10,7 @@ export function WhatsInBox({ items }: { items: unknown }) {
     <ul className="space-y-2.5">
       {list.map((item) => (
         <li key={item} className="flex items-start gap-2.5 text-sm text-stone-700">
-          <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-brass-600" />
+          <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-ink" />
           {item}
         </li>
       ))}

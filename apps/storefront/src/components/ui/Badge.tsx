@@ -11,9 +11,9 @@ const tones: Record<Tone, string> = {
 
 // Map known product badge labels to a tone; unknown labels fall back to neutral.
 const badgeTone: Record<string, Tone> = {
-  New: "brass",
+  New: "neutral",
   Bestseller: "ink",
-  Limited: "danger",
+  Limited: "ink",
   Handcrafted: "neutral",
 };
 
@@ -29,7 +29,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-sm px-2 py-0.5 text-2xs font-semibold uppercase tracking-eyebrow",
+        "inline-flex items-center px-2 py-0.5 text-2xs font-medium uppercase tracking-eyebrow",
         tones[tone],
         className,
       )}

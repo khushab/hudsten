@@ -49,7 +49,7 @@ export default async function PolicyPage({
 
   return (
     <Container as="main" className="max-w-prose py-12 sm:py-16">
-      <h1 className="text-4xl font-semibold tracking-tight">{title}</h1>
+      <h1 className="text-4xl font-normal">{title}</h1>
       <div className="prose prose-stone mt-8 max-w-none">
         {body ? (
           <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(body) }} />

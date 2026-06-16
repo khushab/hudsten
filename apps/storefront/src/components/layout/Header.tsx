@@ -22,7 +22,7 @@ export function Header({
 
         <Link
           href="/"
-          className="font-display text-2xl font-extrabold tracking-tightest lg:mr-4"
+          className="font-display text-base font-medium tracking-[0.22em] lg:mr-4"
           aria-label={`${storeName} home`}
         >
           {storeName.toUpperCase()}

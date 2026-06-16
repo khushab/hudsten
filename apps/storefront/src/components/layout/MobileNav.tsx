@@ -63,12 +63,12 @@ export function MobileNav({ items }: { items: NavNode[] }) {
             aria-modal="true"
             aria-label="Menu"
             className={cn(
-              "absolute inset-y-0 left-0 flex w-[86%] max-w-sm flex-col bg-paper shadow-lift transition-transform duration-300 ease-lux",
+              "absolute inset-y-0 left-0 flex w-[86%] max-w-sm flex-col border-r border-stone-200 bg-paper transition-transform duration-300 ease-lux",
               open ? "translate-x-0" : "-translate-x-full",
             )}
           >
             <div className="flex items-center justify-between border-b border-stone-200 px-5 py-4">
-              <span className="font-display text-xl font-bold tracking-tight">
+              <span className="font-display text-base font-medium tracking-[0.22em]">
                 HUDSTEN
               </span>
               <button
@@ -86,7 +86,7 @@ export function MobileNav({ items }: { items: NavNode[] }) {
                   <li key={item.id}>
                     {item.children.length > 0 ? (
                       <details className="group" open>
-                        <summary className="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2.5 text-base font-medium">
+                        <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2.5 text-sm font-medium uppercase tracking-[0.12em]">
                           {item.label}
                           <span className="text-stone-400 transition-transform group-open:rotate-45">
                             +
@@ -98,7 +98,7 @@ export function MobileNav({ items }: { items: NavNode[] }) {
                               <Link
                                 href={c.href ?? "#"}
                                 className={cn(
-                                  "block rounded-md px-3 py-2 text-sm hover:text-ink",
+                                  "block px-3 py-2 text-xs uppercase tracking-[0.1em] hover:text-ink",
                                   isActive(c.href) ? "font-medium text-ink" : "text-stone-600",
                                 )}
                               >
@@ -112,7 +112,7 @@ export function MobileNav({ items }: { items: NavNode[] }) {
                       <Link
                         href={item.href ?? "#"}
                         className={cn(
-                          "block rounded-md px-3 py-2.5 text-base font-medium hover:bg-stone-100",
+                          "block px-3 py-2.5 text-sm font-medium uppercase tracking-[0.12em] hover:bg-stone-100",
                           isActive(item.href) && "bg-stone-100",
                         )}
                       >
