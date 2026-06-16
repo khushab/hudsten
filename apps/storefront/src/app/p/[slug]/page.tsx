@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ROUTES } from "@hudsten/shared";
@@ -15,15 +16,14 @@ import { absoluteUrl } from "@/lib/env";
 import { Container } from "@/components/ui/Container";
 import { Breadcrumbs, type Crumb } from "@/components/Breadcrumbs";
 import { Accordion } from "@/components/ui/Accordion";
+import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { ProductBuyBox } from "@/components/product/ProductBuyBox";
-import { SpecsTable } from "@/components/product/SpecsTable";
-import { WhatsInBox } from "@/components/product/WhatsInBox";
 import { ReviewsEmpty } from "@/components/product/ReviewsEmpty";
 import { ProductGrid } from "@/components/product/ProductGrid";
-import { SectionHeading } from "@/components/marketing/SectionHeading";
-import { breadcrumbJsonLd, productJsonLd } from "@/lib/jsonld";
+import { breadcrumbJsonLd, faqJsonLd, productJsonLd } from "@/lib/jsonld";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { cn } from "@/lib/cn";
 
 export const revalidate = 3600;
 
@@ -98,29 +98,7 @@ export default async function ProductPage({
     { name: product.title },
   ];
 
-  // FAQ assembled from real data (specs + policies) — no fabricated content.
-  const faqItems = [
-    product.specs.care
-      ? { q: "How do I care for it?", a: String(product.specs.care) }
-      : null,
-    product.specs.warranty
-      ? { q: "Is there a warranty?", a: String(product.specs.warranty) }
-      : null,
-    {
-      q: "Shipping & delivery?",
-      a:
-        stripHtml(settings?.policies.shipping ?? "") ||
-        "Free shipping across India, typically 3–7 business days.",
-    },
-    {
-      q: "Returns & exchanges?",
-      a:
-        stripHtml(settings?.policies.returns ?? "") ||
-        "7-day easy returns on unused items in original condition.",
-    },
-  ].filter((x): x is { q: string; a: string } => x !== null);
-
-  const whatsInBox = product.specs.whats_in_box;
+  const editorial = product.editorialBlocks;
 
   return (
     <main className="pb-24 lg:pb-0">
@@ -133,6 +111,7 @@ export default async function ProductPage({
               path: c.path ?? `${ROUTES.product}/${product.slug}`,
             })),
           ),
+          ...(product.faqs.length > 0 ? [faqJsonLd(product.faqs)] : []),
         ]}
       />
 
@@ -149,7 +128,7 @@ export default async function ProductPage({
         />
       </Container>
 
-      {/* Below the fold */}
+      {/* Below the fold — free-form rich-text sections + per-product FAQ. */}
       <Container className="max-w-4xl space-y-2 border-t border-stone-200 pt-8">
         {product.description && (
           <Accordion title="Description" defaultOpen>
@@ -160,22 +139,76 @@ export default async function ProductPage({
           </Accordion>
         )}
 
-        <Accordion title="Specifications" defaultOpen>
-          <SpecsTable schema={product.specSchema} specs={product.specs} />
-        </Accordion>
-
-        {Array.isArray(whatsInBox) && whatsInBox.length > 0 && (
-          <Accordion title="What's in the box">
-            <WhatsInBox items={whatsInBox} />
+        {product.details && (
+          <Accordion title="Details">
+            <div
+              className="prose prose-sm prose-stone max-w-none"
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.details) }}
+            />
           </Accordion>
         )}
 
-        {faqItems.map((item) => (
-          <Accordion key={item.q} title={item.q}>
-            <p>{item.a}</p>
+        {product.specifications && (
+          <Accordion title="Specifications">
+            <div
+              className="prose prose-sm prose-stone max-w-none"
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.specifications) }}
+            />
+          </Accordion>
+        )}
+
+        {product.faqs.map((faq) => (
+          <Accordion key={faq.question} title={faq.question}>
+            <p>{faq.answer}</p>
           </Accordion>
         ))}
       </Container>
+
+      {/* Editorial — full-bleed alternating image/text rows (admin-editable). */}
+      {editorial.length > 0 && (
+        <section className="mt-12 border-t border-stone-200">
+          {editorial.map((b, i) => (
+            <Reveal
+              key={i}
+              className={cn("grid border-b border-stone-200 md:grid-cols-2")}
+            >
+              <div
+                className={cn(
+                  "relative min-h-[340px] bg-paper-dim md:min-h-[480px]",
+                  i % 2 === 1 && "md:order-2",
+                )}
+              >
+                {b.image_url && (
+                  <Image
+                    src={b.image_url}
+                    alt={b.heading || ""}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                )}
+              </div>
+              <div
+                className={cn(
+                  "flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-16",
+                  i % 2 === 1 && "md:order-1",
+                )}
+              >
+                {b.heading && (
+                  <h2 className="text-xl font-normal uppercase tracking-caps sm:text-2xl">
+                    {b.heading}
+                  </h2>
+                )}
+                {b.body && (
+                  <p className="mt-4 max-w-md text-xs uppercase leading-[1.85] tracking-[0.08em] text-stone-500">
+                    {b.body}
+                  </p>
+                )}
+              </div>
+            </Reveal>
+          ))}
+        </section>
+      )}
 
       {/* Reviews */}
       <Container className="max-w-4xl py-12">
@@ -198,15 +231,21 @@ export default async function ProductPage({
         )}
       </Container>
 
-      {/* Pairs well with (cross-sell) — with a fallback so the page never dead-ends. */}
+      {/* Related products — MW grey band, centered heading. */}
       {related.length > 0 ? (
-        <Container className="py-12">
-          <SectionHeading eyebrow="Complete the kit" title="Pairs well with" />
-          <ProductGrid products={related} />
-        </Container>
+        <section className="mt-12 bg-[#EFEFEF] py-14">
+          <Container>
+            <Reveal>
+              <h2 className="mb-8 text-center text-2xl font-normal uppercase tracking-caps sm:text-3xl">
+                Related products
+              </h2>
+              <ProductGrid products={related} />
+            </Reveal>
+          </Container>
+        </section>
       ) : (
         <Container className="py-12">
-          <div className="rounded-lg border border-stone-200 bg-paper-dim px-6 py-8 text-center">
+          <div className="border border-stone-200 bg-paper-dim px-6 py-8 text-center">
             <p className="font-display text-lg font-medium">
               Want to see what else we make?
             </p>

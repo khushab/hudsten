@@ -12,7 +12,7 @@ export function ProductCard({
   product: ProductCardType;
   priority?: boolean;
 }) {
-  const colorCount = product.colors?.length ?? 0;
+  const colors = product.colors ?? [];
 
   return (
     <Link href={`${ROUTES.product}/${product.slug}`} className="group block">
@@ -50,23 +50,31 @@ export function ProductCard({
           </div>
         )}
       </div>
-      <div className="mt-3 space-y-1.5">
+      <div className="mt-3 space-y-1.5 text-center">
         <h3 className="font-display text-sm font-normal uppercase tracking-[0.08em] group-hover:underline">
           {product.title}
         </h3>
-        <div className="flex items-baseline justify-between gap-2">
-          <Price
-            price={product.price}
-            compareAt={product.compare_at_price}
-            currency={product.currency}
-            size="sm"
-          />
-          {colorCount > 1 && (
-            <span className="shrink-0 text-xs text-stone-500">
-              {colorCount} colors
-            </span>
-          )}
-        </div>
+        <Price
+          price={product.price}
+          compareAt={product.compare_at_price}
+          currency={product.currency}
+          size="sm"
+          className="justify-center"
+        />
+        {/* Swatch dots replace the "N colors" label — only when there's a real choice. */}
+        {colors.length > 1 && (
+          <div className="flex flex-wrap justify-center gap-1.5 pt-0.5">
+            {colors.map((c) => (
+              <span
+                key={c.value}
+                title={c.value}
+                aria-label={c.value}
+                className="h-3 w-3 rounded-full border border-stone-200"
+                style={{ backgroundColor: c.color_hex ?? "#ddd" }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </Link>
   );

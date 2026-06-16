@@ -36,8 +36,14 @@ export function Accordion({
           />
         </svg>
       </summary>
-      <div className="pb-5 pt-1 text-sm leading-relaxed text-stone-600">
-        {children}
+      {/* grid-template-rows 0fr→1fr trick (see .accordion-body in globals.css) animates
+          height without a fixed value. Inner wrapper must be overflow-hidden. */}
+      <div className="accordion-body">
+        <div className="overflow-hidden">
+          <div className="pb-5 pt-1 text-sm leading-relaxed text-stone-600">
+            {children}
+          </div>
+        </div>
       </div>
     </details>
   );

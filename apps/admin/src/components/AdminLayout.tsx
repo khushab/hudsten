@@ -8,7 +8,6 @@ const NAV = [
   { to: "/products", label: "Products" },
   { to: "/categories", label: "Categories" },
   { to: "/collections", label: "Collections" },
-  { to: "/product-types", label: "Product Types" },
   { to: "/navigation", label: "Navigation" },
   { to: "/settings", label: "Settings" },
 ];

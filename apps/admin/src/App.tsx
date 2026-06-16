@@ -7,7 +7,6 @@ import ProductsList from "@/pages/products/ProductsList";
 import ProductEditor from "@/pages/products/ProductEditor";
 import Categories from "@/pages/Categories";
 import Collections from "@/pages/Collections";
-import ProductTypes from "@/pages/ProductTypes";
 import Navigation from "@/pages/Navigation";
 import Settings from "@/pages/Settings";
 
@@ -23,7 +22,6 @@ export default function App() {
           <Route path="products/:id" element={<ProductEditor />} />
           <Route path="categories" element={<Categories />} />
           <Route path="collections" element={<Collections />} />
-          <Route path="product-types" element={<ProductTypes />} />
           <Route path="navigation" element={<Navigation />} />
           <Route path="settings" element={<Settings />} />
         </Route>

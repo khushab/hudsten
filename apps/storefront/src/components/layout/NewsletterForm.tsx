@@ -8,14 +8,18 @@ import { Button } from "@/components/ui/Button";
 import { trackNewsletterSignup } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
-/** Newsletter signup. Honest lead capture — no dark patterns. */
+/** Newsletter signup. Honest lead capture — no dark patterns. `tone="dark"` adapts
+ *  the input + button + success text for placement on a dark surface (the footer). */
 export function NewsletterForm({
   source = "footer",
+  tone = "light",
   className,
 }: {
   source?: string;
+  tone?: "light" | "dark";
   className?: string;
 }) {
+  const dark = tone === "dark";
   const [done, setDone] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -50,7 +54,10 @@ export function NewsletterForm({
 
   if (done) {
     return (
-      <p className={cn("text-sm text-stone-600", className)} role="status">
+      <p
+        className={cn("text-sm", dark ? "text-stone-300" : "text-stone-600", className)}
+        role="status"
+      >
         Thanks — you're on the list. Watch your inbox for first dibs on new drops.
       </p>
     );
@@ -84,10 +91,20 @@ export function NewsletterForm({
           placeholder="you@email.com"
           // sm:flex-1 (not flex-1): in the mobile COLUMN layout flex-1 would govern
           // height and collapse the h-11; appearance-none kills iOS native styling.
-          className="h-11 w-full appearance-none rounded-md border border-stone-300 bg-paper px-4 text-sm outline-none transition-colors focus:border-ink sm:flex-1"
+          className={cn(
+            "h-11 w-full appearance-none px-4 text-sm outline-none transition-colors sm:flex-1",
+            dark
+              ? "border border-white/20 bg-transparent text-paper placeholder:text-stone-500 focus:border-paper"
+              : "border border-stone-300 bg-paper focus:border-ink",
+          )}
           {...register("email")}
         />
-        <Button type="submit" variant="primary" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={isSubmitting}
+          className={dark ? "bg-paper text-ink hover:bg-stone-200" : undefined}
+        >
           {isSubmitting ? "Joining…" : "Subscribe"}
         </Button>
       </div>

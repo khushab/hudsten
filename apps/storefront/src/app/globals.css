@@ -51,9 +51,11 @@
     cursor: pointer;
   }
 
-  /* PDP fixed CTA bar (mobile only) — reserve bottom space so it never covers the footer. */
+  /* PDP fixed CTA bar (mobile only) — reserve bottom space so it never covers the footer.
+     Two stacked rows now: p-3 (1.5rem) + price line (~1.4rem) + gap (0.5rem) + button h-11
+     (2.75rem) ≈ 6.1rem; round up for clearance. */
   body.has-sticky-cta {
-    padding-bottom: 4.5rem;
+    padding-bottom: 6.5rem;
   }
   @media (min-width: 1024px) {
     body.has-sticky-cta {
@@ -64,7 +66,7 @@
   /* On the PDP (mobile), lift the cookie banner above the fixed CTA bar so it never
      covers the primary "Order on WhatsApp" button for first-time visitors. */
   body.has-sticky-cta .cookie-banner {
-    bottom: 4.75rem;
+    bottom: 6.75rem;
   }
   @media (min-width: 1024px) {
     body.has-sticky-cta .cookie-banner {
@@ -77,6 +79,23 @@
   /* Small uppercase eyebrow label used across the brand. */
   .eyebrow {
     @apply text-2xs font-medium uppercase tracking-eyebrow text-stone-500;
+  }
+
+  /* Accordion open/close via the grid-template-rows 0fr→1fr trick (animates height
+     without a fixed value). The body stays in the DOM in both states so the rows can
+     transition; the inner element is overflow-hidden (set in Accordion.tsx). */
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  details[open] .accordion-body {
+    grid-template-rows: 1fr;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-body {
+      transition: none;
+    }
   }
 
   /* Page container. */

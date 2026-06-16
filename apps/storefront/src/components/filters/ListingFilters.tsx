@@ -96,7 +96,7 @@ export function ListingFilters({
 
   const filtered = useMemo(() => {
     let list = products.filter((p) => {
-      if (colors.size > 0 && !(p.colors ?? []).some((c) => colors.has(c)))
+      if (colors.size > 0 && !(p.colors ?? []).some((c) => colors.has(c.value)))
         return false;
       if (genders.size > 0 && !genders.has(p.gender)) return false;
       if (p.price > maxPrice) return false;

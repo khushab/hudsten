@@ -7,14 +7,12 @@ import {
   SUGGESTED_BADGES,
   productCoreSchema,
   slugify,
-  type SpecSchema,
 } from "@hudsten/shared";
 import {
   getProductForEdit,
   saveProduct,
   type ProductEditorPayload,
 } from "@/api/products";
-import { listProductTypes } from "@/api/productTypes";
 import { listCategoryRefs, listCollectionRefs, listTags, ensureTag } from "@/api/reference";
 import {
   Button,
@@ -28,17 +26,29 @@ import {
   Textarea,
   Toggle,
 } from "@/components/ui";
+import { RichText } from "@/components/RichText";
 import { cn } from "@/lib/cn";
 import { OptionsVariants } from "./editor/OptionsVariants";
 import { ImagesEditor } from "./editor/ImagesEditor";
-import { SpecsForm } from "./editor/SpecsForm";
+import { EditorialBlocksEditor } from "./editor/EditorialBlocksEditor";
+
+// Pre-seeded on NEW products only (editable, empty answers) so the merchant has a
+// ready FAQ scaffold instead of a blank slate.
+const DEFAULT_FAQS = [
+  "What's in the box?",
+  "How do I care for it?",
+  "Is there a warranty?",
+  "Shipping & delivery?",
+  "Returns & exchanges?",
+].map((question) => ({ question, answer: "" }));
 
 const BLANK: ProductEditorPayload = {
   core: {
     title: "",
     slug: "",
     description: "",
-    product_type_id: "",
+    details: null,
+    specifications: null,
     category_id: null,
     gender: "unisex",
     price: 0,
@@ -46,7 +56,9 @@ const BLANK: ProductEditorPayload = {
     currency: "INR",
     status: "draft",
     in_stock: true,
-    specs: {},
+    video_url: null,
+    faqs: DEFAULT_FAQS,
+    editorial_blocks: [],
     whatsapp_message_template: null,
     amazon_url: null,
     is_featured: false,
@@ -72,7 +84,6 @@ export default function ProductEditor() {
   const [error, setError] = useState<string | null>(null);
 
   // Reference data
-  const types = useQuery({ queryKey: ["product-types"], queryFn: listProductTypes });
   const categories = useQuery({ queryKey: ["cat-refs"], queryFn: listCategoryRefs });
   const collections = useQuery({ queryKey: ["col-refs"], queryFn: listCollectionRefs });
   const tags = useQuery({ queryKey: ["tags"], queryFn: listTags });
@@ -97,11 +108,6 @@ export default function ProductEditor() {
   // Auto-slug from title until the slug is manually edited.
   const onTitle = (title: string) =>
     setCore({ title, ...(slugTouched ? {} : { slug: slugify(title) }) });
-
-  const selectedSchema: SpecSchema = useMemo(() => {
-    const t = types.data?.find((x) => x.id === core.product_type_id);
-    return (t?.spec_schema ?? []) as unknown as SpecSchema;
-  }, [types.data, core.product_type_id]);
 
   const colorValues = useMemo(() => {
     const colorOpt = payload.options.find((o) => o.name.toLowerCase() === "color");
@@ -207,26 +213,11 @@ export default function ProductEditor() {
               }}
             />
           </Field>
-          <Field label="Product type" htmlFor="ptype">
-            <Select
-              id="ptype"
-              value={core.product_type_id}
-              onChange={(e) => setCore({ product_type_id: e.target.value })}
-            >
-              <option value="">Select type…</option>
-              {types.data?.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </Select>
-          </Field>
-          <Field label="Description (HTML)" htmlFor="desc" className="sm:col-span-2">
-            <Textarea
+          <Field label="Description" htmlFor="desc" className="sm:col-span-2">
+            <RichText
               id="desc"
-              className="min-h-32"
-              value={core.description ?? ""}
-              onChange={(e) => setCore({ description: e.target.value })}
+              value={core.description}
+              onChange={(html) => setCore({ description: html })}
             />
           </Field>
           <Field label="Primary category" htmlFor="cat">
@@ -319,6 +310,38 @@ export default function ProductEditor() {
         </div>
       </Card>
 
+      {/* Content — long-form PDP copy */}
+      <Card title="Content">
+        <div className="space-y-4">
+          <Field label="Details" htmlFor="details">
+            <RichText
+              id="details"
+              value={core.details}
+              onChange={(html) => setCore({ details: html || null })}
+            />
+          </Field>
+          <Field label="Specifications" htmlFor="specs">
+            <RichText
+              id="specs"
+              value={core.specifications}
+              onChange={(html) => setCore({ specifications: html || null })}
+            />
+          </Field>
+          <Field
+            label="Product video URL"
+            htmlFor="video"
+            hint="Optional. YouTube link or a direct .mp4 URL."
+          >
+            <Input
+              id="video"
+              value={core.video_url ?? ""}
+              onChange={(e) => setCore({ video_url: e.target.value || null })}
+              placeholder="https://…"
+            />
+          </Field>
+        </div>
+      </Card>
+
       {/* Options & variants */}
       <Card title="Options & variants">
         <OptionsVariants
@@ -340,12 +363,90 @@ export default function ProductEditor() {
         />
       </Card>
 
-      {/* Specs (dynamic) */}
-      <Card title="Specifications">
-        <SpecsForm
-          schema={selectedSchema}
-          value={core.specs}
-          onChange={(specs) => setCore({ specs })}
+      {/* FAQ */}
+      <Card
+        title="FAQ"
+        actions={
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              setCore({ faqs: [...core.faqs, { question: "", answer: "" }] })
+            }
+          >
+            + Add question
+          </Button>
+        }
+      >
+        {core.faqs.length === 0 ? (
+          <p className="text-sm text-stone-500">No questions yet.</p>
+        ) : (
+          <div className="space-y-4">
+            {core.faqs.map((f, i) => (
+              <div key={i} className="space-y-2 rounded-md border border-stone-200 p-3">
+                <div className="flex items-start gap-2">
+                  <Input
+                    placeholder="Question"
+                    value={f.question}
+                    onChange={(e) =>
+                      setCore({
+                        faqs: core.faqs.map((x, idx) =>
+                          idx === i ? { ...x, question: e.target.value } : x,
+                        ),
+                      })
+                    }
+                  />
+                  <button
+                    type="button"
+                    aria-label="Remove question"
+                    onClick={() =>
+                      setCore({ faqs: core.faqs.filter((_, idx) => idx !== i) })
+                    }
+                    className="mt-1 shrink-0 px-1 text-stone-400 hover:text-danger"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <Textarea
+                  placeholder="Answer"
+                  value={f.answer}
+                  onChange={(e) =>
+                    setCore({
+                      faqs: core.faqs.map((x, idx) =>
+                        idx === i ? { ...x, answer: e.target.value } : x,
+                      ),
+                    })
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {/* Editorial blocks */}
+      <Card
+        title="Editorial blocks"
+        actions={
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              setCore({
+                editorial_blocks: [
+                  ...core.editorial_blocks,
+                  { image_url: null, heading: "", body: "" },
+                ],
+              })
+            }
+          >
+            + Add block
+          </Button>
+        }
+      >
+        <EditorialBlocksEditor
+          blocks={core.editorial_blocks}
+          onChange={(editorial_blocks) => setCore({ editorial_blocks })}
         />
       </Card>
 

@@ -44,7 +44,8 @@ export interface ProductEditorPayload {
     title: string;
     slug: string;
     description: string | null;
-    product_type_id: string;
+    details: string | null;
+    specifications: string | null;
     category_id: string | null;
     gender: Enums<"gender_enum">;
     price: number;
@@ -52,7 +53,9 @@ export interface ProductEditorPayload {
     currency: string;
     status: Enums<"product_status">;
     in_stock: boolean;
-    specs: Record<string, unknown>;
+    video_url: string | null;
+    faqs: { question: string; answer: string }[];
+    editorial_blocks: { image_url: string | null; heading: string; body: string }[];
     whatsapp_message_template: string | null;
     amazon_url: string | null;
     is_featured: boolean;
@@ -122,8 +125,9 @@ export async function getProductForEdit(
     await sb
       .from("products")
       .select(
-        `id, title, slug, description, product_type_id, category_id, gender, price, compare_at_price,
-         currency, status, in_stock, specs, whatsapp_message_template, amazon_url, is_featured, badges,
+        `id, title, slug, description, details, specifications, video_url, faqs, editorial_blocks,
+         category_id, gender, price, compare_at_price,
+         currency, status, in_stock, whatsapp_message_template, amazon_url, is_featured, badges,
          meta_title, meta_description,
          options:product_options(id, name, position, values:product_option_values(id, value, color_hex, position)),
          variants:product_variants(id, title, sku, price, compare_at_price, in_stock, position, variant_option_values(option_value_id)),
@@ -142,7 +146,8 @@ export async function getProductForEdit(
       title: data.title,
       slug: data.slug,
       description: data.description,
-      product_type_id: data.product_type_id,
+      details: data.details,
+      specifications: data.specifications,
       category_id: data.category_id,
       gender: data.gender,
       price: data.price,
@@ -150,7 +155,13 @@ export async function getProductForEdit(
       currency: data.currency,
       status: data.status,
       in_stock: data.in_stock,
-      specs: (data.specs ?? {}) as Record<string, unknown>,
+      video_url: data.video_url,
+      faqs: Array.isArray(data.faqs)
+        ? (data.faqs as { question: string; answer: string }[])
+        : [],
+      editorial_blocks: Array.isArray(data.editorial_blocks)
+        ? (data.editorial_blocks as { image_url: string | null; heading: string; body: string }[])
+        : [],
       whatsapp_message_template: data.whatsapp_message_template,
       amazon_url: data.amazon_url,
       is_featured: data.is_featured,
@@ -200,7 +211,11 @@ interface RawEditRow {
   title: string;
   slug: string;
   description: string | null;
-  product_type_id: string;
+  details: string | null;
+  specifications: string | null;
+  video_url: string | null;
+  faqs: unknown;
+  editorial_blocks: unknown;
   category_id: string | null;
   gender: Enums<"gender_enum">;
   price: number;
@@ -208,7 +223,6 @@ interface RawEditRow {
   currency: string;
   status: Enums<"product_status">;
   in_stock: boolean;
-  specs: Record<string, unknown> | null;
   whatsapp_message_template: string | null;
   amazon_url: string | null;
   is_featured: boolean;

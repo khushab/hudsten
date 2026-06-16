@@ -7,12 +7,6 @@ export interface RefItem {
   name: string;
 }
 
-export async function listProductTypeRefs(): Promise<RefItem[]> {
-  const sb = getSupabase();
-  const rows = must(await sb.from("product_types").select("id, name").order("name"), "ptRefs") ?? [];
-  return rows as RefItem[];
-}
-
 export async function listCategoryRefs(): Promise<RefItem[]> {
   const sb = getSupabase();
   const rows =

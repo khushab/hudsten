@@ -3,14 +3,12 @@
  * consume — deliberately decoupled from raw DB rows so components never depend on the
  * exact table structure (the portability seam).
  */
-import type { SpecSchema } from "@hudsten/shared";
 import type { Enums, Tables } from "./database.types";
 
 export type Category = Tables<"categories">;
 export type Collection = Tables<"collections">;
 export type Tag = Tables<"tags">;
 export type ProductRow = Tables<"products">;
-export type ProductType = Tables<"product_types">;
 
 /** Category with nested children (the admin tree + storefront nav). */
 export interface CategoryNode extends Category {
@@ -78,8 +76,21 @@ export interface ProductCard {
   primaryImage: { url: string; alt_text: string | null } | null;
   /** Second gallery image — cards swap to it on hover (fashion-ecom convention). */
   secondaryImage: { url: string; alt_text: string | null } | null;
-  /** Color option-value labels — drives the "N colours" card hint + listing filters. */
-  colors: string[];
+  /** Color option-values (label + hex) — drives the card swatch dots + listing filters. */
+  colors: { value: string; color_hex: string | null }[];
+}
+
+/** Per-product FAQ entry (admin-editable). */
+export interface ProductFaq {
+  question: string;
+  answer: string;
+}
+
+/** Editorial image+text block rendered as an alternating section on the PDP. */
+export interface ProductEditorialBlock {
+  image_url: string | null;
+  heading: string;
+  body: string;
 }
 
 /** Full PDP payload (PRD §6). */
@@ -88,20 +99,21 @@ export interface ProductDetail {
   title: string;
   slug: string;
   description: string | null;
+  details: string | null;
+  specifications: string | null;
+  videoUrl: string | null;
   gender: Enums<"gender_enum">;
   price: number;
   compare_at_price: number | null;
   currency: string;
   in_stock: boolean;
-  specs: Record<string, unknown>;
   whatsapp_message_template: string | null;
   amazon_url: string | null;
   badges: string[];
   meta_title: string | null;
   meta_description: string | null;
-  /** Spec schema from the product's type — drives dynamic spec rendering. */
-  specSchema: SpecSchema;
-  productTypeName: string;
+  faqs: ProductFaq[];
+  editorialBlocks: ProductEditorialBlock[];
   category: Pick<Category, "id" | "name" | "slug"> | null;
   options: ProductOption[];
   variants: Variant[];

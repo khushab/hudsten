@@ -171,11 +171,10 @@ export function ProductBuyBox({
     variant: variantLabel,
   };
 
-  // Product video (PRD §6) lives in specs so each product type can opt in.
-  const rawVideo = product.specs.video_url;
+  // Product video (PRD §6) — a single admin-editable URL on the product.
   const videoUrl =
-    typeof rawVideo === "string" && rawVideo.trim().length > 0
-      ? rawVideo.trim()
+    product.videoUrl && product.videoUrl.trim().length > 0
+      ? product.videoUrl.trim()
       : null;
 
   return (
@@ -340,33 +339,37 @@ export function ProductBuyBox({
         <CompactTrust className="mt-7" />
       </div>
 
-      {/* Sticky mobile CTA bar (Hick's Law — one clear action). */}
+      {/* Sticky mobile CTA bar (Hick's Law — one clear action). Two stacked rows so the
+          full-width button never clips the label, regardless of screen width. */}
       {waUrl && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-stone-200 bg-paper/95 p-3 backdrop-blur-md lg:hidden">
-          <div className="flex items-center gap-3">
-            <div className="shrink-0">
-              <div className="flex items-baseline gap-2">
-                <span className="font-display text-base font-medium">
-                  {formatPrice(price, product.currency)}
+        <div className="fixed inset-x-0 bottom-0 z-40 flex flex-col gap-2 border-t border-stone-200 bg-paper/95 p-3 backdrop-blur-md lg:hidden">
+          {/* Row 1 — compact price line: current price + struck compare-at + % off. */}
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm">
+            <span className="font-display font-medium">
+              {formatPrice(price, product.currency)}
+            </span>
+            {pct != null && compareAt != null && (
+              <>
+                <span className="text-xs text-stone-600 line-through">
+                  {formatPrice(compareAt, product.currency)}
                 </span>
-                {pct != null && (
-                  <span className="border border-stone-300 px-1.5 py-0.5 text-2xs font-medium uppercase tracking-wide text-ink">
-                    -{pct}%
-                  </span>
-                )}
-              </div>
-            </div>
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackWhatsAppClick(eventPayload)}
-              className={buttonClasses("whatsapp", "md", "flex-1 whitespace-nowrap")}
-            >
-              <WhatsAppIcon className="h-5 w-5 shrink-0" />
-              Order on WhatsApp
-            </a>
+                <span className="border border-stone-300 px-1.5 py-0.5 text-2xs font-medium uppercase tracking-wide text-ink">
+                  -{pct}%
+                </span>
+              </>
+            )}
           </div>
+          {/* Row 2 — full-width WhatsApp CTA (label can never clip). */}
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackWhatsAppClick(eventPayload)}
+            className={buttonClasses("whatsapp", "md", "w-full whitespace-nowrap")}
+          >
+            <WhatsAppIcon className="h-5 w-5 shrink-0" />
+            Order on WhatsApp
+          </a>
         </div>
       )}
     </div>

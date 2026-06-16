@@ -56,13 +56,25 @@ export const productImageSchema = z.object({
   option_value_ids: z.array(z.string()).default([]),
 });
 
+export const faqItemSchema = z.object({
+  question: z.string().min(1),
+  answer: z.string().default(""),
+});
+
+export const editorialBlockSchema = z.object({
+  image_url: z.union([z.string().url(), z.literal("")]).nullable().optional(),
+  heading: z.string().default(""),
+  body: z.string().default(""),
+});
+
 /** Core product form (excludes the relational builders above, which save separately). */
 export const productCoreSchema = z
   .object({
     title: z.string().min(1, "Title is required"),
     slug: slugSchema,
     description: optionalText,
-    product_type_id: uuidSchema,
+    details: optionalText,
+    specifications: optionalText,
     category_id: uuidSchema.nullable().optional(),
     gender: z.enum(GENDERS).default("unisex"),
     price: z.number().nonnegative(),
@@ -70,8 +82,9 @@ export const productCoreSchema = z
     currency: z.string().default("INR"),
     status: z.enum(PRODUCT_STATUSES).default("draft"),
     in_stock: z.boolean().default(true),
-    /** Validated loosely here; validated against the type's spec_schema at save time. */
-    specs: z.record(z.unknown()).default({}),
+    video_url: z.union([z.string().url(), z.literal("")]).nullable().optional(),
+    faqs: z.array(faqItemSchema).default([]),
+    editorial_blocks: z.array(editorialBlockSchema).default([]),
     whatsapp_message_template: optionalText,
     amazon_url: z.union([z.string().url(), z.literal("")]).nullable().optional(),
     is_featured: z.boolean().default(false),
@@ -100,6 +113,8 @@ export const productEditorSchema = z.object({
   tag_ids: z.array(uuidSchema).default([]),
 });
 
+export type FaqItem = z.infer<typeof faqItemSchema>;
+export type EditorialBlock = z.infer<typeof editorialBlockSchema>;
 export type ProductCoreInput = z.infer<typeof productCoreSchema>;
 export type ProductOptionInput = z.infer<typeof productOptionSchema>;
 export type ProductVariantInput = z.infer<typeof productVariantSchema>;

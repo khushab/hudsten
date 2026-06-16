@@ -1,10 +1,11 @@
-import type { SpecSchema } from "@hudsten/shared";
 import type { Enums } from "../database.types";
 import type { HudstenClient } from "../supabase/client";
 import type {
   GalleryImage,
   ProductCard,
   ProductDetail,
+  ProductEditorialBlock,
+  ProductFaq,
   ProductOption,
   Tag,
   Variant,
@@ -39,7 +40,7 @@ function expandGenders(genders?: Gender[]): Gender[] | null {
 // Options ride along on every card: colors power the "N colours" hint on cards
 // and the listing filters; the second image powers the hover swap.
 const CARD_SELECT =
-  "id, title, slug, price, compare_at_price, currency, gender, badges, in_stock, position, images:product_images(url, alt_text, position), options:product_options(name, values:product_option_values(value))";
+  "id, title, slug, price, compare_at_price, currency, gender, badges, in_stock, position, images:product_images(url, alt_text, position), options:product_options(name, values:product_option_values(value, color_hex))";
 
 interface RawCard {
   id: string;
@@ -53,7 +54,7 @@ interface RawCard {
   in_stock: boolean;
   position: number;
   images: { url: string; alt_text: string | null; position: number }[];
-  options: { name: string; values: { value: string }[] }[];
+  options: { name: string; values: { value: string; color_hex: string | null }[] }[];
 }
 
 function toCard(r: RawCard): ProductCard {
@@ -79,7 +80,11 @@ function toCard(r: RawCard): ProductCard {
     secondaryImage: secondary
       ? { url: secondary.url, alt_text: secondary.alt_text }
       : null,
-    colors: colorOption?.values.map((v) => v.value) ?? [],
+    colors:
+      colorOption?.values.map((v) => ({
+        value: v.value,
+        color_hex: v.color_hex,
+      })) ?? [],
   };
 }
 
@@ -228,9 +233,9 @@ export async function getColorFacets(
 
 // ── Full PDP detail ───────────────────────────────────────────────────────────
 const DETAIL_SELECT = `
-  id, title, slug, description, gender, price, compare_at_price, currency, in_stock,
-  specs, whatsapp_message_template, amazon_url, badges, meta_title, meta_description,
-  product_type:product_types(name, spec_schema),
+  id, title, slug, description, details, specifications, video_url, faqs, editorial_blocks,
+  gender, price, compare_at_price, currency, in_stock,
+  whatsapp_message_template, amazon_url, badges, meta_title, meta_description,
   category:categories(id, name, slug),
   options:product_options(id, name, position, values:product_option_values(id, value, color_hex, position)),
   variants:product_variants(id, title, sku, price, compare_at_price, in_stock, position, variant_option_values(option_value_id)),
@@ -244,18 +249,21 @@ interface RawDetail {
   title: string;
   slug: string;
   description: string | null;
+  details: string | null;
+  specifications: string | null;
+  video_url: string | null;
+  faqs: { question?: string; answer?: string }[] | null;
+  editorial_blocks: { image_url?: string | null; heading?: string; body?: string }[] | null;
   gender: Gender;
   price: number;
   compare_at_price: number | null;
   currency: string;
   in_stock: boolean;
-  specs: Record<string, unknown> | null;
   whatsapp_message_template: string | null;
   amazon_url: string | null;
   badges: string[];
   meta_title: string | null;
   meta_description: string | null;
-  product_type: { name: string; spec_schema: unknown } | null;
   category: { id: string; name: string; slug: string } | null;
   options: {
     id: string;
@@ -287,6 +295,26 @@ interface RawDetail {
   }[];
   product_collections: { collection_id: string }[];
   product_tags: { tag: Tag | null }[];
+}
+
+function normalizeFaqs(raw: RawDetail["faqs"]): ProductFaq[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((f) => ({ question: (f?.question ?? "").trim(), answer: (f?.answer ?? "").trim() }))
+    .filter((f) => f.question.length > 0);
+}
+
+function normalizeEditorial(
+  raw: RawDetail["editorial_blocks"],
+): ProductEditorialBlock[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((b) => ({
+      image_url: b?.image_url ?? null,
+      heading: (b?.heading ?? "").trim(),
+      body: (b?.body ?? "").trim(),
+    }))
+    .filter((b) => Boolean(b.image_url) || b.heading.length > 0 || b.body.length > 0);
 }
 
 export async function getProductBySlug(
@@ -345,19 +373,21 @@ export async function getProductBySlug(
     title: r.title,
     slug: r.slug,
     description: r.description,
+    details: r.details,
+    specifications: r.specifications,
+    videoUrl: r.video_url,
     gender: r.gender,
     price: r.price,
     compare_at_price: r.compare_at_price,
     currency: r.currency,
     in_stock: r.in_stock,
-    specs: (r.specs ?? {}) as Record<string, unknown>,
     whatsapp_message_template: r.whatsapp_message_template,
     amazon_url: r.amazon_url,
     badges: r.badges ?? [],
     meta_title: r.meta_title,
     meta_description: r.meta_description,
-    specSchema: (r.product_type?.spec_schema ?? []) as SpecSchema,
-    productTypeName: r.product_type?.name ?? "",
+    faqs: normalizeFaqs(r.faqs),
+    editorialBlocks: normalizeEditorial(r.editorial_blocks),
     category: r.category,
     options,
     variants,

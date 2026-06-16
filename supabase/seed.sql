@@ -4,25 +4,6 @@
 -- NOTE (PRD guardrail): reviews ship EMPTY — intentionally none seeded.
 -- Idempotent-ish: uses ON CONFLICT DO NOTHING so re-running won't duplicate.
 
--- ════════════════════════════ PRODUCT TYPE ════════════════════════════
--- spec_schema keys match PRD §4: dimensions, weight, capacity_l, materials,
--- compartments, laptop_fit, care, warranty, whats_in_box, country.
-insert into public.product_types (id, name, spec_schema) values
-('a1a1a1a1-0000-0000-0000-000000000001', 'Bag', '[
-  {"key":"dimensions","label":"Dimensions (L×W×H)","type":"text","group":"Dimensions","help":"e.g. 50 × 25 × 28 cm"},
-  {"key":"weight","label":"Weight","type":"number","unit":"kg","group":"Dimensions"},
-  {"key":"capacity_l","label":"Capacity","type":"number","unit":"L","group":"Dimensions"},
-  {"key":"materials","label":"Materials","type":"text","group":"Materials","help":"Outer / lining / hardware"},
-  {"key":"compartments","label":"Compartments & Pockets","type":"textarea","group":"Features"},
-  {"key":"laptop_fit","label":"Laptop Sleeve","type":"text","group":"Features"},
-  {"key":"whats_in_box","label":"What''s in the Box","type":"list","group":"Features"},
-  {"key":"care","label":"Care","type":"textarea","group":"Care & Warranty"},
-  {"key":"warranty","label":"Warranty","type":"text","group":"Care & Warranty"},
-  {"key":"country","label":"Origin","type":"text","group":"Origin"},
-  {"key":"video_url","label":"Product video URL","type":"text","group":"Media","help":"YouTube link or direct .mp4 URL — shown as the last gallery slide."}
-]'::jsonb)
-on conflict (id) do nothing;
-
 -- ════════════════════════════ CATEGORY TREE ════════════════════════════
 -- Only "Gym Bags" is populated at launch (PRD §3).
 insert into public.categories (id, name, slug, parent_id, position, is_active, meta_title, meta_description) values
@@ -90,46 +71,63 @@ insert into public.tags (id, name, slug) values
 on conflict (id) do nothing;
 
 -- ════════════════════════════ PRODUCTS ════════════════════════════
--- amazon_url set on Atlas + Vanguard; null on Aura + Forge (tests "hide secondary CTA").
--- compare_at_price null on Forge (tests "no discount badge" path).
+-- Content model: description / details / specifications are rich HTML; faqs +
+-- editorial_blocks are jsonb. amazon_url set on Atlas + Vanguard; compare_at_price
+-- null on Forge (tests "no discount badge"); video_url null (admin can add later).
 insert into public.products (
-  id, title, slug, description, product_type_id, category_id, gender,
-  price, compare_at_price, currency, status, in_stock, specs,
+  id, title, slug, description, details, specifications, video_url, faqs, editorial_blocks,
+  category_id, gender, price, compare_at_price, currency, status, in_stock,
   whatsapp_message_template, amazon_url, is_featured, badges, meta_title, meta_description, position
 ) values
 (
   'd0000000-0000-0000-0000-000000000001','Atlas Gym Duffel','atlas-gym-duffel',
   '<p>The Atlas is our everyday workhorse — a 35L duffel that swallows a full gym kit and still slides under your desk. Structured base, water-resistant shell, and a dedicated shoe tunnel.</p>',
-  'a1a1a1a1-0000-0000-0000-000000000001','b0000000-0000-0000-0000-000000000002','unisex',
+  '<p>Built around a structured, water-resistant 1200D poly shell with a ripstop lining and YKK hardware. A ventilated shoe tunnel keeps damp kit apart from the rest, and a padded sleeve takes a 15" laptop.</p>',
+  '<ul><li>Dimensions: 50 × 25 × 28 cm</li><li>Capacity: 35 L</li><li>Weight: 0.9 kg</li><li>Materials: water-resistant 1200D poly shell, ripstop lining, YKK hardware</li><li>Laptop sleeve: fits up to 15"</li><li>Origin: handcrafted in India</li></ul>',
+  null,
+  '[{"question":"What''s in the box?","answer":"Atlas Gym Duffel, a detachable padded shoulder strap, and a dust bag."},{"question":"How do I care for it?","answer":"Wipe clean with a damp cloth. Do not machine wash."},{"question":"Is there a warranty?","answer":"Yes — a 1-year manufacturer warranty against defects."},{"question":"Shipping & delivery?","answer":"Free shipping across India, typically 3–7 business days."},{"question":"Returns & exchanges?","answer":"7-day easy returns on unused items in original condition."}]'::jsonb,
+  '[{"image_url":"https://placehold.co/1200x1200/f5f5f3/8a8a8a?text=Atlas+Lifestyle","heading":"Built for the everyday carry","body":"From the gym floor to the desk — the Atlas holds a full kit and still slides under your chair."},{"image_url":"https://placehold.co/1200x1200/efefef/8a8a8a?text=Atlas+Detail","heading":"Made to last","body":"Water-resistant shell, ripstop lining and YKK hardware — picked for the years, not the photoshoot."}]'::jsonb,
+  'b0000000-0000-0000-0000-000000000002','unisex',
   2499, 3499, 'INR', 'active', true,
-  '{"dimensions":"50 × 25 × 28 cm","weight":0.9,"capacity_l":35,"materials":"Water-resistant 1200D poly shell · ripstop lining · YKK hardware","compartments":"Main zip compartment, ventilated shoe tunnel, interior zip pocket, 2 side pockets","laptop_fit":"Padded sleeve fits up to 15\"","whats_in_box":["Atlas Gym Duffel","Detachable padded shoulder strap","Dust bag"],"care":"Wipe clean with a damp cloth. Do not machine wash.","warranty":"1-year manufacturer warranty","country":"Handcrafted in India"}'::jsonb,
   null, 'https://www.amazon.in/dp/PLACEHOLDERATLAS', true, '{New,Bestseller}',
   'Atlas Gym Duffel — 35L Water-resistant Gym Bag | Hudsten','A 35L gym duffel with a ventilated shoe tunnel and 15" laptop sleeve. Water-resistant, handcrafted in India.',1
 ),
 (
   'd0000000-0000-0000-0000-000000000002','Vanguard Weekender','vanguard-weekender',
   '<p>Two days, one bag. The Vanguard pairs full-grain leather trim with a 40L cabin-friendly body — equal parts gym holdall and weekend carry.</p>',
-  'a1a1a1a1-0000-0000-0000-000000000001','b0000000-0000-0000-0000-000000000002','men',
+  '<p>Full-grain leather trim over a waxed-canvas body with solid brass hardware. A 40L cabin-friendly silhouette with a roomy main compartment and a zip end pocket for the small stuff.</p>',
+  '<ul><li>Dimensions: 55 × 27 × 30 cm</li><li>Capacity: 40 L</li><li>Weight: 1.2 kg</li><li>Materials: full-grain leather trim, waxed-canvas body, brass hardware</li><li>Laptop sleeve: none</li><li>Origin: handcrafted in India</li></ul>',
+  null,
+  '[{"question":"What''s in the box?","answer":"Vanguard Weekender, a leather luggage tag, and a dust bag."},{"question":"How do I care for it?","answer":"Condition the leather trim every 3 months. Spot clean the canvas."},{"question":"Is there a warranty?","answer":"Yes — a 1-year manufacturer warranty against defects."},{"question":"Shipping & delivery?","answer":"Free shipping across India, typically 3–7 business days."},{"question":"Returns & exchanges?","answer":"7-day easy returns on unused items in original condition."}]'::jsonb,
+  '[{"image_url":"https://placehold.co/1200x1200/f5f5f3/8a8a8a?text=Vanguard+Lifestyle","heading":"From gym to gate","body":"A weekend''s worth of kit in a bag that looks at home on your shoulder or in an overhead bin."},{"image_url":"https://placehold.co/1200x1200/efefef/8a8a8a?text=Vanguard+Leather","heading":"Leather that ages well","body":"Full-grain trim and brass hardware develop a patina that gets better with every trip."}]'::jsonb,
+  'b0000000-0000-0000-0000-000000000002','men',
   3299, 4299, 'INR', 'active', true,
-  '{"dimensions":"55 × 27 × 30 cm","weight":1.2,"capacity_l":40,"materials":"Full-grain leather trim · waxed canvas body · brass hardware","compartments":"Main compartment, zip end pocket, interior slip pocket","laptop_fit":"No dedicated sleeve","whats_in_box":["Vanguard Weekender","Leather luggage tag","Dust bag"],"care":"Condition leather trim every 3 months. Spot clean canvas.","warranty":"1-year manufacturer warranty","country":"Handcrafted in India"}'::jsonb,
   null, 'https://www.amazon.in/dp/PLACEHOLDERVANG', true, '{Bestseller}',
   'Vanguard Weekender — 40L Leather-trim Duffel | Hudsten','A 40L cabin-friendly weekender with full-grain leather trim and waxed-canvas body. Handcrafted in India.',2
 ),
 (
   'd0000000-0000-0000-0000-000000000003','Aura Studio Tote','aura-studio-tote',
   '<p>From mat to meeting. The Aura is an 18L structured tote with a wipe-clean interior and a sleeve that keeps your laptop and your towel politely apart.</p>',
-  'a1a1a1a1-0000-0000-0000-000000000001','b0000000-0000-0000-0000-000000000002','women',
+  '<p>Vegan saffiano leather with a water-resistant lining and gold-tone hardware. A padded sleeve takes a 13" laptop, and a zip valuables pocket keeps the essentials secure.</p>',
+  '<ul><li>Dimensions: 38 × 16 × 30 cm</li><li>Capacity: 18 L</li><li>Weight: 0.7 kg</li><li>Materials: vegan saffiano leather, water-resistant lining, gold-tone hardware</li><li>Laptop sleeve: fits up to 13"</li><li>Origin: handcrafted in India</li></ul>',
+  null,
+  '[{"question":"What''s in the box?","answer":"Aura Studio Tote, a detachable crossbody strap, and a dust bag."},{"question":"How do I care for it?","answer":"Wipe with a soft damp cloth. Avoid prolonged sunlight."},{"question":"Is there a warranty?","answer":"Yes — a 1-year manufacturer warranty against defects."},{"question":"Shipping & delivery?","answer":"Free shipping across India, typically 3–7 business days."},{"question":"Returns & exchanges?","answer":"7-day easy returns on unused items in original condition."}]'::jsonb,
+  '[{"image_url":"https://placehold.co/1200x1200/f5f5f3/8a8a8a?text=Aura+Lifestyle","heading":"Studio to street","body":"Structured enough for the office, light enough for the studio — with a wipe-clean interior for both."},{"image_url":"https://placehold.co/1200x1200/efefef/8a8a8a?text=Aura+Interior","heading":"Organised by design","body":"A padded sleeve, a zip valuables pocket and two slip pockets keep the day''s essentials in their place."}]'::jsonb,
+  'b0000000-0000-0000-0000-000000000002','women',
   1999, 2799, 'INR', 'active', true,
-  '{"dimensions":"38 × 16 × 30 cm","weight":0.7,"capacity_l":18,"materials":"Vegan saffiano leather · water-resistant lining · gold-tone hardware","compartments":"Main compartment, padded sleeve, zip valuables pocket, 2 slip pockets","laptop_fit":"Padded sleeve fits up to 13\"","whats_in_box":["Aura Studio Tote","Detachable crossbody strap","Dust bag"],"care":"Wipe with a soft damp cloth. Avoid prolonged sunlight.","warranty":"1-year manufacturer warranty","country":"Handcrafted in India"}'::jsonb,
   null, null, false, '{New}',
   'Aura Studio Tote — 18L Gym & Work Tote | Hudsten','An 18L structured tote with a 13" laptop sleeve and wipe-clean interior. Handcrafted in India.',3
 ),
 (
   'd0000000-0000-0000-0000-000000000004','Forge Sport Holdall','forge-sport-holdall',
   '<p>Built for the grind. The Forge is a 45L holdall with a reinforced base, compression straps, and a separate vented compartment for kit you''d rather not smell tomorrow.</p>',
-  'a1a1a1a1-0000-0000-0000-000000000001','b0000000-0000-0000-0000-000000000002','unisex',
+  '<p>A water-resistant 1680D ballistic shell with a ripstop lining and gunmetal hardware. Compression straps cinch the load down, and a vented kit compartment keeps the gym smell out of the rest.</p>',
+  '<ul><li>Dimensions: 58 × 28 × 30 cm</li><li>Capacity: 45 L</li><li>Weight: 1.1 kg</li><li>Materials: water-resistant 1680D ballistic shell, ripstop lining, gunmetal hardware</li><li>Laptop sleeve: none</li><li>Origin: handcrafted in India</li></ul>',
+  null,
+  '[{"question":"What''s in the box?","answer":"Forge Sport Holdall and a detachable padded strap."},{"question":"How do I care for it?","answer":"Wipe clean with a damp cloth."},{"question":"Is there a warranty?","answer":"Yes — a 1-year manufacturer warranty against defects."},{"question":"Shipping & delivery?","answer":"Free shipping across India, typically 3–7 business days."},{"question":"Returns & exchanges?","answer":"7-day easy returns on unused items in original condition."}]'::jsonb,
+  '[{"image_url":"https://placehold.co/1200x1200/f5f5f3/8a8a8a?text=Forge+Lifestyle","heading":"Built for the grind","body":"45 litres, a reinforced base and compression straps — for the people who train like they mean it."},{"image_url":"https://placehold.co/1200x1200/efefef/8a8a8a?text=Forge+Vent","heading":"Keep it separate","body":"A vented kit compartment isolates damp gear so the rest of your bag stays fresh."}]'::jsonb,
+  'b0000000-0000-0000-0000-000000000002','unisex',
   2799, null, 'INR', 'active', true,
-  '{"dimensions":"58 × 28 × 30 cm","weight":1.1,"capacity_l":45,"materials":"Water-resistant 1680D ballistic shell · ripstop lining · gunmetal hardware","compartments":"Main compartment, vented kit compartment, 2 external compression pockets","laptop_fit":"No dedicated sleeve","whats_in_box":["Forge Sport Holdall","Detachable padded strap"],"care":"Wipe clean with a damp cloth.","warranty":"1-year manufacturer warranty","country":"Handcrafted in India"}'::jsonb,
   null, null, true, '{Limited}',
   'Forge Sport Holdall — 45L Gym Holdall | Hudsten','A 45L gym holdall with a vented kit compartment and compression straps. Water-resistant, handcrafted in India.',4
 )
