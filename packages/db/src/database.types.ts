@@ -403,30 +403,6 @@ export type Database = {
           },
         ]
       }
-      product_types: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-          spec_schema: Json
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-          spec_schema?: Json
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-          spec_schema?: Json
-          updated_at?: string
-        }
-        Relationships: []
-      }
       product_variants: {
         Row: {
           compare_at_price: number | null
@@ -483,6 +459,9 @@ export type Database = {
           created_at: string
           currency: string
           description: string | null
+          details: string | null
+          editorial_blocks: Json
+          faqs: Json
           gender: Database["public"]["Enums"]["gender_enum"]
           id: string
           in_stock: boolean
@@ -491,12 +470,12 @@ export type Database = {
           meta_title: string | null
           position: number
           price: number
-          product_type_id: string
           slug: string
-          specs: Json
+          specifications: string | null
           status: Database["public"]["Enums"]["product_status"]
           title: string
           updated_at: string
+          video_url: string | null
           whatsapp_message_template: string | null
         }
         Insert: {
@@ -507,6 +486,9 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          details?: string | null
+          editorial_blocks?: Json
+          faqs?: Json
           gender?: Database["public"]["Enums"]["gender_enum"]
           id?: string
           in_stock?: boolean
@@ -515,12 +497,12 @@ export type Database = {
           meta_title?: string | null
           position?: number
           price: number
-          product_type_id: string
           slug: string
-          specs?: Json
+          specifications?: string | null
           status?: Database["public"]["Enums"]["product_status"]
           title: string
           updated_at?: string
+          video_url?: string | null
           whatsapp_message_template?: string | null
         }
         Update: {
@@ -531,6 +513,9 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          details?: string | null
+          editorial_blocks?: Json
+          faqs?: Json
           gender?: Database["public"]["Enums"]["gender_enum"]
           id?: string
           in_stock?: boolean
@@ -539,12 +524,12 @@ export type Database = {
           meta_title?: string | null
           position?: number
           price?: number
-          product_type_id?: string
           slug?: string
-          specs?: Json
+          specifications?: string | null
           status?: Database["public"]["Enums"]["product_status"]
           title?: string
           updated_at?: string
+          video_url?: string | null
           whatsapp_message_template?: string | null
         }
         Relationships: [
@@ -553,13 +538,6 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "products_product_type_id_fkey"
-            columns: ["product_type_id"]
-            isOneToOne: false
-            referencedRelation: "product_types"
             referencedColumns: ["id"]
           },
         ]

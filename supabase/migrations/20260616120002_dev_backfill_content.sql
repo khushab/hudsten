@@ -1,0 +1,33 @@
+-- DEV content backfill. The content-model migration ADDED details/specifications/
+-- faqs/editorial_blocks columns but left existing rows empty, and seed.sql only fills
+-- FRESH inserts (ON CONFLICT DO NOTHING). This populates the four seeded products so the
+-- new PDP sections render on an already-migrated dev DB. Mirrors supabase/seed.sql; it is
+-- idempotent (sets the same content) and harmless to re-run / on a fresh reset.
+
+update public.products set
+  details = '<p>Built around a structured, water-resistant 1200D poly shell with a ripstop lining and YKK hardware. A ventilated shoe tunnel keeps damp kit apart from the rest, and a padded sleeve takes a 15" laptop.</p>',
+  specifications = '<ul><li>Dimensions: 50 × 25 × 28 cm</li><li>Capacity: 35 L</li><li>Weight: 0.9 kg</li><li>Materials: water-resistant 1200D poly shell, ripstop lining, YKK hardware</li><li>Laptop sleeve: fits up to 15"</li><li>Origin: handcrafted in India</li></ul>',
+  faqs = '[{"question":"What''s in the box?","answer":"Atlas Gym Duffel, a detachable padded shoulder strap, and a dust bag."},{"question":"How do I care for it?","answer":"Wipe clean with a damp cloth. Do not machine wash."},{"question":"Is there a warranty?","answer":"Yes — a 1-year manufacturer warranty against defects."},{"question":"Shipping & delivery?","answer":"Free shipping across India, typically 3–7 business days."},{"question":"Returns & exchanges?","answer":"7-day easy returns on unused items in original condition."}]'::jsonb,
+  editorial_blocks = '[{"image_url":"https://placehold.co/1200x1200/f5f5f3/8a8a8a?text=Atlas+Lifestyle","heading":"Built for the everyday carry","body":"From the gym floor to the desk — the Atlas holds a full kit and still slides under your chair."},{"image_url":"https://placehold.co/1200x1200/efefef/8a8a8a?text=Atlas+Detail","heading":"Made to last","body":"Water-resistant shell, ripstop lining and YKK hardware — picked for the years, not the photoshoot."}]'::jsonb
+where id = 'd0000000-0000-0000-0000-000000000001';
+
+update public.products set
+  details = '<p>Full-grain leather trim over a waxed-canvas body with solid brass hardware. A 40L cabin-friendly silhouette with a roomy main compartment and a zip end pocket for the small stuff.</p>',
+  specifications = '<ul><li>Dimensions: 55 × 27 × 30 cm</li><li>Capacity: 40 L</li><li>Weight: 1.2 kg</li><li>Materials: full-grain leather trim, waxed-canvas body, brass hardware</li><li>Laptop sleeve: none</li><li>Origin: handcrafted in India</li></ul>',
+  faqs = '[{"question":"What''s in the box?","answer":"Vanguard Weekender, a leather luggage tag, and a dust bag."},{"question":"How do I care for it?","answer":"Condition the leather trim every 3 months. Spot clean the canvas."},{"question":"Is there a warranty?","answer":"Yes — a 1-year manufacturer warranty against defects."},{"question":"Shipping & delivery?","answer":"Free shipping across India, typically 3–7 business days."},{"question":"Returns & exchanges?","answer":"7-day easy returns on unused items in original condition."}]'::jsonb,
+  editorial_blocks = '[{"image_url":"https://placehold.co/1200x1200/f5f5f3/8a8a8a?text=Vanguard+Lifestyle","heading":"From gym to gate","body":"A weekend''s worth of kit in a bag that looks at home on your shoulder or in an overhead bin."},{"image_url":"https://placehold.co/1200x1200/efefef/8a8a8a?text=Vanguard+Leather","heading":"Leather that ages well","body":"Full-grain trim and brass hardware develop a patina that gets better with every trip."}]'::jsonb
+where id = 'd0000000-0000-0000-0000-000000000002';
+
+update public.products set
+  details = '<p>Vegan saffiano leather with a water-resistant lining and gold-tone hardware. A padded sleeve takes a 13" laptop, and a zip valuables pocket keeps the essentials secure.</p>',
+  specifications = '<ul><li>Dimensions: 38 × 16 × 30 cm</li><li>Capacity: 18 L</li><li>Weight: 0.7 kg</li><li>Materials: vegan saffiano leather, water-resistant lining, gold-tone hardware</li><li>Laptop sleeve: fits up to 13"</li><li>Origin: handcrafted in India</li></ul>',
+  faqs = '[{"question":"What''s in the box?","answer":"Aura Studio Tote, a detachable crossbody strap, and a dust bag."},{"question":"How do I care for it?","answer":"Wipe with a soft damp cloth. Avoid prolonged sunlight."},{"question":"Is there a warranty?","answer":"Yes — a 1-year manufacturer warranty against defects."},{"question":"Shipping & delivery?","answer":"Free shipping across India, typically 3–7 business days."},{"question":"Returns & exchanges?","answer":"7-day easy returns on unused items in original condition."}]'::jsonb,
+  editorial_blocks = '[{"image_url":"https://placehold.co/1200x1200/f5f5f3/8a8a8a?text=Aura+Lifestyle","heading":"Studio to street","body":"Structured enough for the office, light enough for the studio — with a wipe-clean interior for both."},{"image_url":"https://placehold.co/1200x1200/efefef/8a8a8a?text=Aura+Interior","heading":"Organised by design","body":"A padded sleeve, a zip valuables pocket and two slip pockets keep the day''s essentials in their place."}]'::jsonb
+where id = 'd0000000-0000-0000-0000-000000000003';
+
+update public.products set
+  details = '<p>A water-resistant 1680D ballistic shell with a ripstop lining and gunmetal hardware. Compression straps cinch the load down, and a vented kit compartment keeps the gym smell out of the rest.</p>',
+  specifications = '<ul><li>Dimensions: 58 × 28 × 30 cm</li><li>Capacity: 45 L</li><li>Weight: 1.1 kg</li><li>Materials: water-resistant 1680D ballistic shell, ripstop lining, gunmetal hardware</li><li>Laptop sleeve: none</li><li>Origin: handcrafted in India</li></ul>',
+  faqs = '[{"question":"What''s in the box?","answer":"Forge Sport Holdall and a detachable padded strap."},{"question":"How do I care for it?","answer":"Wipe clean with a damp cloth."},{"question":"Is there a warranty?","answer":"Yes — a 1-year manufacturer warranty against defects."},{"question":"Shipping & delivery?","answer":"Free shipping across India, typically 3–7 business days."},{"question":"Returns & exchanges?","answer":"7-day easy returns on unused items in original condition."}]'::jsonb,
+  editorial_blocks = '[{"image_url":"https://placehold.co/1200x1200/f5f5f3/8a8a8a?text=Forge+Lifestyle","heading":"Built for the grind","body":"45 litres, a reinforced base and compression straps — for the people who train like they mean it."},{"image_url":"https://placehold.co/1200x1200/efefef/8a8a8a?text=Forge+Vent","heading":"Keep it separate","body":"A vented kit compartment isolates damp gear so the rest of your bag stays fresh."}]'::jsonb
+where id = 'd0000000-0000-0000-0000-000000000004';
