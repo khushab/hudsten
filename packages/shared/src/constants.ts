@@ -25,17 +25,6 @@ export type NavLinkType = (typeof NAV_LINK_TYPES)[number];
 export const USER_ROLES = ["admin", "customer"] as const;
 export type UserRole = (typeof USER_ROLES)[number];
 
-// Spec field types used by product_types.spec_schema entries.
-export const SPEC_FIELD_TYPES = [
-  "text",
-  "textarea",
-  "number",
-  "boolean",
-  "select",
-  "list", // array of strings (e.g. "what's in the box")
-] as const;
-export type SpecFieldType = (typeof SPEC_FIELD_TYPES)[number];
-
 // --- Badges (free-text in DB, but these are the canonical suggestions) ---
 export const SUGGESTED_BADGES = [
   "New",

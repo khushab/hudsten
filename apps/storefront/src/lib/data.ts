@@ -73,7 +73,7 @@ export const fetchColorFacets = cache(
 export const fetchProductBySlug = cache((slug: string) =>
   getProductBySlug(createPublicClient(), slug),
 );
-/** "Pairs well with" — same category, excluding the current product. */
+/** Related products — same category, excluding the current product. */
 export const fetchProductsForCrossSell = cache(
   (categoryId: string, excludeId: string, limit = 4) =>
     getProductCards(createPublicClient(), { categoryId, excludeId, limit }),

@@ -21,6 +21,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { ProductBuyBox } from "@/components/product/ProductBuyBox";
 import { ReviewsEmpty } from "@/components/product/ReviewsEmpty";
 import { ProductGrid } from "@/components/product/ProductGrid";
+import { Faq } from "@/components/product/Faq";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd } from "@/lib/jsonld";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { cn } from "@/lib/cn";
@@ -156,12 +157,6 @@ export default async function ProductPage({
             />
           </Accordion>
         )}
-
-        {product.faqs.map((faq) => (
-          <Accordion key={faq.question} title={faq.question}>
-            <p>{faq.answer}</p>
-          </Accordion>
-        ))}
       </Container>
 
       {/* Editorial — full-bleed alternating image/text rows (admin-editable). */}
@@ -208,6 +203,13 @@ export default async function ProductPage({
             </Reveal>
           ))}
         </section>
+      )}
+
+      {/* FAQ — its own block, separate from the Description/Details/Specifications group. */}
+      {product.faqs.length > 0 && (
+        <Container className="max-w-4xl py-12">
+          <Faq items={product.faqs} />
+        </Container>
       )}
 
       {/* Reviews */}

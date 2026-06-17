@@ -4,5 +4,4 @@
 export * from "./constants";
 export * from "./format";
 export * from "./whatsapp";
-export * from "./spec-schema";
 export * from "./schemas";
