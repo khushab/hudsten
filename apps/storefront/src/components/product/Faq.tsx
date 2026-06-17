@@ -10,7 +10,7 @@ export function Faq({ items }: { items: ProductFaq[] }) {
   if (items.length === 0) return null;
   return (
     <div>
-      <h2 className="mb-5 text-2xl font-normal">Frequently asked questions</h2>
+      <h2 className="mb-5 text-2xl font-normal">FAQ</h2>
       <div className="border-t border-stone-200">
         {items.map((faq) => (
           <Accordion key={faq.question} title={faq.question}>

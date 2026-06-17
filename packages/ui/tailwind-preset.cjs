@@ -21,7 +21,7 @@ module.exports = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: "#171717",
+          DEFAULT: "#1C1C1C",
           soft: "#1F1F1D",
           muted: "#2E2E2E",
         },
@@ -68,8 +68,8 @@ module.exports = {
       },
       fontFamily: {
         // One neutral grotesk (Inter) for the whole brand; --font-display aliases --font-sans.
-        display: ['var(--font-display)', "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-        sans: ['var(--font-sans)', "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ['var(--font-display)', "Instrument Sans", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ['var(--font-sans)', "Instrument Sans", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       fontSize: {
         // Neutral tracking on the scale; uppercase tracking is applied via base styles/utilities.
@@ -88,7 +88,7 @@ module.exports = {
       },
       letterSpacing: {
         tightest: "-0.04em",
-        caps: "0.1em", // uppercase headings / buttons
+        caps: "0.18em", // uppercase headings / buttons (matches the MW reference)
         eyebrow: "0.18em", // small uppercase labels / eyebrows
       },
       borderRadius: {

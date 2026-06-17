@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
+import { Instrument_Sans } from "next/font/google";
 import type { NavNode, SiteSettings } from "@hudsten/db";
 import { absoluteUrl } from "@/lib/env";
 import { fetchNavigation, fetchSettings } from "@/lib/data";
@@ -11,12 +11,12 @@ import { Analytics } from "@/components/analytics/Analytics";
 import { CookieConsent } from "@/components/analytics/CookieConsent";
 import "./globals.css";
 
-// One self-hosted grotesk (Inter) for the whole brand — neutral, technical, and identical
-// on every device. No Google request chain. --font-display is aliased to --font-sans in
-// globals.css, so headings and body share the same face.
-const sans = localFont({
-  src: "../fonts/inter-latin-wght-normal.woff2",
-  weight: "100 900",
+// Instrument Sans — the exact face the Mission Workshop reference uses. next/font
+// SELF-HOSTS it (bundled + served from our own origin), so it renders identically on
+// every OS/browser — no system-font variance, no runtime Google request. --font-display
+// is aliased to --font-sans in globals.css, so headings and body share the same face.
+const sans = Instrument_Sans({
+  subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
 });
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#171717",
+  themeColor: "#1C1C1C",
   width: "device-width",
   initialScale: 1,
 };

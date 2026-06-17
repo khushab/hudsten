@@ -188,7 +188,7 @@ export function ProductBuyBox({
 
       <div>
         <ProductBadges badges={product.badges} className="mb-3" />
-        <h1 className="text-3xl font-normal uppercase tracking-caps sm:text-4xl">
+        <h1 className="text-xl font-normal uppercase tracking-caps">
           {product.title}
         </h1>
 

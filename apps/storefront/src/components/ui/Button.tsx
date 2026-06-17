@@ -10,10 +10,10 @@ type Variant =
 type Size = "sm" | "md" | "lg" | "icon";
 
 const base =
-  "inline-flex items-center justify-center gap-2 font-medium uppercase tracking-caps transition-colors duration-200 ease-lux disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 font-medium uppercase tracking-[0.18em] transition-colors duration-300 ease-lux disabled:cursor-not-allowed disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-ink text-paper hover:bg-ink-soft",
+  primary: "bg-ink text-paper hover:bg-stone-700",
   secondary: "border border-ink text-ink hover:bg-ink hover:text-paper",
   outline: "border border-stone-300 text-ink hover:border-ink",
   brass: "bg-ink text-paper hover:bg-ink-soft",

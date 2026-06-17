@@ -161,11 +161,11 @@ export default async function ProductPage({
 
       {/* Editorial — full-bleed alternating image/text rows (admin-editable). */}
       {editorial.length > 0 && (
-        <section className="mt-12 border-t border-stone-200">
+        <section className="mt-12">
           {editorial.map((b, i) => (
             <Reveal
               key={i}
-              className={cn("grid border-b border-stone-200 md:grid-cols-2")}
+              className={cn("grid md:grid-cols-2")}
             >
               <div
                 className={cn(
@@ -190,12 +190,12 @@ export default async function ProductPage({
                 )}
               >
                 {b.heading && (
-                  <h2 className="text-xl font-normal uppercase tracking-caps sm:text-2xl">
+                  <h2 className="text-ink text-xl font-normal uppercase tracking-caps sm:text-2xl">
                     {b.heading}
                   </h2>
                 )}
                 {b.body && (
-                  <p className="mt-4 max-w-md text-xs uppercase leading-[1.85] tracking-[0.08em] text-stone-500">
+                  <p className="mt-4 max-w-md text-sm uppercase leading-[1.7] tracking-caps text-ink">
                     {b.body}
                   </p>
                 )}
@@ -238,7 +238,7 @@ export default async function ProductPage({
         <section className="mt-12 bg-[#EFEFEF] py-14">
           <Container>
             <Reveal>
-              <h2 className="mb-8 text-center text-2xl font-normal uppercase tracking-caps sm:text-3xl">
+              <h2 className="mb-8 text-center text-2xl font-normal uppercase tracking-caps">
                 Related products
               </h2>
               <ProductGrid products={related} />

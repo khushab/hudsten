@@ -20,14 +20,14 @@ export function Price({
 }) {
   const pct = discountPercent(price, compareAt);
   const sizeCls = {
-    sm: "text-base",
-    md: "text-xl",
-    lg: "text-3xl",
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-lg",
   }[size];
 
   return (
     <div className={cn("flex flex-wrap items-baseline gap-x-2.5 gap-y-1", className)}>
-      <span className={cn("font-display font-medium", sizeCls)}>
+      <span className={cn("font-display font-normal tracking-caps text-ink/65", sizeCls)}>
         {formatPrice(price, currency)}
       </span>
       {pct != null && compareAt != null && (
