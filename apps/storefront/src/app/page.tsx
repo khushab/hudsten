@@ -101,14 +101,13 @@ export default async function HomePage() {
 
       {tiles.length >= 2 && (
         <Container as="section" className="pt-section-sm sm:pt-section">
-          <SectionHeading eyebrow="Find your fit" title="Shop by collection" />
+          <SectionHeading title="Shop by collection" />
           <CollectionTiles tiles={tiles} />
         </Container>
       )}
 
       <Container as="section" className="py-section-sm sm:py-section">
         <SectionHeading
-          eyebrow="Just dropped"
           title={featuredTitle}
           link={featuredHref ? { label: "View all", href: featuredHref } : undefined}
         />
@@ -124,7 +123,7 @@ export default async function HomePage() {
       <Container as="section" className="py-section">
         <div className="mx-auto max-w-2xl text-center">
           <p className="eyebrow mb-3">The launch list</p>
-          <h2 className="text-3xl font-normal sm:text-4xl">
+          <h2 className="text-2xl font-normal">
             Be first in line for the drop
           </h2>
           <p className="mt-3 text-stone-600">

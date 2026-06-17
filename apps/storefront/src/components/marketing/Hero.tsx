@@ -28,7 +28,7 @@ export function Hero({ hero }: { hero: HeroSettings }) {
       <div className="relative mx-auto flex min-h-[58vh] max-w-shell flex-col justify-end px-4 pb-14 pt-28 sm:px-6 lg:min-h-[72vh] lg:px-8 lg:pb-20">
         <div className="max-w-2xl">
           <p className="eyebrow text-paper/70">Premium Bags · Handcrafted</p>
-          <h1 className="mt-3 text-5xl font-normal leading-tight tracking-caps sm:text-6xl lg:text-7xl">
+          <h1 className="mt-3 text-3xl font-normal leading-tight tracking-caps sm:text-4xl">
             {headline}
           </h1>
           <p className="mt-5 max-w-md text-base text-paper/80 sm:text-lg">

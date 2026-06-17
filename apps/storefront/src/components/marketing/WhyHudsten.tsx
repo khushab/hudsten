@@ -28,7 +28,7 @@ export function WhyHudsten() {
     <section className="border-y border-stone-200 bg-ink text-paper">
       <div className="mx-auto max-w-shell px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <p className="eyebrow text-paper/70">Why Hudsten</p>
-        <h2 className="mt-3 max-w-2xl text-3xl font-normal sm:text-4xl">
+        <h2 className="mt-3 max-w-2xl text-2xl font-normal">
           Built to outlast the hype.
         </h2>
         <div className="mt-10 grid gap-10 sm:grid-cols-3">

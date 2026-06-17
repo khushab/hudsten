@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <main className="shell flex min-h-[60vh] flex-col items-center justify-center gap-5 text-center">
       <p className="eyebrow">404</p>
-      <h1 className="text-4xl font-normal sm:text-5xl">
+      <h1 className="text-3xl font-normal">
         This page wandered off.
       </h1>
       <p className="max-w-prose text-stone-600">
