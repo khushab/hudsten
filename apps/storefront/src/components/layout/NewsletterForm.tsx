@@ -101,9 +101,14 @@ export function NewsletterForm({
         />
         <Button
           type="submit"
-          variant="primary"
+          variant="invert"
           disabled={isSubmitting}
-          className={dark ? "bg-paper text-ink hover:bg-stone-200" : undefined}
+          // On the dark footer the sweep mirrors: paper button → ink fills in, text flips to paper.
+          className={
+            dark
+              ? "border-paper bg-paper text-ink before:bg-ink hover:text-paper"
+              : undefined
+          }
         >
           {isSubmitting ? "Joining…" : "Subscribe"}
         </Button>

@@ -6,7 +6,8 @@ type Variant =
   | "outline"
   | "brass"
   | "whatsapp"
-  | "ghost";
+  | "ghost"
+  | "invert";
 type Size = "sm" | "md" | "lg" | "icon";
 
 const base =
@@ -19,6 +20,11 @@ const variants: Record<Variant, string> = {
   brass: "bg-ink text-paper hover:bg-ink-soft",
   whatsapp: "bg-whatsapp text-white hover:bg-whatsapp-dark",
   ghost: "text-ink hover:bg-stone-100",
+  // MW "fill sweep": a paper ::before wipes in left→right on hover (origin-right→left
+  // swap makes both enter+leave sweep the same way), text flips ink, 1px border stays.
+  // Timing matched to MW's computed values: 0.45s + cubic-bezier(0.785,0.135,0.15,0.86).
+  invert:
+    "relative isolate border border-ink bg-ink text-paper duration-[450ms] ease-[cubic-bezier(0.785,0.135,0.15,0.86)] before:absolute before:inset-0 before:-z-10 before:origin-right before:scale-x-0 before:bg-paper before:transition-transform before:duration-[450ms] before:ease-[cubic-bezier(0.785,0.135,0.15,0.86)] before:content-[''] hover:text-ink hover:before:origin-left hover:before:scale-x-100 motion-reduce:before:transition-none",
 };
 
 const sizes: Record<Size, string> = {

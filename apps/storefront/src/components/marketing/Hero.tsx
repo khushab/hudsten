@@ -37,7 +37,12 @@ export function Hero({ hero }: { hero: HeroSettings }) {
           {hero.cta_link && (
             <Link
               href={hero.cta_link}
-              className={buttonClasses("primary", "lg", "mt-8 bg-paper text-ink hover:bg-stone-100")}
+              // Dark-surface mirror of the MW fill-sweep: paper button → ink wipes in, text flips paper.
+              className={buttonClasses(
+                "invert",
+                "lg",
+                "mt-8 border-paper bg-paper text-ink before:bg-ink hover:text-paper",
+              )}
             >
               {hero.cta_label || "Shop now"}
             </Link>
