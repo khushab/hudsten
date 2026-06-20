@@ -2,7 +2,7 @@ import { ReturnIcon, ShieldIcon, TruckIcon, LockIcon } from "@/components/icons"
 import { cn } from "@/lib/cn";
 
 const ITEMS = [
-  { Icon: TruckIcon, title: "Free shipping", sub: "On all orders, pan-India" },
+  { Icon: TruckIcon, title: "Free shipping", sub: "All orders, pan-India" },
   { Icon: ReturnIcon, title: "7-day returns", sub: "Easy, no-fuss returns" },
   { Icon: ShieldIcon, title: "1-year warranty", sub: "Against manufacturing defects" },
   { Icon: LockIcon, title: "Secure ordering", sub: "Order safely over WhatsApp" },

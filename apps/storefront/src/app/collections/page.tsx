@@ -62,8 +62,7 @@ export default async function CollectionsIndexPage() {
       />
       <h1 className="mt-6 text-3xl font-normal">Collections</h1>
       <p className="mt-2 max-w-prose text-stone-600">
-        Curated edits of the range — built around how you train, travel and
-        carry.
+        Curated edits — for how you train, travel and carry.
       </p>
       <div className="mt-8">
         {tiles.length > 0 ? (

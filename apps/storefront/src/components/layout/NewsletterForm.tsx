@@ -58,7 +58,7 @@ export function NewsletterForm({
         className={cn("text-sm", dark ? "text-stone-300" : "text-stone-600", className)}
         role="status"
       >
-        Thanks — you're on the list. Watch your inbox for first dibs on new drops.
+        You're on the list. First dibs on drops, straight to your inbox.
       </p>
     );
   }

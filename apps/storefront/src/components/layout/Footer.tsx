@@ -34,8 +34,7 @@ export function Footer({ settings }: { settings: SiteSettings | null }) {
               {storeName.toUpperCase()}
             </p>
             <p className="mt-3 max-w-sm text-sm text-stone-400">
-              Premium bags, handcrafted to outlast the hype. Join for first dibs
-              on new drops.
+              Handcrafted to outlast the hype. Join for first dibs on drops.
             </p>
             <NewsletterForm source="footer" tone="dark" className="mt-5 max-w-md" />
           </div>

@@ -124,11 +124,10 @@ export default async function HomePage() {
         <div className="mx-auto max-w-2xl text-center">
           <p className="eyebrow mb-3">The launch list</p>
           <h2 className="text-2xl font-normal">
-            Be first in line for the drop
+            Be first to the drop
           </h2>
           <p className="mt-3 text-stone-600">
-            Early access to new releases before they hit the site — and nothing
-            else. No spam, unsubscribe anytime.
+            Early access to new releases. No spam, ever.
           </p>
           <div className="mt-6 flex justify-center">
             <NewsletterForm source="home" className="max-w-md" />

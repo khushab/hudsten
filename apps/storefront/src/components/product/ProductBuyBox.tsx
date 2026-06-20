@@ -345,7 +345,7 @@ export function ProductBuyBox({
               onClick={() => trackAmazonClick(eventPayload)}
               className="block text-center text-xs font-medium uppercase tracking-[0.12em] text-stone-600 underline underline-offset-4 hover:text-ink"
             >
-              Prefer Amazon? Buy there →
+              Buy on Amazon →
             </a>
           )}
 

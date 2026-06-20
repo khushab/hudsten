@@ -12,14 +12,12 @@ export function ReviewsEmpty() {
     <div className="rounded-lg border border-dashed border-stone-300 bg-paper-dim p-6">
       <p className="font-display text-lg font-medium">No reviews yet</p>
       <p className="mt-1 text-sm text-stone-600">
-        We&apos;re a new brand — these are fresh off the workbench, and we&apos;d
-        rather show you zero reviews than fake ones. Every Hudsten piece is
-        backed by our guarantees:
+        New brand — we won&apos;t fake reviews. Every piece is backed by:
       </p>
       <div className="mt-4 flex flex-wrap gap-x-8 gap-y-3 text-sm text-stone-700">
         <span className="flex items-center gap-2">
           <ShieldIcon className="h-5 w-5 text-ink" />
-          1-year warranty against defects
+          1-year warranty
         </span>
         <span className="flex items-center gap-2">
           <ReturnIcon className="h-5 w-5 text-ink" />

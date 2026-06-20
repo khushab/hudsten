@@ -43,7 +43,7 @@ export default async function SearchPage({
       <div className="mt-10">
         {!query ? (
           <p className="text-sm text-stone-500">
-            Type above to search the catalog.
+            Search the catalog.
           </p>
         ) : results.length > 0 ? (
           <>

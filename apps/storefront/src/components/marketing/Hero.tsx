@@ -7,7 +7,7 @@ import { buttonClasses } from "@/components/ui/Button";
 export function Hero({ hero }: { hero: HeroSettings }) {
   const headline = hero.headline || "Carry Better.";
   const subtext =
-    hero.subtext || "Premium gym bags, handcrafted to outlast the hype.";
+    hero.subtext || "Premium gym bags, built to outlast the hype.";
 
   return (
     <section className="relative isolate overflow-hidden bg-ink text-paper">

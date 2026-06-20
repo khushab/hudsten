@@ -5,17 +5,17 @@ const PILLARS = [
   {
     Icon: CheckIcon,
     title: "Materials that outlast trends",
-    body: "Ballistic weaves, full-grain trim and YKK hardware — picked for the years, not the photoshoot.",
+    body: "Ballistic weave, full-grain trim, YKK hardware.",
   },
   {
     Icon: ShieldIcon,
     title: "Built in small batches",
-    body: "Every piece is handcrafted in India and inspected seam by seam before it ships.",
+    body: "Handcrafted in India, inspected seam by seam.",
   },
   {
     Icon: ReturnIcon,
     title: "The risk is on us",
-    body: "1-year warranty against defects and 7-day no-fuss returns. If it isn't right, we make it right.",
+    body: "1-year warranty, 7-day returns. No questions.",
   },
 ];
 

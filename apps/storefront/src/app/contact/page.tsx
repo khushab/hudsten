@@ -25,8 +25,7 @@ export default async function ContactPage() {
         Get in touch
       </h1>
       <p className="mt-4 text-stone-600">
-        Questions about a product, your order, or anything else? The fastest way
-        to reach us is WhatsApp — we usually reply within a few hours.
+        Questions about a product or order? WhatsApp is fastest — we usually reply within a few hours.
       </p>
 
       {waUrl && (
