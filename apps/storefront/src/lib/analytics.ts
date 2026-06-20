@@ -71,6 +71,11 @@ export function trackWhatsAppClick(p: ProductEventInput): void {
   });
 }
 
+/** Product share (native share sheet or copy-link). GA4 has a recommended `share` event. */
+export function trackShare(id: string, name: string): void {
+  ga("share", { method: "web_share", item_id: id, item_name: name });
+}
+
 /** SECONDARY CTA click (Amazon outbound). */
 export function trackAmazonClick(p: ProductEventInput): void {
   ga("amazon_click", {

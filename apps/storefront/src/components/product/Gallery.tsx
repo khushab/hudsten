@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import type { GalleryImage } from "@hudsten/db";
-import { CloseIcon } from "@/components/icons";
+import { CloseIcon, ShareIcon, CheckIcon } from "@/components/icons";
 import { cn } from "@/lib/cn";
 
 /**
@@ -30,11 +30,15 @@ export function Gallery({
   activeColorId,
   title,
   videoUrl = null,
+  shareUrl,
+  onShare,
 }: {
   images: GalleryImage[];
   activeColorId: string | null;
   title: string;
   videoUrl?: string | null;
+  shareUrl?: string;
+  onShare?: () => void;
 }) {
   // Product-level fallback = images tagged to no color; if none, all images.
   const fallback = useMemo(() => {
@@ -97,6 +101,28 @@ export function Gallery({
   const zoomPrev = () =>
     setZoomIndex((z) => (z - 1 + visible.length) % visible.length);
   const zoomNext = () => setZoomIndex((z) => (z + 1) % visible.length);
+
+  // Share: native share sheet (mobile → WhatsApp/IG/…) with a copy-link fallback (desktop).
+  const [copied, setCopied] = useState(false);
+  const handleShare = async () => {
+    if (!shareUrl) return;
+    onShare?.();
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title, url: shareUrl });
+      } catch {
+        // user dismissed the share sheet — ignore
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1800);
+      } catch {
+        // clipboard unavailable — ignore
+      }
+    }
+  };
 
   // Lightbox a11y: Esc closes, arrows navigate (wrap), scroll lock, focus the close button on open.
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -186,6 +212,26 @@ export function Gallery({
           </div>
         )}
 
+        {/* Share — native sheet on mobile, copy-link fallback on desktop. stopPropagation so it
+            doesn't open zoom; z-10 to sit above the stacked images. */}
+        {shareUrl && (
+          <button
+            type="button"
+            aria-label={copied ? "Link copied" : "Share this product"}
+            title={copied ? "Link copied" : "Share"}
+            onClick={(e) => {
+              e.stopPropagation();
+              void handleShare();
+            }}
+            className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-paper/85 text-ink shadow-subtle backdrop-blur transition hover:bg-paper"
+          >
+            {copied ? (
+              <CheckIcon className="h-4 w-4" />
+            ) : (
+              <ShareIcon className="h-4 w-4" />
+            )}
+          </button>
+        )}
       </div>
 
       {/* Thumbnails — the active color set (+ video). */}

@@ -17,7 +17,12 @@ import {
   TruckIcon,
   WhatsAppIcon,
 } from "@/components/icons";
-import { trackAmazonClick, trackViewItem, trackWhatsAppClick } from "@/lib/analytics";
+import {
+  trackAmazonClick,
+  trackShare,
+  trackViewItem,
+  trackWhatsAppClick,
+} from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 function isColorOption(name: string) {
@@ -198,6 +203,8 @@ export function ProductBuyBox({
         activeColorId={activeColorId}
         title={product.title}
         videoUrl={videoUrl}
+        shareUrl={productUrl}
+        onShare={() => trackShare(product.id, product.title)}
       />
 
       <div>
