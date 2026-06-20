@@ -36,7 +36,7 @@ export function TrustStripSlim({ className }: { className?: string }) {
     <div className={cn("border-y border-stone-200 bg-paper-dim", className)}>
       {/* 2×2 grid on mobile (all four guarantees visible — no cut-off scroller);
           one roomier centered line on larger screens. */}
-      <ul className="mx-auto grid max-w-shell grid-cols-2 gap-x-6 gap-y-2.5 px-4 py-3.5 sm:flex sm:items-center sm:justify-center sm:gap-x-10 sm:px-6 sm:py-4 lg:px-8">
+      <ul className="mx-auto grid max-w-shell grid-cols-[auto_auto] justify-center gap-x-6 gap-y-2.5 px-4 py-3.5 sm:flex sm:items-center sm:justify-center sm:gap-x-10 sm:px-6 sm:py-4 lg:px-8">
         {ITEMS.map(({ Icon, title }) => (
           <li
             key={title}

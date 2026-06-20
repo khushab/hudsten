@@ -13,7 +13,7 @@ export function CompactTrust({ className }: { className?: string }) {
   return (
     <ul
       className={cn(
-        "grid grid-cols-2 gap-3 rounded-lg border border-stone-200 bg-paper-dim p-4 sm:grid-cols-4",
+        "grid grid-cols-[auto_auto] justify-center gap-x-6 gap-y-3 rounded-lg border border-stone-200 bg-paper-dim p-4 sm:grid-cols-4 sm:justify-items-start sm:gap-x-3",
         className,
       )}
     >
