@@ -84,12 +84,11 @@ export default async function HomePage() {
     <main>
       <JsonLd
         data={[
-          organizationJsonLd(storeName, [
-            social.instagram,
-            social.facebook,
-            social.youtube,
-            social.x,
-          ]),
+          organizationJsonLd(
+            storeName,
+            [social.instagram, social.facebook, social.youtube, social.x],
+            settings?.logo_url,
+          ),
           websiteJsonLd(storeName),
         ]}
       />

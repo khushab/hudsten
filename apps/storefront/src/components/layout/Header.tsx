@@ -14,6 +14,7 @@ export function Header({
 }) {
   const waUrl = buildWhatsAppGeneralUrl(settings?.whatsapp_number);
   const storeName = settings?.store_name ?? "Hudsten";
+  const logoUrl = settings?.logo_url;
 
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200 bg-paper/90 backdrop-blur-md">
@@ -25,7 +26,12 @@ export function Header({
           className="font-display text-base font-medium tracking-[0.22em] lg:mr-4"
           aria-label={`${storeName} home`}
         >
-          {storeName.toUpperCase()}
+          {logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoUrl} alt={storeName} className="h-7 w-auto" />
+          ) : (
+            storeName.toUpperCase()
+          )}
         </Link>
 
         <div className="flex-1">

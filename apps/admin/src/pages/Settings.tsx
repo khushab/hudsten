@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSettingsRow, updateSettings, type SettingsRow } from "@/api/settings";
 import { listCollectionRefs } from "@/api/reference";
+import { ImageUploadField } from "@/components/ImageUploadField";
 import {
   Button,
   Card,
@@ -145,11 +146,12 @@ export default function Settings() {
               onChange={(e) => set("store_name", e.target.value)}
             />
           </Field>
-          <Field label="Logo URL" htmlFor="logo_url">
-            <Input
-              id="logo_url"
+          <Field label="Logo">
+            <ImageUploadField
               value={form.logo_url}
-              onChange={(e) => set("logo_url", e.target.value)}
+              onChange={(url) => set("logo_url", url ?? "")}
+              alt="Store logo"
+              fit="contain"
             />
           </Field>
           <Field
@@ -215,11 +217,11 @@ export default function Settings() {
       {/* Hero */}
       <Card title="Hero">
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Image URL" htmlFor="hero_image" className="sm:col-span-2">
-            <Input
-              id="hero_image"
-              value={form.hero.image_url ?? ""}
-              onChange={(e) => setObj("hero", "image_url", e.target.value)}
+          <Field label="Image" className="sm:col-span-2">
+            <ImageUploadField
+              value={form.hero.image_url}
+              onChange={(url) => setObj("hero", "image_url", url ?? "")}
+              alt="Hero image"
             />
           </Field>
           <Field label="Headline" htmlFor="hero_headline">

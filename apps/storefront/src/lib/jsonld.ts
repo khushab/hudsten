@@ -77,6 +77,7 @@ export function faqJsonLd(
 export function organizationJsonLd(
   storeName: string,
   socials?: (string | undefined)[],
+  logoUrl?: string | null,
 ): Record<string, unknown> {
   const sameAs = (socials ?? []).filter(
     (s): s is string => Boolean(s) && /^https?:\/\//.test(s as string),
@@ -86,7 +87,7 @@ export function organizationJsonLd(
     "@type": "Organization",
     name: storeName,
     url: absoluteUrl("/"),
-    logo: absoluteUrl("/icon.svg"),
+    logo: logoUrl && /^https?:\/\//.test(logoUrl) ? logoUrl : absoluteUrl("/icon.svg"),
     ...(sameAs.length ? { sameAs } : {}),
   };
 }
