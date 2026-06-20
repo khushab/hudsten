@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ROUTES } from "@hudsten/shared";
 import {
-  fetchActiveCategories,
   fetchCategoryBreadcrumb,
   fetchCategoryBySlug,
   fetchColorFacets,
@@ -16,10 +15,12 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/jsonld";
 
 export const revalidate = 3600;
+export const dynamic = "force-static";
+export const dynamicParams = true;
 
+// Generate at runtime (not at build) so on-demand revalidation reliably clears the cache entry.
 export async function generateStaticParams() {
-  const cats = await fetchActiveCategories();
-  return cats.map((c) => ({ slug: c.slug }));
+  return [];
 }
 
 export async function generateMetadata({

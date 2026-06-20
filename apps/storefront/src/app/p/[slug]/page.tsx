@@ -10,7 +10,6 @@ import {
   fetchProductsForCrossSell,
   fetchPublishedReviews,
   fetchSettings,
-  fetchActiveProductSlugs,
 } from "@/lib/data";
 import { absoluteUrl } from "@/lib/env";
 import { Container } from "@/components/ui/Container";
@@ -27,10 +26,13 @@ import { sanitizeHtml } from "@/lib/sanitize";
 import { cn } from "@/lib/cn";
 
 export const revalidate = 3600;
+export const dynamic = "force-static";
+export const dynamicParams = true;
 
+// Generate at runtime (not at build): on-demand revalidation reliably clears runtime cache entries,
+// not build-time ones. Pages are still statically cached/ISR after the first request.
 export async function generateStaticParams() {
-  const slugs = await fetchActiveProductSlugs();
-  return slugs.map((s) => ({ slug: s.slug }));
+  return [];
 }
 
 export async function generateMetadata({
