@@ -61,8 +61,9 @@ export function Gallery({
   const active = isVideo ? null : (visible[index] ?? visible[0] ?? null);
   const embedUrl = videoUrl ? youTubeEmbedUrl(videoUrl) : null;
 
-  const prev = () => setIndex((i) => Math.max(0, i - 1));
-  const next = () => setIndex((i) => Math.min(total - 1, i + 1));
+  // Wrap infinitely (last → first, first → last) across the color's images + the video slide.
+  const prev = () => setIndex((i) => (i - 1 + total) % total);
+  const next = () => setIndex((i) => (i + 1) % total);
 
   // Swipe: horizontal drags advance slides; vertical-dominant gestures stay scrolls.
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -83,10 +84,21 @@ export function Gallery({
     }
   };
 
+  // The lightbox keeps its OWN index (decoupled from the gallery) so navigating inside it doesn't
+  // shuffle the gallery behind it. It wraps infinitely within the active color's images.
   const [zoom, setZoom] = useState(false);
+  const [zoomIndex, setZoomIndex] = useState(0);
+  const zoomImage = visible[zoomIndex];
+  const openZoom = () => {
+    if (isVideo) return;
+    setZoomIndex(index);
+    setZoom(true);
+  };
+  const zoomPrev = () =>
+    setZoomIndex((z) => (z - 1 + visible.length) % visible.length);
+  const zoomNext = () => setZoomIndex((z) => (z + 1) % visible.length);
 
-  // Zoom lightbox a11y: Esc to close, scroll lock, focus the close button on open and
-  // restore focus on close. Tab is trapped to the close button (the only control).
+  // Lightbox a11y: Esc closes, arrows navigate (wrap), scroll lock, focus the close button on open.
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const prevFocusRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
@@ -95,10 +107,10 @@ export function Gallery({
     closeBtnRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setZoom(false);
-      if (e.key === "Tab") {
-        e.preventDefault();
-        closeBtnRef.current?.focus();
-      }
+      else if (e.key === "ArrowLeft")
+        setZoomIndex((z) => (z - 1 + visible.length) % visible.length);
+      else if (e.key === "ArrowRight")
+        setZoomIndex((z) => (z + 1) % visible.length);
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -107,7 +119,7 @@ export function Gallery({
       document.body.style.overflow = "";
       prevFocusRef.current?.focus();
     };
-  }, [zoom]);
+  }, [zoom, visible.length]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -119,10 +131,18 @@ export function Gallery({
         onKeyDown={(e) => {
           if (e.key === "ArrowLeft") prev();
           if (e.key === "ArrowRight") next();
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openZoom();
+          }
         }}
+        onClick={openZoom}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className="relative aspect-[4/5] touch-pan-y overflow-hidden rounded-xl bg-paper-dim focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+        className={cn(
+          "relative aspect-square touch-pan-y overflow-hidden rounded-xl bg-paper-dim focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink",
+          !isVideo && "cursor-zoom-in",
+        )}
       >
         {/* All images stacked + eager-loaded so a color switch is instant (no fetch
             flicker). Above ~24 images the preload cost outweighs the flicker win, so
@@ -137,7 +157,7 @@ export function Gallery({
             loading="eager"
             priority={i === 0}
             className={cn(
-              "object-cover transition-opacity duration-200",
+              "object-contain transition-opacity duration-200",
               !isVideo && img.id === active?.id ? "opacity-100" : "opacity-0",
             )}
           />
@@ -166,16 +186,6 @@ export function Gallery({
           </div>
         )}
 
-        {active && (
-          <button
-            type="button"
-            onClick={() => setZoom(true)}
-            aria-label="Zoom image"
-            className="absolute bottom-3 right-3 rounded-full bg-paper/85 px-3 py-1.5 text-xs font-medium text-ink shadow-subtle backdrop-blur hover:bg-paper"
-          >
-            Zoom
-          </button>
-        )}
       </div>
 
       {/* Thumbnails — the active color set (+ video). */}
@@ -227,9 +237,9 @@ export function Gallery({
       )}
 
       {/* Zoom lightbox */}
-      {zoom && active && (
+      {zoom && zoomImage && (
         <div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-ink/90 p-4"
+          className="fixed inset-0 z-[80] flex flex-col items-center justify-center bg-ink/90 p-4"
           role="dialog"
           aria-modal="true"
           onClick={() => setZoom(false)}
@@ -238,23 +248,88 @@ export function Gallery({
             ref={closeBtnRef}
             type="button"
             aria-label="Close zoom"
-            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-paper/10 text-paper hover:bg-paper/20"
+            className="absolute right-4 top-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-paper/10 text-paper hover:bg-paper/20"
             onClick={() => setZoom(false)}
           >
             <CloseIcon className="h-6 w-6" />
           </button>
-          <div
-            className="relative h-[85vh] w-full max-w-3xl"
-            onClick={(e) => e.stopPropagation()}
-          >
+
+          {/* Desktop: side arrows overlaid on the image. They wrap infinitely + drive their own
+              zoomIndex (the gallery behind doesn't move). On mobile they'd overlap the full-width
+              image, so they move to a bar below instead. */}
+          {visible.length > 1 && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  zoomPrev();
+                }}
+                className="absolute left-4 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-paper/10 text-paper hover:bg-paper/20 sm:inline-flex"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true" className="h-6 w-6">
+                  <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                aria-label="Next image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  zoomNext();
+                }}
+                className="absolute right-4 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-paper/10 text-paper hover:bg-paper/20 sm:inline-flex"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true" className="h-6 w-6">
+                  <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          {/* No stopPropagation — clicking the image (or anywhere) closes the lightbox. */}
+          <div className="relative w-full max-w-3xl flex-1 min-h-0">
             <Image
-              src={active.url}
-              alt={active.alt_text ?? title}
+              src={zoomImage.url}
+              alt={zoomImage.alt_text ?? title}
               fill
               sizes="100vw"
               className="object-contain"
             />
           </div>
+
+          {/* Mobile: controls below the image (clear + tappable, no overlap with the photo). */}
+          {visible.length > 1 && (
+            <div
+              className="mt-4 flex shrink-0 items-center justify-center gap-8 sm:hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                aria-label="Previous image"
+                onClick={zoomPrev}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-paper/10 text-paper hover:bg-paper/20"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true" className="h-6 w-6">
+                  <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <span className="text-sm tabular-nums text-paper/80">
+                {zoomIndex + 1} / {visible.length}
+              </span>
+              <button
+                type="button"
+                aria-label="Next image"
+                onClick={zoomNext}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-paper/10 text-paper hover:bg-paper/20"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true" className="h-6 w-6">
+                  <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

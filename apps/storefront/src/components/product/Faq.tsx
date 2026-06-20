@@ -10,7 +10,8 @@ export function Faq({ items }: { items: ProductFaq[] }) {
   if (items.length === 0) return null;
   return (
     <div>
-      <h2 className="mb-5 text-2xl font-normal">FAQ</h2>
+      {/* normal-case so the acronym+plural renders "FAQs", not the global-uppercase "FAQS". */}
+      <h2 className="mb-5 text-2xl font-normal normal-case tracking-normal">FAQs</h2>
       <div className="border-t border-stone-200">
         {items.map((faq) => (
           <Accordion key={faq.question} title={faq.question}>

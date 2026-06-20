@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ROUTES } from "@hudsten/shared";
 import { summarizeReviews } from "@hudsten/db";
@@ -169,9 +168,10 @@ export default async function ProductPage({
               key={i}
               className={cn("grid md:grid-cols-2")}
             >
+              {/* Image half — white, full image (never cropped), with breathing room (MW style). */}
               <div
                 className={cn(
-                  "relative min-h-[340px] bg-paper-dim md:min-h-[480px]",
+                  "relative aspect-square bg-paper",
                   i % 2 === 1 && "md:order-2",
                 )}
               >
@@ -181,13 +181,14 @@ export default async function ProductPage({
                     alt={b.heading || ""}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover"
+                    className="object-contain"
                   />
                 )}
               </div>
+              {/* Text half — light-grey panel, equal width to the image (MW style). */}
               <div
                 className={cn(
-                  "flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-16",
+                  "flex flex-col justify-center bg-paper-dim px-6 py-12 sm:px-10 lg:px-16 md:aspect-square",
                   i % 2 === 1 && "md:order-1",
                 )}
               >
@@ -235,8 +236,8 @@ export default async function ProductPage({
         )}
       </Container>
 
-      {/* Related products — MW grey band, centered heading. */}
-      {related.length > 0 ? (
+      {/* Related products — MW grey band, centered heading. Omitted entirely when there are none. */}
+      {related.length > 0 && (
         <section className="mt-12 bg-[#EFEFEF] py-14">
           <Container>
             <Reveal>
@@ -247,31 +248,6 @@ export default async function ProductPage({
             </Reveal>
           </Container>
         </section>
-      ) : (
-        <Container className="py-12">
-          <div className="border border-stone-200 bg-paper-dim px-6 py-8 text-center">
-            <p className="font-display text-lg font-medium">
-              Want to see what else we make?
-            </p>
-            <p className="mx-auto mt-1 max-w-prose text-sm text-stone-600">
-              More pieces are on the way — browse the collection or come back
-              soon.
-            </p>
-            <Link
-              href={
-                product.category
-                  ? `${ROUTES.category}/${product.category.slug}`
-                  : "/"
-              }
-              className="mt-4 inline-block text-sm font-medium underline underline-offset-4 hover:text-ink"
-            >
-              {product.category
-                ? `Explore ${product.category.name}`
-                : "Back to home"}{" "}
-              →
-            </Link>
-          </div>
-        </Container>
       )}
     </main>
   );

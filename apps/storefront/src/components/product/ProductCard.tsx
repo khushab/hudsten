@@ -16,7 +16,7 @@ export function ProductCard({
 
   return (
     <Link href={`${ROUTES.product}/${product.slug}`} className="group block">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-paper-dim">
+      <div className="relative aspect-square overflow-hidden rounded-lg bg-paper-dim">
         {product.primaryImage ? (
           <>
             <Image
@@ -25,7 +25,7 @@ export function ProductCard({
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               priority={priority}
-              className="object-cover transition-transform duration-500 ease-lux group-hover:scale-105"
+              className="object-contain transition-transform duration-500 ease-lux group-hover:scale-105"
             />
             {/* Hover swap to the second angle (CSS-only; lazy — loads on demand). */}
             {product.secondaryImage && (
@@ -34,7 +34,7 @@ export function ProductCard({
                 alt=""
                 fill
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="object-cover opacity-0 transition-opacity duration-300 ease-lux group-hover:opacity-100"
+                className="object-contain opacity-0 transition-opacity duration-300 ease-lux group-hover:opacity-100"
               />
             )}
           </>
