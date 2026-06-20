@@ -188,7 +188,7 @@ export default async function ProductPage({
               {/* Text half — light-grey panel, equal width to the image (MW style). */}
               <div
                 className={cn(
-                  "flex flex-col justify-center bg-paper-dim px-6 py-12 sm:px-10 lg:px-16 md:aspect-square",
+                  "flex aspect-square flex-col justify-center bg-paper-dim px-6 py-12 sm:px-10 lg:px-16",
                   i % 2 === 1 && "md:order-1",
                 )}
               >
