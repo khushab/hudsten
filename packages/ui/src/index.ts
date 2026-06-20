@@ -5,7 +5,7 @@ export const brandColors = {
   ink: "#1C1C1C",
   paper: "#FFFFFF",
   brass: "#171717", // neutralized to monochrome (MW has no metallic accent)
-  whatsapp: "#1E7A47", // refined green reserved for the primary CTA
+  whatsapp: "#16A34A", // clean modern green for the primary CTA
 } as const;
 
 export const fontStacks = {

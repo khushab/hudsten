@@ -163,6 +163,20 @@ export function ProductBuyBox({
     return () => document.body.classList.remove("has-sticky-cta");
   }, [waUrl]);
 
+  // The sticky mobile CTA appears ONLY once the inline WhatsApp button has scrolled out of view —
+  // so there's never two "Order on WhatsApp" buttons on screen at the same time.
+  const inlineCtaRef = useRef<HTMLAnchorElement>(null);
+  const [inlineCtaVisible, setInlineCtaVisible] = useState(true);
+  useEffect(() => {
+    const el = inlineCtaRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) =>
+      setInlineCtaVisible(entry?.isIntersecting ?? true),
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [waUrl]);
+
   const eventPayload = {
     id: product.id,
     name: product.title,
@@ -300,6 +314,7 @@ export function ProductBuyBox({
         <div className="mt-5 space-y-3">
           {waUrl ? (
             <a
+              ref={inlineCtaRef}
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -339,9 +354,9 @@ export function ProductBuyBox({
         <CompactTrust className="mt-7" />
       </div>
 
-      {/* Sticky mobile CTA bar (Hick's Law — one clear action). Two stacked rows so the
-          full-width button never clips the label, regardless of screen width. */}
-      {waUrl && (
+      {/* Sticky mobile CTA bar (Hick's Law — one clear action), shown only after the inline CTA
+          scrolls away. Two stacked rows so the full-width button never clips the label. */}
+      {waUrl && !inlineCtaVisible && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex flex-col gap-2 border-t border-stone-200 bg-paper/95 p-3 backdrop-blur-md lg:hidden">
           {/* Row 1 — compact price line: current price + struck compare-at + % off. */}
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm">

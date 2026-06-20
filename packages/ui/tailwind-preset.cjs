@@ -60,10 +60,10 @@ module.exports = {
         },
         success: "#1F7A4D",
         danger: "#B42318",
-        // The one reserved accent — refined green (raw #25D366 would cheapen the monochrome page).
+        // The one reserved accent — a clean, modern green for the primary CTA.
         whatsapp: {
-          DEFAULT: "#1E7A47",
-          dark: "#185E38",
+          DEFAULT: "#16A34A",
+          dark: "#15803D",
         },
       },
       fontFamily: {

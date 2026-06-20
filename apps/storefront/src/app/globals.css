@@ -34,6 +34,14 @@
   :focus-visible {
     @apply outline-none ring-2 ring-ink ring-offset-2 ring-offset-paper;
   }
+  /* Text inputs/textarea show focus via their own border (focus:border-ink), so the ring above
+     would draw a second outline INSIDE the field. Drop it for those. (Checkboxes/radios keep the
+     ring — they have no border focus cue.) */
+  input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply ring-0 ring-offset-0;
+  }
 
   ::selection {
     @apply bg-ink text-paper;
