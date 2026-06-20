@@ -3,61 +3,43 @@ import { revalidatePath } from "next/cache";
 
 export const runtime = "nodejs";
 
-/**
- * On-demand ISR revalidation, called by Supabase Database Webhooks when catalog/content rows
- * change (see supabase/migrations/*_revalidation_webhooks.sql). Path-based + coarse: a table
- * change marks the affected route patterns stale and Next regenerates each lazily on next visit.
- *
- * Gated by a shared secret that lives only server-side (this env + the DB trigger). The admin
- * SPA is never in the loop, so no secret reaches the browser.
- */
-
-// Sentinel: nav + settings render in the root layout, so revalidating it cascades to every page.
+// Sentinel: nav + settings live in the root layout, so revalidating it cascades to every page.
 const LAYOUT = "__layout__";
 
-// Webhook table → route patterns to invalidate. '[slug]' patterns invalidate every instance.
-const TABLE_PATHS: Record<string, string[]> = {
-  products: ["/p/[slug]", "/c/[slug]", "/collections/[slug]", "/collections", "/", "/sitemap.xml"],
-  product_variants: ["/p/[slug]", "/c/[slug]", "/collections/[slug]", "/"], // price/stock on cards
-  product_images: ["/p/[slug]", "/c/[slug]", "/collections/[slug]", "/"],
-  product_collections: ["/collections/[slug]", "/collections", "/", "/sitemap.xml"], // membership
-  collections: ["/collections/[slug]", "/collections", "/", "/sitemap.xml"],
-  categories: ["/c/[slug]", "/p/[slug]", "/sitemap.xml"], // category pages + PDP breadcrumb/related
-  navigation_menu: [LAYOUT],
-  settings: [LAYOUT],
-};
-
+/**
+ * On-demand ISR revalidation, called by Supabase DB webhooks (see
+ * supabase/migrations/*_revalidate_exact_paths.sql). The DB trigger resolves the affected slugs and
+ * sends CONCRETE paths (e.g. /p/the-slug) — dynamic-pattern revalidation
+ * (revalidatePath('/p/[slug]','page')) does NOT reliably purge prerendered pages in Next 15, so we
+ * always revalidate exact paths. Secret-gated; the secret lives only server-side (this env + the trigger).
+ */
 export async function POST(req: Request) {
   const secret = process.env.REVALIDATE_SECRET;
   if (!secret || req.headers.get("x-revalidate-secret") !== secret) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  let body: { table?: string; type?: string };
+  let paths: unknown;
   try {
-    body = (await req.json()) as { table?: string; type?: string };
+    ({ paths } = (await req.json()) as { paths?: unknown });
   } catch {
     return NextResponse.json({ error: "invalid body" }, { status: 400 });
   }
 
-  const paths = TABLE_PATHS[body.table ?? ""];
-  if (!paths) {
-    return NextResponse.json({ revalidated: false, reason: `untracked table: ${body.table}` });
+  if (!Array.isArray(paths) || !paths.every((p) => typeof p === "string")) {
+    return NextResponse.json({ error: "no paths" }, { status: 400 });
   }
 
   const done: string[] = [];
-  for (const path of paths) {
+  for (const path of new Set(paths as string[])) {
     if (path === LAYOUT) {
-      revalidatePath("/", "layout"); // cascades to all routes under the root layout
+      revalidatePath("/", "layout"); // cascade to all routes under the root layout
       done.push("/ (layout)");
-    } else if (path.includes("[")) {
-      revalidatePath(path, "page"); // dynamic segment → all instances
-      done.push(path);
     } else {
       revalidatePath(path);
       done.push(path);
     }
   }
 
-  return NextResponse.json({ revalidated: true, table: body.table, type: body.type, paths: done });
+  return NextResponse.json({ revalidated: true, paths: done });
 }
