@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { uploadProductImage } from "@/api/storage";
 import { Button, ErrorNote, Input, Spinner, Textarea } from "@/components/ui";
+import { useConfirm } from "@/components/Confirm";
 
 type EditorialBlock = { image_url: string | null; heading: string; body: string };
 
@@ -19,11 +20,27 @@ export function EditorialBlocksEditor({
   // Per-row upload state so one block uploading doesn't disable the others.
   const [busyIdx, setBusyIdx] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const confirm = useConfirm();
 
   const update = (i: number, patch: Partial<EditorialBlock>) =>
     onChange(blocks.map((b, idx) => (idx === i ? { ...b, ...patch } : b)));
 
-  const remove = (i: number) => onChange(blocks.filter((_, idx) => idx !== i));
+  const remove = async (i: number) => {
+    const b = blocks[i];
+    // Only confirm when the block actually has content to lose.
+    if (
+      (b?.heading || b?.body || b?.image_url) &&
+      !(await confirm({
+        title: "Remove block?",
+        message:
+          "This editorial block and its content will be removed. Restored only if you leave without saving.",
+        confirmLabel: "Remove",
+        danger: true,
+      }))
+    )
+      return;
+    onChange(blocks.filter((_, idx) => idx !== i));
+  };
 
   async function onPick(i: number, e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];

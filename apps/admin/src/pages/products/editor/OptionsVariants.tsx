@@ -4,6 +4,7 @@ import type {
   EditorVariant,
 } from "@/api/products";
 import { Button, Input } from "@/components/ui";
+import { useConfirm } from "@/components/Confirm";
 
 const uid = () => crypto.randomUUID();
 const isColor = (name: string) => name.toLowerCase() === "color";
@@ -68,14 +69,30 @@ export function OptionsVariants({
   onOptions: (next: EditorOption[]) => void;
   onVariants: (next: EditorVariant[]) => void;
 }) {
+  const confirm = useConfirm();
+
   const addOption = () =>
     onOptions([...options, { name: "", position: options.length, values: [] }]);
 
   const updateOption = (i: number, patch: Partial<EditorOption>) =>
     onOptions(options.map((o, idx) => (idx === i ? { ...o, ...patch } : o)));
 
-  const removeOption = (i: number) =>
+  const removeOption = async (i: number) => {
+    const o = options[i];
+    // Only confirm when there's something to lose (named option or any values).
+    if (
+      (o?.name || o?.values.length) &&
+      !(await confirm({
+        title: "Remove option?",
+        message:
+          "This option and its values will be removed, affecting variants. Restored only if you leave without saving.",
+        confirmLabel: "Remove",
+        danger: true,
+      }))
+    )
+      return;
     onOptions(options.filter((_, idx) => idx !== i).map((o, idx) => ({ ...o, position: idx })));
+  };
 
   const addValue = (i: number) =>
     updateOption(i, {

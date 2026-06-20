@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatPrice } from "@hudsten/shared";
 import { deleteProduct, listProducts } from "@/api/products";
+import { useConfirm } from "@/components/Confirm";
 import { Button, Card, ErrorNote, Input, PageHeader, Spinner } from "@/components/ui";
 import { cn } from "@/lib/cn";
 
@@ -26,6 +27,7 @@ export default function ProductsList() {
     mutationFn: deleteProduct,
     onSuccess: () => qc.invalidateQueries({ queryKey: ["products"] }),
   });
+  const confirm = useConfirm();
 
   return (
     <div>
@@ -101,8 +103,15 @@ export default function ProductsList() {
                   <td className="px-5 py-3 text-right">
                     <button
                       type="button"
-                      onClick={() => {
-                        if (confirm(`Delete "${p.title}"? This cannot be undone.`))
+                      onClick={async () => {
+                        if (
+                          await confirm({
+                            title: "Delete product?",
+                            message: `"${p.title}" will be permanently deleted. This can't be undone.`,
+                            confirmLabel: "Delete",
+                            danger: true,
+                          })
+                        )
                           del.mutate(p.id);
                       }}
                       className="text-xs text-danger hover:underline"

@@ -257,14 +257,25 @@ interface RawEditRow {
   product_tags: { tag_id: string }[];
 }
 
-/** Current image URLs of a product (for storage cleanup diffs). */
+/**
+ * Current image URLs of a product (for storage cleanup diffs) — covers BOTH the
+ * product_images gallery AND editorial-block images (stored in the products JSON),
+ * so neither source leaks orphaned files in Storage.
+ */
 async function getImageUrls(productId: string): Promise<string[]> {
   const sb = getSupabase();
-  const rows = must(
-    await sb.from("product_images").select("url").eq("product_id", productId),
-    "getImageUrls",
-  ) as { url: string }[];
-  return rows.map((r) => r.url);
+  const [imgs, prod] = await Promise.all([
+    sb.from("product_images").select("url").eq("product_id", productId),
+    sb.from("products").select("editorial_blocks").eq("id", productId).maybeSingle(),
+  ]);
+  const urls = (must(imgs, "getImageUrls") as { url: string }[]).map((r) => r.url);
+  const blocks = prod.data?.editorial_blocks;
+  if (Array.isArray(blocks)) {
+    for (const b of blocks as { image_url?: string | null }[]) {
+      if (b?.image_url) urls.push(b.image_url);
+    }
+  }
+  return urls;
 }
 
 /**
@@ -302,7 +313,12 @@ export async function saveProduct(payload: ProductEditorPayload): Promise<string
     "saveProduct",
   ) as string;
 
-  const kept = new Set(payload.images.map((i) => i.url));
+  const kept = new Set([
+    ...payload.images.map((i) => i.url),
+    ...payload.core.editorial_blocks
+      .map((b) => b.image_url)
+      .filter((u): u is string => !!u),
+  ]);
   await removeProductImages(previousUrls.filter((u) => !kept.has(u)));
 
   revalidateStorefront(

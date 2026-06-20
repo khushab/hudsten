@@ -10,6 +10,7 @@ import {
   type Collection,
   type CollectionInput,
 } from "@/api/collections";
+import { useConfirm } from "@/components/Confirm";
 import { listProductRefs } from "@/api/reference";
 import { listCategories } from "@/api/categories";
 import {
@@ -105,6 +106,7 @@ export default function Collections() {
     mutationFn: deleteCollection,
     onSuccess: () => qc.invalidateQueries({ queryKey: ["collections"] }),
   });
+  const confirm = useConfirm();
 
   return (
     <div className="space-y-6">
@@ -185,8 +187,15 @@ export default function Collections() {
                   <td className="px-5 py-3 text-right">
                     <button
                       type="button"
-                      onClick={() => {
-                        if (window.confirm(`Delete "${c.name}"? This cannot be undone.`))
+                      onClick={async () => {
+                        if (
+                          await confirm({
+                            title: "Delete collection?",
+                            message: `"${c.name}" will be permanently deleted. This can't be undone.`,
+                            confirmLabel: "Delete",
+                            danger: true,
+                          })
+                        )
                           del.mutate(c.id);
                       }}
                       className="text-xs text-danger hover:underline"

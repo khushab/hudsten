@@ -9,6 +9,7 @@ import {
   type NavInput,
   type NavRow,
 } from "@/api/navigation";
+import { useConfirm } from "@/components/Confirm";
 import {
   Button,
   Card,
@@ -114,6 +115,7 @@ export default function Navigation() {
     mutationFn: (id: string) => deleteNavItem(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["navigation"] }),
   });
+  const confirm = useConfirm();
 
   const move = useMutation({
     mutationFn: (updates: { id: string; position: number; parent_id: string | null }[]) =>
@@ -152,14 +154,15 @@ export default function Navigation() {
     );
   };
 
-  const onDelete = (item: NavRow) => {
+  const onDelete = async (item: NavRow) => {
     const childCount = (childrenByParent.get(item.id) ?? []).length;
     // navigation_menu.parent_id is ON DELETE CASCADE → nested items are deleted too.
-    const msg =
+    const message =
       childCount > 0
-        ? `Delete "${item.label}"? Its ${childCount} nested item(s) will also be permanently deleted. This cannot be undone.`
-        : `Delete "${item.label}"? This cannot be undone.`;
-    if (confirm(msg)) del.mutate(item.id);
+        ? `"${item.label}" and its ${childCount} nested item(s) will be permanently deleted. This can't be undone.`
+        : `"${item.label}" will be permanently deleted. This can't be undone.`;
+    if (await confirm({ title: "Delete nav item?", message, confirmLabel: "Delete", danger: true }))
+      del.mutate(item.id);
   };
 
   const renderRow = (item: NavRow, siblings: NavRow[], depth: number) => {

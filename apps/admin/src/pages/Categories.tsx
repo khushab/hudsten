@@ -9,6 +9,7 @@ import {
   type Category,
   type CategoryInput,
 } from "@/api/categories";
+import { useConfirm } from "@/components/Confirm";
 import {
   Button,
   Card,
@@ -163,6 +164,7 @@ export default function Categories() {
       qc.invalidateQueries({ queryKey: ["categories"] });
     },
   });
+  const confirm = useConfirm();
 
   const reorder = useMutation({
     mutationFn: reorderCategories,
@@ -234,11 +236,14 @@ export default function Categories() {
                   activeId={form.id}
                   busy={reorder.isPending || del.isPending}
                   onEdit={startEdit}
-                  onDelete={(c) => {
+                  onDelete={async (c) => {
                     if (
-                      window.confirm(
-                        `Delete "${c.name}"?${c.children.length ? " Its sub-categories will be orphaned." : ""} This cannot be undone.`,
-                      )
+                      await confirm({
+                        title: "Delete category?",
+                        message: `"${c.name}" will be permanently deleted.${c.children.length ? " Its sub-categories will be orphaned." : ""} This can't be undone.`,
+                        confirmLabel: "Delete",
+                        danger: true,
+                      })
                     )
                       del.mutate(c.id);
                   }}
