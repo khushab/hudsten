@@ -13,9 +13,6 @@ const nextConfig = {
   reactStrictMode: true,
   // @hudsten/* are source-only workspace packages (no build step) — transpile them.
   transpilePackages: ["@hudsten/shared", "@hudsten/db", "@hudsten/ui"],
-  // jsdom (via isomorphic-dompurify) reads asset files at runtime — webpack
-  // bundling breaks those paths, so load it from node_modules instead.
-  serverExternalPackages: ["isomorphic-dompurify", "jsdom"],
   images: {
     // AVIF/WebP + remote sources. Supabase Storage CDN host is added from env at build.
     formats: ["image/avif", "image/webp"],
