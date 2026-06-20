@@ -1,6 +1,7 @@
 import type { Enums, Json } from "@hudsten/db";
 import { getSupabase } from "@/lib/supabase";
 import { removeProductImages } from "./storage";
+import { revalidateStorefront } from "./revalidate";
 
 /** Throw on a Supabase error; return data otherwise. */
 function must<T>(res: { data: T; error: { message: string } | null }, ctx: string): T {
@@ -275,6 +276,20 @@ async function getImageUrls(productId: string): Promise<string[]> {
  * After a successful save, storage files for images that were removed from the
  * product are deleted best-effort (never fails the save).
  */
+/** Entity tags a product edit affects: its PDP + its category & collection listings + home. */
+function productTags(
+  slug: string,
+  categoryId: string | null,
+  collectionIds: string[],
+): string[] {
+  return [
+    `product:${slug}`,
+    ...(categoryId ? [`category-products:${categoryId}`] : []),
+    ...collectionIds.map((id) => `collection-products:${id}`),
+    "home",
+  ];
+}
+
 export async function saveProduct(payload: ProductEditorPayload): Promise<string> {
   const sb = getSupabase();
 
@@ -290,13 +305,32 @@ export async function saveProduct(payload: ProductEditorPayload): Promise<string
   const kept = new Set(payload.images.map((i) => i.url));
   await removeProductImages(previousUrls.filter((u) => !kept.has(u)));
 
+  revalidateStorefront(
+    productTags(payload.core.slug, payload.core.category_id, payload.collectionIds),
+  );
   return pid;
 }
 
 export async function deleteProduct(id: string): Promise<void> {
   const sb = getSupabase();
-  // Snapshot file URLs first — after the row cascade-deletes they're unrecoverable.
+  // Snapshot identity (for revalidation) + file URLs before the row cascade-deletes them.
+  const meta = (
+    await sb
+      .from("products")
+      .select("slug, category_id, product_collections(collection_id)")
+      .eq("id", id)
+      .maybeSingle()
+  ).data;
   const urls = await getImageUrls(id);
   must(await sb.from("products").delete().eq("id", id).select("id"), "deleteProduct");
   await removeProductImages(urls);
+  if (meta) {
+    revalidateStorefront(
+      productTags(
+        meta.slug,
+        meta.category_id,
+        (meta.product_collections ?? []).map((c) => c.collection_id),
+      ),
+    );
+  }
 }

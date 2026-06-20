@@ -62,9 +62,11 @@ export default async function CollectionPage({
   if (!collection) notFound();
 
   const products = await fetchProductsForCollection(collection);
-  const colorFacets = await fetchColorFacets({
-    ids: products.map((p) => p.id),
-  });
+  // Scope the facets cache to this collection so a product change in it revalidates them too.
+  const colorFacets = await fetchColorFacets(
+    { ids: products.map((p) => p.id) },
+    `collection-products:${collection.id}`,
+  );
 
   const crumbs: Crumb[] = [
     { name: "Home", path: "/" },

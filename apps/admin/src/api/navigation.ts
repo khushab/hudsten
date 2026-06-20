@@ -1,6 +1,7 @@
 import type { Tables, TablesInsert } from "@hudsten/db";
 import { getSupabase } from "@/lib/supabase";
 import { must } from "./_util";
+import { revalidateStorefront } from "./revalidate";
 
 export type NavRow = Tables<"navigation_menu">;
 export type NavInput = Omit<TablesInsert<"navigation_menu">, "id"> & { id?: string };
@@ -22,12 +23,14 @@ export async function upsertNavItem(input: NavInput): Promise<string> {
     await sb.from("navigation_menu").upsert(input).select("id").single(),
     "upsertNavItem",
   ) as { id: string };
+  revalidateStorefront(["nav"]);
   return row.id;
 }
 
 export async function deleteNavItem(id: string): Promise<void> {
   const sb = getSupabase();
   must(await sb.from("navigation_menu").delete().eq("id", id).select("id"), "deleteNavItem");
+  revalidateStorefront(["nav"]);
 }
 
 export async function reorderNav(
@@ -44,4 +47,5 @@ export async function reorderNav(
       "reorderNav",
     );
   }
+  revalidateStorefront(["nav"]);
 }

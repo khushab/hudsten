@@ -1,6 +1,7 @@
 import type { Tables, TablesInsert } from "@hudsten/db";
 import { getSupabase } from "@/lib/supabase";
 import { must } from "./_util";
+import { revalidateStorefront } from "./revalidate";
 
 export type Collection = Tables<"collections">;
 export type CollectionInput = Omit<TablesInsert<"collections">, "id"> & { id?: string };
@@ -22,12 +23,27 @@ export async function upsertCollection(input: CollectionInput): Promise<string> 
     await sb.from("collections").upsert(input).select("id").single(),
     "upsertCollection",
   ) as { id: string };
+  revalidateStorefront([
+    `collection:${input.slug}`,
+    `collection-products:${row.id}`,
+    "collections-list",
+    "home",
+  ]);
   return row.id;
 }
 
 export async function deleteCollection(id: string): Promise<void> {
   const sb = getSupabase();
+  const slug = (
+    await sb.from("collections").select("slug").eq("id", id).maybeSingle()
+  ).data?.slug;
   must(await sb.from("collections").delete().eq("id", id).select("id"), "deleteCollection");
+  revalidateStorefront([
+    ...(slug ? [`collection:${slug}`] : []),
+    `collection-products:${id}`,
+    "collections-list",
+    "home",
+  ]);
 }
 
 export async function getCollectionProductIds(collectionId: string): Promise<string[]> {
@@ -68,4 +84,5 @@ export async function setManualProducts(
       "set collection products",
     );
   }
+  revalidateStorefront([`collection-products:${collectionId}`, "home"]);
 }

@@ -1,6 +1,7 @@
 import type { Tables, TablesUpdate } from "@hudsten/db";
 import { getSupabase } from "@/lib/supabase";
 import { must } from "./_util";
+import { revalidateStorefront } from "./revalidate";
 
 export type SettingsRow = Tables<"settings">;
 
@@ -25,4 +26,5 @@ export async function updateSettings(
       .single(),
     "updateSettings",
   );
+  revalidateStorefront(["settings"]);
 }

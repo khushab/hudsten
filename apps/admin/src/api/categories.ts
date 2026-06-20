@@ -1,6 +1,7 @@
 import type { Tables, TablesInsert } from "@hudsten/db";
 import { getSupabase } from "@/lib/supabase";
 import { must } from "./_util";
+import { revalidateStorefront } from "./revalidate";
 
 export type Category = Tables<"categories">;
 export type CategoryInput = Omit<TablesInsert<"categories">, "id"> & { id?: string };
@@ -22,12 +23,25 @@ export async function upsertCategory(input: CategoryInput): Promise<string> {
     await sb.from("categories").upsert(input).select("id").single(),
     "upsertCategory",
   ) as { id: string };
+  revalidateStorefront([
+    `category:${input.slug}`,
+    `category-products:${row.id}`,
+    "categories-list",
+  ]);
   return row.id;
 }
 
 export async function deleteCategory(id: string): Promise<void> {
   const sb = getSupabase();
+  const slug = (
+    await sb.from("categories").select("slug").eq("id", id).maybeSingle()
+  ).data?.slug;
   must(await sb.from("categories").delete().eq("id", id).select("id"), "deleteCategory");
+  revalidateStorefront([
+    ...(slug ? [`category:${slug}`] : []),
+    `category-products:${id}`,
+    "categories-list",
+  ]);
 }
 
 /** Persist new positions / parents after a drag-reorder. */
@@ -45,4 +59,5 @@ export async function reorderCategories(
       "reorderCategories",
     );
   }
+  revalidateStorefront(["categories-list"]);
 }
