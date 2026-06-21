@@ -18,27 +18,31 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200 bg-paper/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-shell items-center gap-3 px-4 sm:px-6 lg:px-8">
-        <MobileNav items={nav} />
+      {/* Three zones (1fr · auto · 1fr) keep the logo dead-centre regardless of the
+          left/right widths — Mission Workshop-style centred mark. */}
+      <div className="mx-auto grid h-20 max-w-shell grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 sm:px-6 lg:px-8">
+        {/* Left — hamburger on mobile, primary nav on desktop */}
+        <div className="flex items-center gap-3 justify-self-start">
+          <MobileNav items={nav} />
+          <Nav items={nav} />
+        </div>
 
+        {/* Centre — logo lockup: icon over the wordmark */}
         <Link
           href="/"
-          className="flex items-center gap-2 font-display text-base font-medium tracking-[0.22em] lg:mr-4"
+          className="flex flex-col items-center gap-1 justify-self-center font-display text-sm font-medium tracking-[0.2em]"
           aria-label={`${storeName} home`}
         >
           {logoUrl && (
-            // Icon mark beside the wordmark; alt empty + aria-hidden since the text carries the name.
+            // Icon mark above the wordmark; alt empty + aria-hidden since the text carries the name.
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoUrl} alt="" aria-hidden="true" className="h-6 w-auto" />
+            <img src={logoUrl} alt="" aria-hidden="true" className="h-7 w-auto" />
           )}
           {storeName.toUpperCase()}
         </Link>
 
-        <div className="flex-1">
-          <Nav items={nav} />
-        </div>
-
-        <div className="flex items-center gap-1">
+        {/* Right — actions */}
+        <div className="flex items-center gap-1 justify-self-end">
           <Link
             href="/search"
             aria-label="Search"
