@@ -21,6 +21,7 @@ const SHOP_LINKS = [
 // MW-style dark footer (#1C1C1C). Light text/links sized for AA contrast on near-black.
 export function Footer({ settings }: { settings: SiteSettings | null }) {
   const storeName = settings?.store_name ?? "Hudsten";
+  const logoDark = settings?.logo_url_dark;
   const year = new Date().getFullYear();
   const social = settings?.social ?? {};
 
@@ -30,7 +31,11 @@ export function Footer({ settings }: { settings: SiteSettings | null }) {
         <div className="grid grid-cols-2 gap-10 md:grid-cols-4 lg:grid-cols-5">
           {/* Brand + newsletter */}
           <div className="col-span-2 lg:col-span-2">
-            <p className="font-display text-base font-medium tracking-[0.22em] text-paper">
+            <p className="flex items-center gap-2 font-display text-base font-medium tracking-[0.22em] text-paper">
+              {logoDark && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoDark} alt="" aria-hidden="true" className="h-6 w-auto" />
+              )}
               {storeName.toUpperCase()}
             </p>
             <p className="mt-3 max-w-sm text-sm text-stone-400">

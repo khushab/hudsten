@@ -621,6 +621,7 @@ export type Database = {
           hero: Json
           id: number
           logo_url: string | null
+          logo_url_dark: string | null
           phone: string | null
           policies: Json
           social: Json
@@ -639,6 +640,7 @@ export type Database = {
           hero?: Json
           id?: number
           logo_url?: string | null
+          logo_url_dark?: string | null
           phone?: string | null
           policies?: Json
           social?: Json
@@ -657,6 +659,7 @@ export type Database = {
           hero?: Json
           id?: number
           logo_url?: string | null
+          logo_url_dark?: string | null
           phone?: string | null
           policies?: Json
           social?: Json

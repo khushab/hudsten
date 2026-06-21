@@ -23,15 +23,15 @@ export function Header({
 
         <Link
           href="/"
-          className="font-display text-base font-medium tracking-[0.22em] lg:mr-4"
+          className="flex items-center gap-2 font-display text-base font-medium tracking-[0.22em] lg:mr-4"
           aria-label={`${storeName} home`}
         >
-          {logoUrl ? (
+          {logoUrl && (
+            // Icon mark beside the wordmark; alt empty + aria-hidden since the text carries the name.
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoUrl} alt={storeName} className="h-7 w-auto" />
-          ) : (
-            storeName.toUpperCase()
+            <img src={logoUrl} alt="" aria-hidden="true" className="h-6 w-auto" />
           )}
+          {storeName.toUpperCase()}
         </Link>
 
         <div className="flex-1">

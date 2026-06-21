@@ -30,6 +30,7 @@ export const policyBodiesSchema = z.object({
 export const settingsSchema = z.object({
   store_name: z.string().min(1).default("Hudsten"),
   logo_url: optionalText,
+  logo_url_dark: optionalText,
   announcement_bar: optionalText,
   whatsapp_number: optionalText, // sanitized at link-build time
   whatsapp_default_message_template: optionalText,

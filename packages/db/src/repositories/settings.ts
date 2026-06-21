@@ -25,6 +25,8 @@ export async function getSettings(
   return {
     store_name: row.store_name,
     logo_url: row.logo_url,
+    // ?? null tolerates a DB that hasn't applied the logo_url_dark migration yet.
+    logo_url_dark: row.logo_url_dark ?? null,
     announcement_bar: row.announcement_bar,
     whatsapp_number: row.whatsapp_number,
     whatsapp_default_message_template: row.whatsapp_default_message_template,

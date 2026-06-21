@@ -147,6 +147,8 @@ export interface PolicyBodies {
 export interface SiteSettings {
   store_name: string;
   logo_url: string | null;
+  /** White/light logo for dark surfaces (footer). */
+  logo_url_dark: string | null;
   announcement_bar: string | null;
   whatsapp_number: string | null;
   whatsapp_default_message_template: string | null;

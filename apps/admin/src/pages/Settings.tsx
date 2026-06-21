@@ -21,6 +21,7 @@ type StrMap = Record<string, string>;
 interface FormState {
   store_name: string;
   logo_url: string;
+  logo_url_dark: string;
   announcement_bar: string;
   whatsapp_number: string;
   whatsapp_default_message_template: string;
@@ -38,6 +39,7 @@ interface FormState {
 const BLANK: FormState = {
   store_name: "",
   logo_url: "",
+  logo_url_dark: "",
   announcement_bar: "",
   whatsapp_number: "",
   whatsapp_default_message_template: "",
@@ -59,6 +61,7 @@ function seedFrom(row: SettingsRow): FormState {
   return {
     store_name: row.store_name ?? "",
     logo_url: row.logo_url ?? "",
+    logo_url_dark: row.logo_url_dark ?? "",
     announcement_bar: row.announcement_bar ?? "",
     whatsapp_number: row.whatsapp_number ?? "",
     whatsapp_default_message_template: row.whatsapp_default_message_template ?? "",
@@ -99,6 +102,7 @@ export default function Settings() {
       updateSettings({
         store_name: form.store_name,
         logo_url: orNull(form.logo_url),
+        logo_url_dark: orNull(form.logo_url_dark),
         announcement_bar: orNull(form.announcement_bar),
         whatsapp_number: orNull(form.whatsapp_number),
         whatsapp_default_message_template: orNull(form.whatsapp_default_message_template),
@@ -152,6 +156,15 @@ export default function Settings() {
               onChange={(url) => set("logo_url", url ?? "")}
               alt="Store logo"
               fit="contain"
+            />
+          </Field>
+          <Field label="Logo (for dark backgrounds)" hint="White/light version shown in the footer.">
+            <ImageUploadField
+              value={form.logo_url_dark}
+              onChange={(url) => set("logo_url_dark", url ?? "")}
+              alt="Store logo (light)"
+              fit="contain"
+              preview="dark"
             />
           </Field>
           <Field

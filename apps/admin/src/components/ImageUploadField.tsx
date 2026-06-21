@@ -13,12 +13,15 @@ export function ImageUploadField({
   onChange,
   alt = "",
   fit = "cover",
+  preview = "light",
 }: {
   value: string | null | undefined;
   onChange: (url: string | null) => void;
   alt?: string;
   // "contain" keeps a logo fully visible (never cropped); "cover" suits photos.
   fit?: "cover" | "contain";
+  // Preview backdrop — "dark" so a white/light logo is visible against ink.
+  preview?: "light" | "dark";
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +51,9 @@ export function ImageUploadField({
             src={value}
             alt={alt}
             className={`h-28 w-44 shrink-0 rounded-md border border-stone-200 ${
-              fit === "contain" ? "bg-paper-dim object-contain p-2" : "object-cover"
+              fit === "contain"
+                ? `${preview === "dark" ? "bg-ink" : "bg-paper-dim"} object-contain p-2`
+                : "object-cover"
             }`}
           />
           <div className="flex items-center gap-3 text-xs">
