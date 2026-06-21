@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 const ITEMS = [
   { Icon: TruckIcon, label: "Free shipping" },
   { Icon: ReturnIcon, label: "7-day returns" },
-  { Icon: ShieldIcon, label: "1-yr warranty" },
+  { Icon: ShieldIcon, label: "6-mo warranty" },
   { Icon: LockIcon, label: "Secure order" },
 ];
 

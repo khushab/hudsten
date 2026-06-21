@@ -15,7 +15,7 @@ const PILLARS = [
   {
     Icon: ReturnIcon,
     title: "The risk is on us",
-    body: "1-year warranty, 7-day returns. No questions.",
+    body: "6-month warranty, 7-day returns. No questions.",
   },
 ];
 
