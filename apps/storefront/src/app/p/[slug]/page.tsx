@@ -17,7 +17,6 @@ import { Accordion } from "@/components/ui/Accordion";
 import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { ProductBuyBox } from "@/components/product/ProductBuyBox";
-import { ReviewsEmpty } from "@/components/product/ReviewsEmpty";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { Faq } from "@/components/product/Faq";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd } from "@/lib/jsonld";
@@ -215,12 +214,10 @@ export default async function ProductPage({
         </Container>
       )}
 
-      {/* Reviews */}
-      <Container className="max-w-4xl py-12">
-        <h2 className="mb-5 text-2xl font-normal">Reviews</h2>
-        {reviewList.length === 0 ? (
-          <ReviewsEmpty />
-        ) : (
+      {/* Reviews — only rendered once there are real reviews (no empty-state block). */}
+      {reviewList.length > 0 && (
+        <Container className="max-w-4xl py-12">
+          <h2 className="mb-5 text-2xl font-normal">Reviews</h2>
           <ul className="space-y-6">
             {reviewList.map((r) => (
               <li key={r.id} className="border-b border-stone-200 pb-6">
@@ -233,8 +230,8 @@ export default async function ProductPage({
               </li>
             ))}
           </ul>
-        )}
-      </Container>
+        </Container>
+      )}
 
       {/* Related products — MW grey band, centered heading. Omitted entirely when there are none. */}
       {related.length > 0 && (
