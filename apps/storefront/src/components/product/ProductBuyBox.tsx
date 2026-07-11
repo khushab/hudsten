@@ -13,6 +13,7 @@ import { ProductBadges } from "@/components/ui/Badge";
 import { buttonClasses } from "@/components/ui/Button";
 import { CompactTrust } from "./CompactTrust";
 import {
+  AmazonIcon,
   CheckIcon,
   TruckIcon,
   WhatsAppIcon,
@@ -360,6 +361,7 @@ export function ProductBuyBox({
               )}
             >
               {primaryCta.kind === "whatsapp" && <WhatsAppIcon className="h-5 w-5" />}
+              {primaryCta.kind === "amazon" && <AmazonIcon className="h-5 w-5" />}
               {primaryCta.label}
             </a>
           ) : (
@@ -431,6 +433,9 @@ export function ProductBuyBox({
           >
             {primaryCta.kind === "whatsapp" && (
               <WhatsAppIcon className="h-5 w-5 shrink-0" />
+            )}
+            {primaryCta.kind === "amazon" && (
+              <AmazonIcon className="h-5 w-5 shrink-0" />
             )}
             {primaryCta.label}
           </a>
