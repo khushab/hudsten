@@ -160,16 +160,45 @@ export function ProductBuyBox({
       ? product.amazon_url
       : null;
 
+  const eventPayload = {
+    id: product.id,
+    name: product.title,
+    price,
+    currency: product.currency,
+    variant: variantLabel,
+  };
+
+  // The primary buy action. WhatsApp can be turned OFF per product (admin toggle) — when it
+  // is (or no WhatsApp number is configured), Amazon is promoted to the primary CTA. Only if
+  // neither exists do we fall back to the "ordering is being set up" message.
+  const primaryCta =
+    product.whatsapp_enabled && waUrl
+      ? {
+          kind: "whatsapp" as const,
+          href: waUrl,
+          label: "Order on WhatsApp",
+          onClick: () => trackWhatsAppClick(eventPayload),
+        }
+      : amazonUrl
+        ? {
+            kind: "amazon" as const,
+            href: amazonUrl,
+            label: "Order on Amazon",
+            onClick: () => trackAmazonClick(eventPayload),
+          }
+        : null;
+
   // Reserve space at the page bottom (mobile only) so the fixed CTA bar never covers
   // the footer. Scoped to the PDP via a body class that globals.css zeroes out at lg+.
   useEffect(() => {
-    if (!waUrl) return;
+    if (!primaryCta) return;
     document.body.classList.add("has-sticky-cta");
     return () => document.body.classList.remove("has-sticky-cta");
-  }, [waUrl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [primaryCta?.href]);
 
-  // The sticky mobile CTA appears ONLY once the inline WhatsApp button has scrolled out of view —
-  // so there's never two "Order on WhatsApp" buttons on screen at the same time.
+  // The sticky mobile CTA appears ONLY once the inline primary button has scrolled out of
+  // view — so there's never two primary buttons on screen at the same time.
   const inlineCtaRef = useRef<HTMLAnchorElement>(null);
   const [inlineCtaVisible, setInlineCtaVisible] = useState(true);
   useEffect(() => {
@@ -180,15 +209,8 @@ export function ProductBuyBox({
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [waUrl]);
-
-  const eventPayload = {
-    id: product.id,
-    name: product.title,
-    price,
-    currency: product.currency,
-    variant: variantLabel,
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [primaryCta?.href]);
 
   // Product video (PRD §6) — a single admin-editable URL on the product.
   const videoUrl =
@@ -317,19 +339,28 @@ export function ProductBuyBox({
           {inStock ? "In stock" : "Currently unavailable"}
         </p>
 
-        {/* CTAs — ranked: WhatsApp primary, Amazon secondary (PRD §6). */}
+        {/* CTAs — WhatsApp primary by default; when the per-product WhatsApp toggle is off,
+            Amazon is promoted to the primary button (see primaryCta above). */}
         <div className="mt-5 space-y-3">
-          {waUrl ? (
+          {primaryCta ? (
             <a
               ref={inlineCtaRef}
-              href={waUrl}
+              href={primaryCta.href}
               target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackWhatsAppClick(eventPayload)}
-              className={buttonClasses("whatsapp", "lg", "w-full text-sm")}
+              rel={
+                primaryCta.kind === "amazon"
+                  ? "noopener noreferrer nofollow"
+                  : "noopener noreferrer"
+              }
+              onClick={primaryCta.onClick}
+              className={buttonClasses(
+                primaryCta.kind === "whatsapp" ? "whatsapp" : "primary",
+                "lg",
+                "w-full text-sm",
+              )}
             >
-              <WhatsAppIcon className="h-5 w-5" />
-              Order on WhatsApp
+              {primaryCta.kind === "whatsapp" && <WhatsAppIcon className="h-5 w-5" />}
+              {primaryCta.label}
             </a>
           ) : (
             <p className="rounded-md bg-stone-100 px-4 py-3 text-center text-sm text-stone-500">
@@ -337,7 +368,8 @@ export function ProductBuyBox({
             </p>
           )}
 
-          {amazonUrl && (
+          {/* Secondary Amazon link only when WhatsApp is the primary (avoids a duplicate Amazon CTA). */}
+          {primaryCta?.kind === "whatsapp" && amazonUrl && (
             <a
               href={amazonUrl}
               target="_blank"
@@ -362,8 +394,8 @@ export function ProductBuyBox({
       </div>
 
       {/* Sticky mobile CTA bar (Hick's Law — one clear action), shown only after the inline CTA
-          scrolls away. Two stacked rows so the full-width button never clips the label. */}
-      {waUrl && !inlineCtaVisible && (
+          scrolls away. Mirrors the primary CTA (WhatsApp or Amazon). */}
+      {primaryCta && !inlineCtaVisible && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex flex-col gap-2 border-t border-stone-200 bg-paper/95 p-3 backdrop-blur-md lg:hidden">
           {/* Row 1 — compact price line: current price + struck compare-at + % off. */}
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm">
@@ -381,16 +413,26 @@ export function ProductBuyBox({
               </>
             )}
           </div>
-          {/* Row 2 — full-width WhatsApp CTA (label can never clip). */}
+          {/* Row 2 — full-width primary CTA (label can never clip). */}
           <a
-            href={waUrl}
+            href={primaryCta.href}
             target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackWhatsAppClick(eventPayload)}
-            className={buttonClasses("whatsapp", "md", "w-full whitespace-nowrap")}
+            rel={
+              primaryCta.kind === "amazon"
+                ? "noopener noreferrer nofollow"
+                : "noopener noreferrer"
+            }
+            onClick={primaryCta.onClick}
+            className={buttonClasses(
+              primaryCta.kind === "whatsapp" ? "whatsapp" : "primary",
+              "md",
+              "w-full whitespace-nowrap",
+            )}
           >
-            <WhatsAppIcon className="h-5 w-5 shrink-0" />
-            Order on WhatsApp
+            {primaryCta.kind === "whatsapp" && (
+              <WhatsAppIcon className="h-5 w-5 shrink-0" />
+            )}
+            {primaryCta.label}
           </a>
         </div>
       )}

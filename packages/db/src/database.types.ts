@@ -476,6 +476,7 @@ export type Database = {
           title: string
           updated_at: string
           video_url: string | null
+          whatsapp_enabled: boolean
           whatsapp_message_template: string | null
         }
         Insert: {
@@ -503,6 +504,7 @@ export type Database = {
           title: string
           updated_at?: string
           video_url?: string | null
+          whatsapp_enabled?: boolean
           whatsapp_message_template?: string | null
         }
         Update: {
@@ -530,6 +532,7 @@ export type Database = {
           title?: string
           updated_at?: string
           video_url?: string | null
+          whatsapp_enabled?: boolean
           whatsapp_message_template?: string | null
         }
         Relationships: [

@@ -235,7 +235,7 @@ export async function getColorFacets(
 const DETAIL_SELECT = `
   id, title, slug, description, details, specifications, video_url, faqs, editorial_blocks,
   gender, price, compare_at_price, currency, in_stock,
-  whatsapp_message_template, amazon_url, badges, meta_title, meta_description,
+  whatsapp_enabled, whatsapp_message_template, amazon_url, badges, meta_title, meta_description,
   category:categories(id, name, slug),
   options:product_options(id, name, position, values:product_option_values(id, value, color_hex, position)),
   variants:product_variants(id, title, sku, price, compare_at_price, in_stock, position, variant_option_values(option_value_id)),
@@ -259,6 +259,7 @@ interface RawDetail {
   compare_at_price: number | null;
   currency: string;
   in_stock: boolean;
+  whatsapp_enabled: boolean;
   whatsapp_message_template: string | null;
   amazon_url: string | null;
   badges: string[];
@@ -381,6 +382,7 @@ export async function getProductBySlug(
     compare_at_price: r.compare_at_price,
     currency: r.currency,
     in_stock: r.in_stock,
+    whatsapp_enabled: r.whatsapp_enabled,
     whatsapp_message_template: r.whatsapp_message_template,
     amazon_url: r.amazon_url,
     badges: r.badges ?? [],

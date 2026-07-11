@@ -59,6 +59,7 @@ const BLANK: ProductEditorPayload = {
     video_url: null,
     faqs: DEFAULT_FAQS,
     editorial_blocks: [],
+    whatsapp_enabled: true,
     whatsapp_message_template: null,
     amazon_url: null,
     is_featured: false,
@@ -453,6 +454,14 @@ export default function ProductEditor() {
       {/* CTAs */}
       <Card title="Buy CTAs">
         <div className="space-y-4">
+          <Toggle
+            checked={core.whatsapp_enabled}
+            onChange={(v) => setCore({ whatsapp_enabled: v })}
+            label="Show 'Order on WhatsApp' button"
+          />
+          <p className="text-xs text-stone-500">
+            When off, the Amazon URL below becomes the primary CTA on this product's page.
+          </p>
           <Field
             label="WhatsApp message template"
             htmlFor="wa"

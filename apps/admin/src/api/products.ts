@@ -57,6 +57,7 @@ export interface ProductEditorPayload {
     video_url: string | null;
     faqs: { question: string; answer: string }[];
     editorial_blocks: { image_url: string | null; heading: string; body: string }[];
+    whatsapp_enabled: boolean;
     whatsapp_message_template: string | null;
     amazon_url: string | null;
     is_featured: boolean;
@@ -128,7 +129,7 @@ export async function getProductForEdit(
       .select(
         `id, title, slug, description, details, specifications, video_url, faqs, editorial_blocks,
          category_id, gender, price, compare_at_price,
-         currency, status, in_stock, whatsapp_message_template, amazon_url, is_featured, badges,
+         currency, status, in_stock, whatsapp_enabled, whatsapp_message_template, amazon_url, is_featured, badges,
          meta_title, meta_description,
          options:product_options(id, name, position, values:product_option_values(id, value, color_hex, position)),
          variants:product_variants(id, title, sku, price, compare_at_price, in_stock, position, variant_option_values(option_value_id)),
@@ -163,6 +164,7 @@ export async function getProductForEdit(
       editorial_blocks: Array.isArray(data.editorial_blocks)
         ? (data.editorial_blocks as { image_url: string | null; heading: string; body: string }[])
         : [],
+      whatsapp_enabled: data.whatsapp_enabled,
       whatsapp_message_template: data.whatsapp_message_template,
       amazon_url: data.amazon_url,
       is_featured: data.is_featured,
@@ -224,6 +226,7 @@ interface RawEditRow {
   currency: string;
   status: Enums<"product_status">;
   in_stock: boolean;
+  whatsapp_enabled: boolean;
   whatsapp_message_template: string | null;
   amazon_url: string | null;
   is_featured: boolean;

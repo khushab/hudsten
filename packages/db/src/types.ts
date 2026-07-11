@@ -107,6 +107,8 @@ export interface ProductDetail {
   compare_at_price: number | null;
   currency: string;
   in_stock: boolean;
+  /** Show the "Order on WhatsApp" CTA. When false, Amazon becomes the primary CTA. */
+  whatsapp_enabled: boolean;
   whatsapp_message_template: string | null;
   amazon_url: string | null;
   badges: string[];
