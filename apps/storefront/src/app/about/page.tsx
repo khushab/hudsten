@@ -40,10 +40,11 @@ export default function AboutPage() {
             something you'd be proud to carry into a meeting.
           </p>
           <p>
+            {/* Warranty paused — when it returns, restore: "…backed by a real warranty and honest returns." */}
             Every piece is built around three non-negotiables: materials that
             age well, hardware that doesn't quit, and details that earn their
             place. No gimmicks, no fake urgency — just bags we'd carry ourselves,
-            backed by a real warranty and honest returns.
+            backed by honest, no-fuss returns.
           </p>
           <p>
             We're just getting started, launching with gym bags and expanding

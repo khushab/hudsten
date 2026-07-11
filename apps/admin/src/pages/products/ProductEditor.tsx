@@ -37,7 +37,7 @@ import { EditorialBlocksEditor } from "./editor/EditorialBlocksEditor";
 const DEFAULT_FAQS = [
   "What's in the box?",
   "How do I care for it?",
-  "Is there a warranty?",
+  // "Is there a warranty?", // re-add when warranty returns
   "Shipping & delivery?",
   "Returns & exchanges?",
 ].map((question) => ({ question, answer: "" }));

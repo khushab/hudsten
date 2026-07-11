@@ -1,18 +1,20 @@
-import { ReturnIcon, ShieldIcon, TruckIcon, LockIcon } from "@/components/icons";
+import { ReturnIcon, TruckIcon, LockIcon } from "@/components/icons";
 import { cn } from "@/lib/cn";
 
 const ITEMS = [
   { Icon: TruckIcon, title: "Free shipping", sub: "All orders, pan-India" },
   { Icon: ReturnIcon, title: "7-day returns", sub: "Easy, no-fuss returns" },
-  { Icon: ShieldIcon, title: "6-month warranty", sub: "Against manufacturing defects" },
-  { Icon: LockIcon, title: "Secure ordering", sub: "Order safely over WhatsApp" },
+  // Warranty paused. To restore: uncomment, add `ShieldIcon` to the import above,
+  // and change `lg:grid-cols-3` → `lg:grid-cols-4` in TrustStrip below.
+  // { Icon: ShieldIcon, title: "6-month warranty", sub: "Against manufacturing defects" },
+  { Icon: LockIcon, title: "Secure ordering", sub: "Safe, protected checkout" },
 ];
 
 /** Risk-reversal band (PRD §6 psychology). Reused on home; PDP has a compact variant. */
 export function TrustStrip({ className }: { className?: string }) {
   return (
     <div className={cn("border-y border-stone-200 bg-paper-dim", className)}>
-      <div className="mx-auto grid max-w-shell grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 sm:px-6 lg:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid max-w-shell grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 sm:px-6 lg:grid-cols-3 lg:px-8">
         {ITEMS.map(({ Icon, title, sub }) => (
           <div key={title} className="flex items-start gap-3">
             <Icon className="h-7 w-7 shrink-0 text-ink" />
