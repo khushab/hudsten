@@ -14,6 +14,12 @@ const nextConfig = {
   // @hudsten/* are source-only workspace packages (no build step) — transpile them.
   transpilePackages: ["@hudsten/shared", "@hudsten/db", "@hudsten/ui"],
   images: {
+    // Serve images DIRECTLY from source (Supabase Storage / placehold.co), bypassing Vercel's
+    // image optimizer. That optimizer was returning HTTP 402 (the plan's image-optimization limit
+    // was exceeded), which broke PDP/gallery images. Our sources are already .webp and modestly
+    // sized, so direct serving is fine. To re-enable optimization later, remove `unoptimized`
+    // (on a higher Vercel plan) or add a Supabase image-transform loader for resizing.
+    unoptimized: true,
     // AVIF/WebP + remote sources. Supabase Storage CDN host is added from env at build.
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
